@@ -6,10 +6,6 @@ using UnityEditor;
 
 public class ColorGradientToTexture : EditorWindow
 {
-    private enum ColorType {
-        RGB, HSV,
-    }
-
     private class ColorAxis {
         public AnimationCurve curve;
         public int direction;
@@ -33,6 +29,7 @@ public class ColorGradientToTexture : EditorWindow
         }
     }
 
+    private int colorMode;
     private ColorAxis[] axes;
     private Vector2Int textureSize;
     private Texture2D tex;
@@ -57,12 +54,27 @@ public class ColorGradientToTexture : EditorWindow
 
     private void OnGUI()
     {
-        EditorGUILayout.Popup("color", 0, new string[]{ "RGB" });
+        var tmp_colorMode = EditorGUILayout.Popup("color", colorMode, new string[]{ "RGB", "HSV" });
+        if (colorMode != tmp_colorMode) {
+            colorMode = tmp_colorMode;
+
+            axes = new ColorAxis[3];
+            for (int i = 0; i < axes.Length; i++) {
+                axes[i] = new ColorAxis();
+            }
+        }
 
         textureSize = EditorGUILayout.Vector2IntField("size", textureSize);
-        axes[0].Editor("r");
-        axes[1].Editor("g");
-        axes[2].Editor("b");
+        if (colorMode == 0) {
+            axes[0].Editor("r");
+            axes[1].Editor("g");
+            axes[2].Editor("b");
+        } else {
+            axes[0].Editor("h");
+            axes[1].Editor("s");
+            axes[2].Editor("v");
+        }
+
 
         if (GUILayout.Button("Preview reload")) {
             Debug.Log("Preview");
@@ -84,12 +96,20 @@ public class ColorGradientToTexture : EditorWindow
             {
                 var xf = (float) x / tex.width;
                 var yf = (float) y / tex.height;
+                Color color;
+                if (colorMode == 0) {
+                    var r = axes[0].Evaluate(xf, yf);
+                    var g = axes[1].Evaluate(xf, yf);
+                    var b = axes[2].Evaluate(xf, yf);
+                    color = new Color(r, g, b);
+                } else {
+                    var h = axes[0].Evaluate(xf, yf);
+                    var s = axes[1].Evaluate(xf, yf);
+                    var v = axes[2].Evaluate(xf, yf);
+                    color = Color.HSVToRGB(h, s, v);
+                }
 
-                var r = axes[0].Evaluate(xf, yf);
-                var g = axes[1].Evaluate(xf, yf);
-                var b = axes[2].Evaluate(xf, yf);
-
-                tex.SetPixel(x, y, new Color(r, g, b, 1), 0);
+                tex.SetPixel(x, y, color, 0);
             }
         }
         tex.Apply();
