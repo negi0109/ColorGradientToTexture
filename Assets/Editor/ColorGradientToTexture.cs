@@ -9,10 +9,31 @@ public class ColorGradientToTexture : EditorWindow
     private enum ColorType {
         RGB, HSV,
     }
-    private AnimationCurve rCurve;
-    private AnimationCurve gCurve;
-    private AnimationCurve bCurve;
 
+    private class ColorAxis {
+        public AnimationCurve curve;
+        public int direction;
+
+        public ColorAxis() {
+            curve = new AnimationCurve();
+            direction = 0;
+        }
+
+        public void Editor (string label) {
+            direction = EditorGUILayout.Popup(direction, new string[]{ "x", "y" });
+            curve = EditorGUILayout.CurveField(label, curve);
+        }
+
+        public float Evaluate (float x, float y) {
+            switch (direction) {
+                case 0: return curve.Evaluate(x);
+                case 1: return curve.Evaluate(y);
+                default: return 0;
+            }
+        }
+    }
+
+    private ColorAxis[] axes;
     private Vector2Int textureSize;
     private Texture2D tex;
 
@@ -28,24 +49,20 @@ public class ColorGradientToTexture : EditorWindow
     private void Initialize(Vector2Int textureSize) {
         this.textureSize = textureSize;
         this.tex = new Texture2D(textureSize.x, textureSize.y, TextureFormat.ARGB32, false);
-        rCurve = new AnimationCurve();
-        gCurve = new AnimationCurve();
-        bCurve = new AnimationCurve();
+        axes = new ColorAxis[3];
+        for (int i = 0; i < axes.Length; i++) {
+            axes[i] = new ColorAxis();
+        }
     }
 
     private void OnGUI()
     {
         EditorGUILayout.Popup("color", 0, new string[]{ "RGB" });
+
         textureSize = EditorGUILayout.Vector2IntField("size", textureSize);
-        EditorGUILayout.LabelField("r");
-        EditorGUILayout.Popup(0, new string[]{ "x" });
-        rCurve = EditorGUILayout.CurveField(rCurve);
-        EditorGUILayout.LabelField("g");
-        EditorGUILayout.Popup(0, new string[]{ "x" });
-        gCurve = EditorGUILayout.CurveField(gCurve);
-        EditorGUILayout.LabelField("b");
-        EditorGUILayout.Popup(0, new string[]{ "y" });
-        bCurve = EditorGUILayout.CurveField(bCurve);
+        axes[0].Editor("r");
+        axes[1].Editor("g");
+        axes[2].Editor("b");
 
         if (GUILayout.Button("Preview reload")) {
             Debug.Log("Preview");
@@ -57,16 +74,20 @@ public class ColorGradientToTexture : EditorWindow
             Debug.Log("bake texture");
         }
     }
+
     private void Preview()
     {
         //fill with with the animation curve data
         for (int x = 0; x < tex.width; x++)
         {
-            var r = rCurve.Evaluate((float)x / tex.width);
-            var g = gCurve.Evaluate((float)x / tex.width);
             for (int y = 0; y < tex.height; y++)
             {
-                var b = bCurve.Evaluate((float)y / tex.height);
+                var xf = (float) x / tex.width;
+                var yf = (float) y / tex.height;
+
+                var r = axes[0].Evaluate(xf, yf);
+                var g = axes[1].Evaluate(xf, yf);
+                var b = axes[2].Evaluate(xf, yf);
 
                 tex.SetPixel(x, y, new Color(r, g, b, 1), 0);
             }
