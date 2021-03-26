@@ -37,10 +37,6 @@ public class ColorGradientToTexture : EditorWindow
     {
         EditorGUILayout.Popup("color", 0, new string[]{ "RGB" });
         textureSize = EditorGUILayout.Vector2IntField("size", textureSize);
-        if (GUILayout.Button("Preview reload")) {
-            Debug.Log("Preview");
-            Preview();
-        }
         EditorGUILayout.LabelField("r");
         EditorGUILayout.Popup(0, new string[]{ "x" });
         rCurve = EditorGUILayout.CurveField(rCurve);
@@ -50,10 +46,13 @@ public class ColorGradientToTexture : EditorWindow
         EditorGUILayout.LabelField("b");
         EditorGUILayout.Popup(0, new string[]{ "y" });
         bCurve = EditorGUILayout.CurveField(bCurve);
-        #region preview
+
+        if (GUILayout.Button("Preview reload")) {
+            Debug.Log("Preview");
+            Preview();
+        }
 
         GUILayout.Box(tex);
-        #endregion
         if (GUILayout.Button("Bake Texture")) {
             Debug.Log("bake texture");
         }
