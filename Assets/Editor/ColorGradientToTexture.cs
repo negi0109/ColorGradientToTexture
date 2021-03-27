@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System.Linq;
 using UnityEditor;
 
 public class ColorGradientToTexture : EditorWindow
@@ -10,17 +11,33 @@ public class ColorGradientToTexture : EditorWindow
         public AnimationCurve curve;
         public int direction;
 
-        public ColorAxis() {
+        public ColorAxis()
+        {
             curve = new AnimationCurve();
             direction = 0;
         }
 
-        public void Editor (string label) {
-            direction = EditorGUILayout.Popup(direction, new string[]{ "x", "y" });
-            curve = EditorGUILayout.CurveField(label, curve);
+        public bool Editor (string label)
+        {
+            var updated = false;
+            var tmp_direction = EditorGUILayout.Popup(direction, new string[]{ "x", "y" });
+
+            if (tmp_direction != direction) {
+                direction = tmp_direction;
+                updated = true;
+            }
+
+            var tmp_curve = EditorGUILayout.CurveField(label, curve);
+            for (float i = 0; i < 1f; i += 0.1f)
+                if (tmp_curve.Evaluate(i) == curve.Evaluate(i))
+                    updated = true;
+
+            curve = tmp_curve;
+            return updated;
         }
 
-        public float Evaluate (float x, float y) {
+        public float Evaluate (float x, float y)
+        {
             switch (direction) {
                 case 0: return curve.Evaluate(x);
                 case 1: return curve.Evaluate(y);
@@ -43,7 +60,8 @@ public class ColorGradientToTexture : EditorWindow
         window.Show();
     }
 
-    private void Initialize(Vector2Int textureSize) {
+    private void Initialize(Vector2Int textureSize)
+    {
         this.textureSize = textureSize;
         this.tex = new Texture2D(textureSize.x, textureSize.y, TextureFormat.ARGB32, false);
         axes = new ColorAxis[3];
@@ -64,19 +82,25 @@ public class ColorGradientToTexture : EditorWindow
             }
         }
 
-        textureSize = EditorGUILayout.Vector2IntField("size", textureSize);
-        if (colorMode == 0) {
-            axes[0].Editor("r");
-            axes[1].Editor("g");
-            axes[2].Editor("b");
-        } else {
-            axes[0].Editor("h");
-            axes[1].Editor("s");
-            axes[2].Editor("v");
+        var updated = false;
+        var tmp_textureSize = EditorGUILayout.Vector2IntField("size", textureSize);
+        if (tmp_textureSize.x != textureSize.x || tmp_textureSize.y != textureSize.y) {
+            textureSize = tmp_textureSize;
+            tex = new Texture2D(textureSize.x, textureSize.y,TextureFormat.ARGB32, false);
+            updated = true;
         }
 
+        if (colorMode == 0) {
+            updated |= axes[0].Editor("r");
+            updated |= axes[1].Editor("g");
+            updated |= axes[2].Editor("b");
+        } else {
+            updated |= axes[0].Editor("h");
+            updated |= axes[1].Editor("s");
+            updated |= axes[2].Editor("v");
+        }
 
-        if (GUILayout.Button("Preview reload")) {
+        if (updated || GUILayout.Button("Preview reload")) {
             Debug.Log("Preview");
             Preview();
         }
