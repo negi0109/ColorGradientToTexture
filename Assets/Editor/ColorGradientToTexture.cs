@@ -23,6 +23,9 @@ public class ColorGradientToTexture : EditorWindow
         public bool Editor (string label)
         {
             var updated = false;
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField(label, new GUILayoutOption[]{ GUILayout.Width(12) });
+
             var tmp_direction = EditorGUILayout.Popup(direction, new string[]{ "x", "y" });
 
             if (tmp_direction != direction) {
@@ -30,7 +33,8 @@ public class ColorGradientToTexture : EditorWindow
                 updated = true;
             }
 
-            curve = EditorGUILayout.CurveField(label, curve);
+            EditorGUILayout.EndHorizontal();
+            curve = EditorGUILayout.CurveField(curve);
             for (int i = 0; i < 10; i++) {
                 var tmp = curve.Evaluate(i / 10f);
                 if (values[i] != tmp) updated = true;
