@@ -11,10 +11,13 @@ public class ColorGradientToTexture : EditorWindow
         public AnimationCurve curve;
         public int direction;
 
+        private float[] values;
+
         public ColorAxis()
         {
-            curve = new AnimationCurve();
+            curve = AnimationCurve.Linear(0, 0, 1, 1);
             direction = 0;
+            values = new float[10];
         }
 
         public bool Editor (string label)
@@ -27,12 +30,13 @@ public class ColorGradientToTexture : EditorWindow
                 updated = true;
             }
 
-            var tmp_curve = EditorGUILayout.CurveField(label, curve);
-            for (float i = 0; i < 1f; i += 0.1f)
-                if (tmp_curve.Evaluate(i) == curve.Evaluate(i))
-                    updated = true;
+            curve = EditorGUILayout.CurveField(label, curve);
+            for (int i = 0; i < 10; i++) {
+                var tmp = curve.Evaluate(i / 10f);
+                if (values[i] != tmp) updated = true;
+                values[i] = tmp;
+            }
 
-            curve = tmp_curve;
             return updated;
         }
 
