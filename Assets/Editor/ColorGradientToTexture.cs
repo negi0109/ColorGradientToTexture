@@ -108,7 +108,7 @@ public class ColorGradientToTexture : EditorWindow
             updated |= axes[2].Editor("v");
         }
 
-        if (updated || GUILayout.Button("Preview reload")) {
+        if (updated | GUILayout.Button("Preview reload")) {
             Debug.Log("Preview");
             Preview();
         }
