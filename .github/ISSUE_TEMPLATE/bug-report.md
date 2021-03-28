@@ -1,9 +1,9 @@
 ---
-name: バグ
-about: 
-title: 
+name: Bug Report
+about: バグ報告
+title: ''
 labels: bug
-assignees: ''
+assignees: negi0109
 
 ---
 
