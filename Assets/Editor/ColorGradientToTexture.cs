@@ -7,7 +7,8 @@ using UnityEditor;
 
 public class ColorGradientToTexture : EditorWindow
 {
-    private class ColorAxis {
+    private class ColorAxis
+    {
         public AnimationCurve curve;
         public int direction;
 
