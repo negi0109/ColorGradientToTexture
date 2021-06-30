@@ -32,7 +32,6 @@ public class ColorGradientToTexture : EditorWindow
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField(label, new GUILayoutOption[]{ GUILayout.Width(12) });
 
-            // var tmp_direction = EditorGUILayout.Popup(xDirection, new string[]{ "x", "y" });
             var tmpXDirection = EditorGUILayout.Slider(xDirection, 0f, 1f);
 
             if (tmpXDirection != xDirection) {
