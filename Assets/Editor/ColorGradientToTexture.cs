@@ -9,50 +9,58 @@ public class ColorGradientToTexture : EditorWindow
 {
     private class ColorAxis
     {
-        public AnimationCurve curve;
-        public int direction;
+        private AnimationCurve xCurve;
+        private AnimationCurve yCurve;
+        private float xDirection;
 
-        private float[] values;
+        private float[] xCurveValues;
+        private float[] yCurveValues;
 
         public ColorAxis()
         {
-            curve = AnimationCurve.Linear(0, 0, 1, 1);
-            direction = 0;
-            values = new float[10];
+            xCurve = AnimationCurve.Linear(0, 0, 1, 1);
+            yCurve = AnimationCurve.Linear(0, 0, 1, 1);
+            xDirection = 0;
+            xCurveValues = new float[10];
+            yCurveValues = new float[10];
         }
 
         public bool Editor (string label)
         {
             var updated = false;
+            EditorGUILayout.BeginVertical();
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField(label, new GUILayoutOption[]{ GUILayout.Width(12) });
 
-            var tmp_direction = EditorGUILayout.Popup(direction, new string[]{ "x", "y" });
+            // var tmp_direction = EditorGUILayout.Popup(xDirection, new string[]{ "x", "y" });
+            var tmpXDirection = EditorGUILayout.Slider(xDirection, 0f, 1f);
 
-            if (tmp_direction != direction) {
-                direction = tmp_direction;
+            if (tmpXDirection != xDirection) {
+                xDirection = tmpXDirection;
                 updated = true;
             }
 
             EditorGUILayout.EndHorizontal();
-            curve = EditorGUILayout.CurveField(curve);
+            xCurve = EditorGUILayout.CurveField("x", xCurve);
             for (int i = 0; i < 10; i++) {
-                var tmp = curve.Evaluate(i / 10f);
-                if (values[i] != tmp) updated = true;
-                values[i] = tmp;
+                var tmp = xCurve.Evaluate(i / 10f);
+                if (xCurveValues[i] != tmp) updated = true;
+                xCurveValues[i] = tmp;
             }
+
+            yCurve = EditorGUILayout.CurveField("y", yCurve);
+            for (int i = 0; i < 10; i++) {
+                var tmp = yCurve.Evaluate(i / 10f);
+                if (yCurveValues[i] != tmp) updated = true;
+                yCurveValues[i] = tmp;
+            }
+            EditorGUILayout.EndVertical();
 
             return updated;
         }
 
         public float Evaluate (float x, float y)
-        {
-            switch (direction) {
-                case 0: return curve.Evaluate(x);
-                case 1: return curve.Evaluate(y);
-                default: return 0;
-            }
-        }
+            => xDirection * xCurve.Evaluate(x) + (1 - xDirection) * yCurve.Evaluate(y);
     }
 
     private int colorMode;
