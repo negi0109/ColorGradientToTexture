@@ -3,7 +3,6 @@ name: Bug Report
 about: バグ報告
 title: ''
 labels: bug
-assignees: negi0109
 
 ---
 

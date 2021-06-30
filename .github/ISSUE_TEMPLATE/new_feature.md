@@ -3,7 +3,6 @@ name: 新機能
 about: 新機能の追加、改善
 title: ''
 labels: enhancement
-assignees: negi0109
 
 ---
 
