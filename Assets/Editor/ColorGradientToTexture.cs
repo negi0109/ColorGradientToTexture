@@ -49,19 +49,26 @@ public class ColorGradientToTexture : EditorWindow
             GUILayout.Box(previewTex);
             EditorGUILayout.BeginVertical();
 
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("x", new GUILayoutOption[]{ GUILayout.Width(12) });
             xCurve = EditorGUILayout.CurveField(xCurve);
             for (int i = 0; i < 10; i++) {
                 var tmp = xCurve.Evaluate(i / 10f);
                 if (xCurveValues[i] != tmp) updated = true;
                 xCurveValues[i] = tmp;
             }
+            EditorGUILayout.EndHorizontal();
 
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("y", new GUILayoutOption[]{ GUILayout.Width(12) });
             yCurve = EditorGUILayout.CurveField(yCurve);
             for (int i = 0; i < 10; i++) {
                 var tmp = yCurve.Evaluate(i / 10f);
                 if (yCurveValues[i] != tmp) updated = true;
                 yCurveValues[i] = tmp;
             }
+            EditorGUILayout.EndHorizontal();
+
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.EndVertical();
