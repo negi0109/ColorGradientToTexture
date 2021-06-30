@@ -62,6 +62,8 @@ public class ColorGradientToTexture : EditorWindow
             => xDirection * xCurve.Evaluate(x) + (1 - xDirection) * yCurve.Evaluate(y);
     }
 
+    private static readonly int previewSize = 150;
+
     private int colorMode;
     private ColorAxis[] axes;
     private Vector2Int textureSize;
@@ -99,12 +101,7 @@ public class ColorGradientToTexture : EditorWindow
         }
 
         var updated = false;
-        var tmp_textureSize = EditorGUILayout.Vector2IntField("size", textureSize);
-        if (tmp_textureSize.x != textureSize.x || tmp_textureSize.y != textureSize.y) {
-            textureSize = tmp_textureSize;
-            tex = new Texture2D(textureSize.x, textureSize.y,TextureFormat.ARGB32, false);
-            updated = true;
-        }
+        textureSize = EditorGUILayout.Vector2IntField("size", textureSize);
 
         if (colorMode == 0) {
             updated |= axes[0].Editor("r");
@@ -130,12 +127,12 @@ public class ColorGradientToTexture : EditorWindow
     private void Preview()
     {
         //fill with with the animation curve data
-        for (int x = 0; x < tex.width; x++)
+        for (int x = 0; x < previewSize; x++)
         {
-            for (int y = 0; y < tex.height; y++)
+            for (int y = 0; y < previewSize; y++)
             {
-                var xf = (float) x / tex.width;
-                var yf = (float) y / tex.height;
+                var xf = (float) x / previewSize;
+                var yf = (float) y / previewSize;
                 Color color;
                 if (colorMode == 0) {
                     var r = axes[0].Evaluate(xf, yf);
