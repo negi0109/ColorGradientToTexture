@@ -13,6 +13,8 @@ public class ColorGradientToTexture : EditorWindow
         private AnimationCurve yCurve;
         private float xDirection;
 
+        private static int previewSize = 50;
+        private Texture2D previewTex;
         private float[] xCurveValues;
         private float[] yCurveValues;
 
@@ -21,8 +23,10 @@ public class ColorGradientToTexture : EditorWindow
             xCurve = AnimationCurve.Linear(0, 0, 1, 1);
             yCurve = AnimationCurve.Linear(0, 0, 1, 1);
             xDirection = 0;
+
             xCurveValues = new float[10];
             yCurveValues = new float[10];
+            previewTex = new Texture2D(previewSize, previewSize, TextureFormat.RGB565, false);
         }
 
         public bool Editor (string label)
@@ -40,21 +44,43 @@ public class ColorGradientToTexture : EditorWindow
             }
 
             EditorGUILayout.EndHorizontal();
-            xCurve = EditorGUILayout.CurveField("x", xCurve);
+            EditorGUILayout.BeginHorizontal();
+
+            GUILayout.Box(previewTex);
+            EditorGUILayout.BeginVertical();
+
+            xCurve = EditorGUILayout.CurveField(xCurve);
             for (int i = 0; i < 10; i++) {
                 var tmp = xCurve.Evaluate(i / 10f);
                 if (xCurveValues[i] != tmp) updated = true;
                 xCurveValues[i] = tmp;
             }
 
-            yCurve = EditorGUILayout.CurveField("y", yCurve);
+            yCurve = EditorGUILayout.CurveField(yCurve);
             for (int i = 0; i < 10; i++) {
                 var tmp = yCurve.Evaluate(i / 10f);
                 if (yCurveValues[i] != tmp) updated = true;
                 yCurveValues[i] = tmp;
             }
             EditorGUILayout.EndVertical();
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.EndVertical();
 
+            if (updated) {
+                for (int x = 0; x < previewSize; x++)
+                {
+                    for (int y = 0; y < previewSize; y++)
+                    {
+                        var xf = (float) x / previewSize;
+                        var yf = (float) y / previewSize;
+                        var v = Evaluate(xf, yf);
+                        var color = new Color(v, v, v, 1);
+
+                        previewTex.SetPixel(x, y, color, 0);
+                    }
+                }
+                previewTex.Apply();
+            }
             return updated;
         }
 
@@ -81,7 +107,7 @@ public class ColorGradientToTexture : EditorWindow
     private void Initialize(Vector2Int textureSize)
     {
         this.textureSize = textureSize;
-        this.tex = new Texture2D(textureSize.x, textureSize.y, TextureFormat.ARGB32, false);
+        this.tex = new Texture2D(previewSize, previewSize, TextureFormat.ARGB32, false);
         axes = new ColorAxis[3];
         for (int i = 0; i < axes.Length; i++) {
             axes[i] = new ColorAxis();
