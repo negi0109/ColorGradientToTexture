@@ -11,7 +11,7 @@ public class ColorGradientToTexture : EditorWindow
     {
         private AnimationCurve xCurve;
         private AnimationCurve yCurve;
-        private float xDirection;
+        private float yDirection;
 
         private static int previewSize = 50;
         private Texture2D previewTex;
@@ -22,7 +22,7 @@ public class ColorGradientToTexture : EditorWindow
         {
             xCurve = AnimationCurve.Linear(0, 0, 1, 1);
             yCurve = AnimationCurve.Linear(0, 0, 1, 1);
-            xDirection = 0;
+            yDirection = 0;
 
             xCurveValues = new float[10];
             yCurveValues = new float[10];
@@ -36,10 +36,10 @@ public class ColorGradientToTexture : EditorWindow
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField(label, new GUILayoutOption[]{ GUILayout.Width(12) });
 
-            var tmpXDirection = EditorGUILayout.Slider(xDirection, 0f, 1f);
+            var tmpDirection = EditorGUILayout.Slider(yDirection, 0f, 1f);
 
-            if (tmpXDirection != xDirection) {
-                xDirection = tmpXDirection;
+            if (tmpDirection != yDirection) {
+                yDirection = tmpDirection;
                 updated = true;
             }
 
@@ -92,7 +92,7 @@ public class ColorGradientToTexture : EditorWindow
         }
 
         public float Evaluate (float x, float y)
-            => xDirection * xCurve.Evaluate(x) + (1 - xDirection) * yCurve.Evaluate(y);
+            => (1 - yDirection) * xCurve.Evaluate(x) + yDirection * yCurve.Evaluate(y);
     }
 
     private static readonly int previewSize = 150;
