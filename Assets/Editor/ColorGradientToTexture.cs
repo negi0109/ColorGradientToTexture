@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
@@ -7,11 +8,12 @@ using UnityEditor;
 
 public class ColorGradientToTexture : EditorWindow
 {
-    private class ColorAxis
+    [Serializable]
+    public class ColorAxis
     {
-        private AnimationCurve xCurve;
-        private AnimationCurve yCurve;
-        private float yDirection;
+        public AnimationCurve xCurve;
+        public AnimationCurve yCurve;
+        public float yDirection;
 
         private static int previewSize = 50;
         private Texture2D previewTex;
@@ -26,12 +28,17 @@ public class ColorGradientToTexture : EditorWindow
 
             xCurveValues = new float[10];
             yCurveValues = new float[10];
-            previewTex = new Texture2D(previewSize, previewSize, TextureFormat.RGB565, false);
         }
 
         public bool Editor (string label)
         {
             var updated = false;
+            if (previewTex == null) {
+                previewTex = new Texture2D(previewSize, previewSize, TextureFormat.ARGB32, false);
+                xCurveValues = new float[10];
+                yCurveValues = new float[10];
+                updated = true;
+            }
             EditorGUILayout.BeginVertical();
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField(label, new GUILayoutOption[]{ GUILayout.Width(12) });
@@ -97,12 +104,13 @@ public class ColorGradientToTexture : EditorWindow
 
     private static readonly int previewSize = 150;
 
-    private int colorMode;
-    private ColorAxis[] axes;
-    private Vector2Int textureSize;
-    private Texture2D tex;
+    public int colorMode;
+    public ColorAxis[] axes;
+    public Vector2Int textureSize;
 
-    [MenuItem("Tools/ColorGradients/Bake texture")]
+    private Texture2D previewTex;
+
+    [MenuItem("Tools/ColorGradients/Bake ")]
     static void OpenWindow()
     {
         Debug.Log("Open Window");
@@ -114,7 +122,7 @@ public class ColorGradientToTexture : EditorWindow
     private void Initialize(Vector2Int textureSize)
     {
         this.textureSize = textureSize;
-        this.tex = new Texture2D(previewSize, previewSize, TextureFormat.ARGB32, false);
+        this.previewTex = new Texture2D(previewSize, previewSize, TextureFormat.ARGB32, false);
         axes = new ColorAxis[3];
         for (int i = 0; i < axes.Length; i++) {
             axes[i] = new ColorAxis();
@@ -134,6 +142,10 @@ public class ColorGradientToTexture : EditorWindow
         }
 
         var updated = false;
+        if (previewTex == null) {
+            previewTex = new Texture2D(previewSize, previewSize, TextureFormat.RGB565, false);
+            updated = true;
+        }
         textureSize = EditorGUILayout.Vector2IntField("size", textureSize);
 
         if (colorMode == 0) {
@@ -147,11 +159,10 @@ public class ColorGradientToTexture : EditorWindow
         }
 
         if (updated | GUILayout.Button("Preview reload")) {
-            Debug.Log("Preview");
             Preview();
         }
 
-        GUILayout.Box(tex);
+        GUILayout.Box(previewTex);
         if (GUILayout.Button("Bake Texture")) {
             Debug.Log("bake texture");
         }
@@ -179,10 +190,10 @@ public class ColorGradientToTexture : EditorWindow
                     color = Color.HSVToRGB(h, s, v);
                 }
 
-                tex.SetPixel(x, y, color, 0);
+                previewTex.SetPixel(x, y, color, 0);
             }
         }
-        tex.Apply();
+        previewTex.Apply();
     }
 
     private void Bake()
