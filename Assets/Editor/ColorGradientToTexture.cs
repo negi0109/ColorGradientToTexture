@@ -110,10 +110,9 @@ public class ColorGradientToTexture : EditorWindow
 
     private Texture2D previewTex;
 
-    [MenuItem("Tools/ColorGradients/Bake ")]
+    [MenuItem("Tools/ColorGradients")]
     static void OpenWindow()
     {
-        Debug.Log("Open Window");
         var window = GetWindow<ColorGradientToTexture>();
         window.Initialize(new Vector2Int(256, 256));
         window.Show();
@@ -158,17 +157,18 @@ public class ColorGradientToTexture : EditorWindow
             updated |= axes[2].Editor("v");
         }
 
-        if (updated | GUILayout.Button("Preview reload")) {
-            Preview();
+        if (updated) {
+            ReloadPreview();
         }
 
         GUILayout.Box(previewTex);
         if (GUILayout.Button("Bake Texture")) {
             Debug.Log("bake texture");
+            Bake();
         }
     }
 
-    private void Preview()
+    private void ReloadPreview()
     {
         //fill with with the animation curve data
         for (int x = 0; x < previewSize; x++)
@@ -198,6 +198,38 @@ public class ColorGradientToTexture : EditorWindow
 
     private void Bake()
     {
+        var filePath = EditorUtility.SaveFilePanelInProject("Save Asset", "default_name", "png", "");
 
+        if (string.IsNullOrEmpty(filePath)) return;
+
+        var tex = new Texture2D(textureSize.x, textureSize.y, TextureFormat.ARGB32, false);
+
+        //fill with with the animation curve data
+        for (int x = 0; x < textureSize.x; x++)
+        {
+            for (int y = 0; y < textureSize.y; y++)
+            {
+                var xf = (float) x / textureSize.x;
+                var yf = (float) y / textureSize.y;
+                Color color;
+                if (colorMode == 0) {
+                    var r = axes[0].Evaluate(xf, yf);
+                    var g = axes[1].Evaluate(xf, yf);
+                    var b = axes[2].Evaluate(xf, yf);
+                    color = new Color(r, g, b);
+                } else {
+                    var h = axes[0].Evaluate(xf, yf);
+                    var s = axes[1].Evaluate(xf, yf);
+                    var v = axes[2].Evaluate(xf, yf);
+                    color = Color.HSVToRGB(h, s, v);
+                }
+
+                tex.SetPixel(x, y, color, 0);
+            }
+        }
+
+        var bytes = tex.EncodeToPNG();
+		System.IO.File.WriteAllBytes (filePath, bytes);
+        AssetDatabase.ImportAsset (filePath, ImportAssetOptions.ForceUpdate);
     }
 }
