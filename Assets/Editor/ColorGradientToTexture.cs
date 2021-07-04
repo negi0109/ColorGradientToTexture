@@ -146,6 +146,8 @@ public class ColorGradientToTexture : EditorWindow
             updated = true;
         }
         textureSize = EditorGUILayout.Vector2IntField("size", textureSize);
+        textureSize.x = Math.Max(textureSize.x, 1);
+        textureSize.y = Math.Max(textureSize.y, 1);
 
         if (colorMode == 0) {
             updated |= axes[0].Editor("r");
