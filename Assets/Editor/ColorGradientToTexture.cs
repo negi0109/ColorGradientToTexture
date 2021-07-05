@@ -15,6 +15,7 @@ public class ColorGradientToTexture : EditorWindow
         {
             Step,
             Noise,
+            Repeat
         }
 
         public Type type;
@@ -28,6 +29,8 @@ public class ColorGradientToTexture : EditorWindow
                 return (int)(v / step) * step;
                 case Type.Noise:
                 return v +  UnityEngine.Random.Range(0f, 1f) * value1;
+                case Type.Repeat:
+                return v * value1 % 1f;
             }
 
             return v;
@@ -52,6 +55,14 @@ public class ColorGradientToTexture : EditorWindow
                 case Type.Noise:
                 {
                     var changedValue1 = EditorGUILayout.Slider("weight", value1, -1f, 1f);
+                    if (changedValue1 != value1) updated = true;
+
+                    value1 = changedValue1;
+                }
+                break;
+                case Type.Repeat:
+                {
+                    var changedValue1 = Mathf.Max(EditorGUILayout.IntField("count", (int)value1), 1);
                     if (changedValue1 != value1) updated = true;
 
                     value1 = changedValue1;
