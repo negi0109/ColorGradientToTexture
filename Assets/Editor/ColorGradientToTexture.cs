@@ -13,7 +13,8 @@ public class ColorGradientToTexture : EditorWindow
     {
         public enum Type
         {
-            Step
+            Step,
+            Noise,
         }
 
         public Type type;
@@ -25,6 +26,8 @@ public class ColorGradientToTexture : EditorWindow
                 case Type.Step:
                 var step = 1f / (int) value1;
                 return (int)(v / step) * step;
+                case Type.Noise:
+                return v +  UnityEngine.Random.Range(0f, 1f) * value1;
             }
 
             return v;
@@ -32,13 +35,27 @@ public class ColorGradientToTexture : EditorWindow
 
         public bool Editor() {
             bool updated = false;
-            var changedType = EditorGUILayout.EnumPopup(type);
+            var changedType = (Type)EditorGUILayout.EnumPopup(type);
+
+            if (changedType != type) updated = true;
+            type = changedType;
+
             switch(type) {
                 case Type.Step:
-                var changedValue1 = Mathf.Max(EditorGUILayout.IntField("step", (int)value1), 1);
-                if (changedValue1 != (int)value1) updated = true;
+                {
+                    var changedValue1 = Mathf.Max(EditorGUILayout.IntField("step", (int)value1), 1);
+                    if (changedValue1 != (int)value1) updated = true;
 
-                value1 = changedValue1;
+                    value1 = changedValue1;
+                }
+                break;
+                case Type.Noise:
+                {
+                    var changedValue1 = EditorGUILayout.Slider("weight", value1, -1f, 1f);
+                    if (changedValue1 != value1) updated = true;
+
+                    value1 = changedValue1;
+                }
                 break;
             }
 
