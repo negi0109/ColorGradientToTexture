@@ -9,11 +9,51 @@ using UnityEditor;
 public class ColorGradientToTexture : EditorWindow
 {
     [Serializable]
+    public class ColorFilter
+    {
+        public enum Type
+        {
+            Step
+        }
+
+        public Type type;
+        public float value1;
+
+        public float Evaluate(float x, float y, float v)
+        {
+            switch(type) {
+                case Type.Step:
+                var step = 1f / (int) value1;
+                return (int)(v / step) * step;
+            }
+
+            return v;
+        }
+
+        public bool Editor() {
+            bool updated = false;
+            var changedType = EditorGUILayout.EnumPopup(type);
+            switch(type) {
+                case Type.Step:
+                var changedValue1 = Mathf.Max(EditorGUILayout.IntField("step", (int)value1), 1);
+                if (changedValue1 != (int)value1) updated = true;
+
+                value1 = changedValue1;
+                break;
+            }
+
+            return updated;
+        }
+
+    }
+
+    [Serializable]
     public class ColorAxis
     {
         public AnimationCurve xCurve;
         public AnimationCurve yCurve;
         public float yDirection;
+        public List<ColorFilter> colorFilters;
 
         private static int previewSize = 50;
         private Texture2D previewTex;
@@ -28,6 +68,7 @@ public class ColorGradientToTexture : EditorWindow
 
             xCurveValues = new float[10];
             yCurveValues = new float[10];
+            colorFilters = new List<ColorFilter>(0);
         }
 
         public bool Editor (string label)
@@ -35,8 +76,6 @@ public class ColorGradientToTexture : EditorWindow
             var updated = false;
             if (previewTex == null) {
                 previewTex = new Texture2D(previewSize, previewSize, TextureFormat.ARGB32, false);
-                xCurveValues = new float[10];
-                yCurveValues = new float[10];
                 updated = true;
             }
             EditorGUILayout.BeginVertical();
@@ -78,6 +117,23 @@ public class ColorGradientToTexture : EditorWindow
 
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndHorizontal();
+
+            if(GUILayout.Button("Add Filter")) colorFilters.Add(new ColorFilter());
+
+            var removeColorFilters = new List<ColorFilter>();
+            foreach (var filter in colorFilters) {
+                EditorGUILayout.BeginHorizontal();
+                updated |= filter.Editor();
+                if(GUILayout.Button("x", new GUILayoutOption[]{ GUILayout.Width(20) }))
+                    removeColorFilters.Add(filter);
+                EditorGUILayout.EndHorizontal();
+            }
+
+            foreach(var removeFilter in removeColorFilters) {
+                colorFilters.Remove(removeFilter);
+                updated = true;
+            }
+
             EditorGUILayout.EndVertical();
 
             if (updated) {
@@ -99,7 +155,14 @@ public class ColorGradientToTexture : EditorWindow
         }
 
         public float Evaluate (float x, float y)
-            => (1 - yDirection) * xCurve.Evaluate(x) + yDirection * yCurve.Evaluate(y);
+        {
+            float v = (1 - yDirection) * xCurve.Evaluate(x) + yDirection * yCurve.Evaluate(y);
+
+            foreach (var filter in colorFilters)
+                v = filter.Evaluate(x, y, v);
+
+            return v;
+        }
     }
 
     private static readonly int previewSize = 150;
