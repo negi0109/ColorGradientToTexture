@@ -241,13 +241,13 @@ public class ColorGradientToTexture : EditorWindow
         textureSize.y = Math.Max(textureSize.y, 1);
 
         if (colorMode == 0) {
-            updated |= axes[0].Editor("r");
-            updated |= axes[1].Editor("g");
-            updated |= axes[2].Editor("b");
+            updated |= axes[0].Editor("R");
+            updated |= axes[1].Editor("G");
+            updated |= axes[2].Editor("B");
         } else {
-            updated |= axes[0].Editor("h");
-            updated |= axes[1].Editor("s");
-            updated |= axes[2].Editor("v");
+            updated |= axes[0].Editor("H");
+            updated |= axes[1].Editor("S");
+            updated |= axes[2].Editor("V");
         }
 
         if (updated) {
