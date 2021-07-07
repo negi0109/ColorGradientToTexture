@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using UnityEditor;
 
-public class ColorGradientToTexture : EditorWindow
+public class ColorGradientToTextureEditor : EditorWindow
 {
     [Serializable]
     public class ColorFilter
@@ -204,7 +204,7 @@ public class ColorGradientToTexture : EditorWindow
     [MenuItem("Tools/ColorGradients")]
     static void OpenWindow()
     {
-        var window = GetWindow<ColorGradientToTexture>();
+        var window = GetWindow<ColorGradientToTextureEditor>();
         window.Initialize(new Vector2Int(256, 256));
         window.Show();
     }
