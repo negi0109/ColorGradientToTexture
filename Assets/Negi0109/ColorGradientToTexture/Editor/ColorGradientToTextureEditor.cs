@@ -204,7 +204,7 @@ namespace Negi0109.ColorGradientToTexture
         private Texture2D previewTex;
 
         [MenuItem("Tools/ColorGradients")]
-        static void OpenWindow()
+        public static void OpenWindow()
         {
             var window = GetWindow<ColorGradientToTextureEditor>();
             window.Initialize(new Vector2Int(256, 256));
