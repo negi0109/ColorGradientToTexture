@@ -17,17 +17,17 @@ namespace Negi0109.ColorGradientToTexture
         public Type type;
         public float value1;
 
-        public float Evaluate(float x, float y, float v)
+        public float Evaluate(float v)
         {
-            switch(type)
+            switch (type)
             {
                 case Type.Step:
-                var step = 1f / (int) value1;
-                return (int)(v / step) * step;
+                    var step = 1f / (int)value1;
+                    return (int)(v / step) * step;
                 case Type.Noise:
-                return v +  UnityEngine.Random.Range(0f, 1f) * value1;
+                    return v + UnityEngine.Random.Range(0f, 1f) * value1;
                 case Type.Repeat:
-                return v * value1 % 1f;
+                    return v * value1 % 1f;
                 default:
                     return v;
             }

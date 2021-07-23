@@ -38,22 +38,25 @@ namespace Negi0109.ColorGradientToTexture
         {
             previewTex = new Texture2D(previewSize, previewSize, TextureFormat.RGB565, false);
             colorAxisEditors = new ColorAxisEditor[colorGradient.Mode.size];
-            for (int i = 0; i < colorGradient.Mode.size; i++) {
+            for (int i = 0; i < colorGradient.Mode.size; i++)
+            {
                 colorAxisEditors[i] = new ColorAxisEditor(colorGradient.Mode.name[i].ToString());
             }
         }
 
         private void OnGUI()
         {
-            var tmp_colorMode = EditorGUILayout.Popup("color", colorGradient.colorMode, new string[]{ "RGB", "HSV" });
-            if (colorGradient.colorMode != tmp_colorMode) {
+            var tmp_colorMode = EditorGUILayout.Popup("color", colorGradient.colorMode, new string[] { "RGB", "HSV" });
+            if (colorGradient.colorMode != tmp_colorMode)
+            {
                 colorGradient = new ColorGradient(tmp_colorMode);
 
                 InitializeEditor();
             }
 
             var updated = false;
-            if (previewTex == null || colorAxisEditors == null) {
+            if (previewTex == null || colorAxisEditors == null)
+            {
                 InitializeEditor();
                 updated = true;
             }
@@ -66,7 +69,8 @@ namespace Negi0109.ColorGradientToTexture
                 updated |= colorAxisEditors[i].Editor(colorGradient.axes[i]);
 
 
-            if (updated) {
+            if (updated)
+            {
                 colorGradient.SetTexturePixel(previewTex);
                 previewTex.Apply();
             }
@@ -81,15 +85,16 @@ namespace Negi0109.ColorGradientToTexture
         {
             var filePath = EditorUtility.SaveFilePanelInProject("Save Asset", "default_name", "png", "");
 
-            if (string.IsNullOrEmpty(filePath)) return;
+            if (string.IsNullOrEmpty(filePath))
+                return;
 
             var tex = new Texture2D(textureSize.x, textureSize.y, TextureFormat.ARGB32, false);
 
             colorGradient.SetTexturePixel(tex);
 
             var bytes = tex.EncodeToPNG();
-            System.IO.File.WriteAllBytes (filePath, bytes);
-            AssetDatabase.ImportAsset (filePath, ImportAssetOptions.ForceUpdate);
+            System.IO.File.WriteAllBytes(filePath, bytes);
+            AssetDatabase.ImportAsset(filePath, ImportAssetOptions.ForceUpdate);
         }
     }
 }

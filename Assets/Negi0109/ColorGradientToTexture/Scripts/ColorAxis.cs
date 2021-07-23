@@ -7,17 +7,25 @@ namespace Negi0109.ColorGradientToTexture
     [Serializable]
     public class ColorAxis
     {
-        public AnimationCurve xCurve = AnimationCurve.Linear(0, 0, 1, 1);
-        public AnimationCurve yCurve = AnimationCurve.Linear(0, 0, 1, 1);
-        public float yDirection = 0;
-        public List<ColorFilter> colorFilters = new List<ColorFilter>(0);
+        public AnimationCurve xCurve;
+        public AnimationCurve yCurve;
+        public float yDirection;
+        public List<ColorFilter> colorFilters;
 
-        public float Evaluate (float x, float y)
+        public ColorAxis()
+        {
+            xCurve = AnimationCurve.Linear(0, 0, 1, 1);
+            yCurve = AnimationCurve.Linear(0, 0, 1, 1);
+            yDirection = 0;
+            colorFilters = new List<ColorFilter>(0);
+        }
+
+        public float Evaluate(float x, float y)
         {
             float v = (1 - yDirection) * xCurve.Evaluate(x) + yDirection * yCurve.Evaluate(y);
 
             foreach (var filter in colorFilters)
-                v = filter.Evaluate(x, y, v);
+                v = filter.Evaluate(v);
 
             return v;
         }
