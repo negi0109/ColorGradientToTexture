@@ -12,7 +12,8 @@ namespace Negi0109.ColorGradientToTexture
             Step,
             Noise,
             Repeat,
-            Scale
+            Scale,
+            Threshold
         }
 
         public Type type;
@@ -31,6 +32,8 @@ namespace Negi0109.ColorGradientToTexture
                     return v * value1 % 1f;
                 case Type.Scale:
                     return v * value1;
+                case Type.Threshold:
+                    return v >= value1 ? 1 : 0;
                 default:
                     return v;
             }

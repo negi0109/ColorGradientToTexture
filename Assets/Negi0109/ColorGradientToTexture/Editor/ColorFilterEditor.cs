@@ -49,6 +49,14 @@ namespace Negi0109.ColorGradientToTexture
                         filter.value1 = changedValue1;
                     }
                     break;
+                case ColorFilter.Type.Threshold:
+                    {
+                        var changedValue1 = EditorGUILayout.Slider("weight", filter.value1, -0f, 1f);
+                        if (changedValue1 != filter.value1) updated = true;
+
+                        filter.value1 = changedValue1;
+                    }
+                    break;
             }
 
             return updated;
