@@ -11,6 +11,7 @@ namespace Negi0109.ColorGradientToTexture
         public AnimationCurve yCurve;
         public float yDirection;
         public List<ColorFilter> colorFilters;
+        public List<CoordinateFilter> coordinateFilters;
 
         public ColorAxis()
         {
@@ -18,11 +19,16 @@ namespace Negi0109.ColorGradientToTexture
             yCurve = AnimationCurve.Linear(0, 0, 1, 1);
             yDirection = 0;
             colorFilters = new List<ColorFilter>(0);
+            coordinateFilters = new List<CoordinateFilter>(0);
         }
 
         public float Evaluate(float x, float y)
         {
-            float v = (1 - yDirection) * xCurve.Evaluate(x) + yDirection * yCurve.Evaluate(y);
+            var pos = new Vector2(x, y);
+            foreach (var filter in coordinateFilters)
+                pos = filter.Evaluate(pos);
+
+            float v = (1 - yDirection) * xCurve.Evaluate(pos.x) + yDirection * yCurve.Evaluate(pos.y);
 
             foreach (var filter in colorFilters)
                 v = filter.Evaluate(v);

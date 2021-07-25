@@ -73,10 +73,36 @@ namespace Negi0109.ColorGradientToTexture
             }
             EditorGUILayout.EndHorizontal();
 
+            if (GUILayout.Button("Add Coordinate"))
+            {
+                axis.coordinateFilters.Add(new CoordinateFilter());
+                updated = true;
+            }
+
+            var removeCoordinateFilters = new List<CoordinateFilter>();
+            foreach (var filter in axis.coordinateFilters)
+            {
+                EditorGUILayout.BeginHorizontal();
+                updated |= CoordinateFilterEditor.Editor(filter);
+                if (GUILayout.Button("x", new GUILayoutOption[] { GUILayout.Width(20) }))
+                    removeCoordinateFilters.Add(filter);
+                EditorGUILayout.EndHorizontal();
+            }
+
+            foreach (var removeFilter in removeCoordinateFilters)
+            {
+                axis.coordinateFilters.Remove(removeFilter);
+                updated = true;
+            }
+
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndHorizontal();
 
-            if (GUILayout.Button("Add Filter")) axis.colorFilters.Add(new ColorFilter());
+            if (GUILayout.Button("Add Filter"))
+            {
+                axis.colorFilters.Add(new ColorFilter());
+                updated = true;
+            }
 
             var removeColorFilters = new List<ColorFilter>();
             foreach (var filter in axis.colorFilters)
