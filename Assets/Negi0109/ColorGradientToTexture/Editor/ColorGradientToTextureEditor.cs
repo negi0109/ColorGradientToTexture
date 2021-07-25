@@ -40,13 +40,13 @@ namespace Negi0109.ColorGradientToTexture
             colorAxisEditors = new ColorAxisEditor[colorGradient.Mode.size];
             for (int i = 0; i < colorGradient.Mode.size; i++)
             {
-                colorAxisEditors[i] = new ColorAxisEditor(colorGradient.Mode.name[i].ToString());
+                colorAxisEditors[i] = new ColorAxisEditor(colorGradient.Mode.axisNames[i].ToString());
             }
         }
 
         private void OnGUI()
         {
-            var tmp_colorMode = EditorGUILayout.Popup("color", colorGradient.colorMode, new string[] { "RGB", "HSV" });
+            var tmp_colorMode = EditorGUILayout.Popup("color", colorGradient.colorMode, ColorMode.names);
             if (colorGradient.colorMode != tmp_colorMode)
             {
                 colorGradient = new ColorGradient(tmp_colorMode);
