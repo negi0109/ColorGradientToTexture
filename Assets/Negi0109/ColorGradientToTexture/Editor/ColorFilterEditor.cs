@@ -35,7 +35,15 @@ namespace Negi0109.ColorGradientToTexture
                     break;
                 case ColorFilter.Type.Repeat:
                     {
-                        var changedValue1 = Mathf.Max(EditorGUILayout.IntField("count", (int)filter.value1), 1);
+                        var changedValue1 = Math.Max(EditorGUILayout.IntField("count", (int)filter.value1), 1);
+                        if (changedValue1 != filter.value1) updated = true;
+
+                        filter.value1 = changedValue1;
+                    }
+                    break;
+                case ColorFilter.Type.Scale:
+                    {
+                        var changedValue1 = Mathf.Max(EditorGUILayout.FloatField("weight", filter.value1), 0);
                         if (changedValue1 != filter.value1) updated = true;
 
                         filter.value1 = changedValue1;

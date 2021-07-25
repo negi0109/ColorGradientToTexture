@@ -11,7 +11,8 @@ namespace Negi0109.ColorGradientToTexture
         {
             Step,
             Noise,
-            Repeat
+            Repeat,
+            Scale
         }
 
         public Type type;
@@ -28,6 +29,8 @@ namespace Negi0109.ColorGradientToTexture
                     return v + UnityEngine.Random.Range(0f, 1f) * value1;
                 case Type.Repeat:
                     return v * value1 % 1f;
+                case Type.Scale:
+                    return v * value1;
                 default:
                     return v;
             }
