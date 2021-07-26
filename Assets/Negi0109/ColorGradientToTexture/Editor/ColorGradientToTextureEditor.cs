@@ -17,6 +17,7 @@ namespace Negi0109.ColorGradientToTexture
 
         private ColorAxisEditor[] colorAxisEditors;
         private Texture2D previewTex;
+        private RenderTexture renderTexture;
 
         [MenuItem("Tools/ColorGradients")]
         public static void OpenWindow()
@@ -55,8 +56,10 @@ namespace Negi0109.ColorGradientToTexture
             }
 
             var updated = false;
+
             if (previewTex == null || colorAxisEditors == null)
             {
+                colorGradient = new ColorGradient(tmp_colorMode);
                 InitializeEditor();
                 updated = true;
             }
@@ -68,17 +71,32 @@ namespace Negi0109.ColorGradientToTexture
             for (int i = 0; i < colorGradient.Mode.size; i++)
                 updated |= colorAxisEditors[i].Editor(colorGradient.axes[i]);
 
+            if (GUILayout.Button("Bake Texture"))
+                Bake();
 
-            if (updated)
+            EditorGUILayout.LabelField("Preview(RenderTexture)");
+            var tmpRenderTexture = (RenderTexture)EditorGUILayout.ObjectField(renderTexture, typeof(RenderTexture), false);
+            updated |= renderTexture != tmpRenderTexture;
+            renderTexture = tmpRenderTexture;
+
+            if (updated && renderTexture == null)
             {
                 colorGradient.SetTexturePixel(previewTex);
                 previewTex.Apply();
             }
 
-            GUILayout.Box(previewTex);
-            if (GUILayout.Button("Bake Texture"))
-                Bake();
+            if (updated && renderTexture != null)
+            {
+                var previewRenderTex = new Texture2D(textureSize.x, textureSize.y, TextureFormat.ARGB32, false);
+                colorGradient.SetTexturePixel(previewRenderTex);
+                previewRenderTex.Apply();
+                Graphics.Blit(previewRenderTex, renderTexture);
+            }
 
+            if (renderTexture == null)
+                GUILayout.Box(previewTex);
+            else
+                GUILayout.Box(renderTexture);
         }
 
         private void Bake()
