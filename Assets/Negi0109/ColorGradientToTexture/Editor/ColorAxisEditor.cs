@@ -12,8 +12,10 @@ namespace Negi0109.ColorGradientToTexture
     {
         private readonly string label;
         private static readonly int previewSize = 50;
+        private static readonly int coordinatePreviewSize = 20;
         private static readonly int cachedSize = 10;
         private Texture2D previewTex;
+        private Texture2D coordinatePreviewTex;
         private float[] xCurveValues;
         private float[] yCurveValues;
 
@@ -25,12 +27,15 @@ namespace Negi0109.ColorGradientToTexture
         public bool Editor(ColorAxis axis)
         {
             var updated = false;
+            var coordinateUpdated = false;
+
             if (previewTex == null)
             {
                 previewTex = new Texture2D(previewSize, previewSize, TextureFormat.ARGB32, false);
+                coordinatePreviewTex = new Texture2D(coordinatePreviewSize, coordinatePreviewSize, TextureFormat.RG16, false);
                 xCurveValues = new float[cachedSize];
                 yCurveValues = new float[cachedSize];
-                updated = true;
+                coordinateUpdated = updated = true;
             }
 
             EditorGUILayout.BeginVertical();
@@ -73,17 +78,21 @@ namespace Negi0109.ColorGradientToTexture
             }
             EditorGUILayout.EndHorizontal();
 
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Box(coordinatePreviewTex);
+
+            EditorGUILayout.BeginVertical();
             if (GUILayout.Button("Add Coordinate"))
             {
                 axis.coordinateFilters.Add(new CoordinateFilter());
-                updated = true;
+                coordinateUpdated = true;
             }
 
             var removeCoordinateFilters = new List<CoordinateFilter>();
             foreach (var filter in axis.coordinateFilters)
             {
                 EditorGUILayout.BeginHorizontal();
-                updated |= CoordinateFilterEditor.Editor(filter);
+                coordinateUpdated |= CoordinateFilterEditor.Editor(filter);
                 if (GUILayout.Button("x", new GUILayoutOption[] { GUILayout.Width(20) }))
                     removeCoordinateFilters.Add(filter);
                 EditorGUILayout.EndHorizontal();
@@ -92,8 +101,12 @@ namespace Negi0109.ColorGradientToTexture
             foreach (var removeFilter in removeCoordinateFilters)
             {
                 axis.coordinateFilters.Remove(removeFilter);
-                updated = true;
+                coordinateUpdated = true;
             }
+            updated |= coordinateUpdated;
+
+            EditorGUILayout.EndVertical();
+            EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndHorizontal();
@@ -146,6 +159,27 @@ namespace Negi0109.ColorGradientToTexture
                     }
                 }
                 previewTex.Apply();
+            }
+
+            if (coordinateUpdated)
+            {
+                for (int x = 0; x < coordinatePreviewSize; x++)
+                {
+                    for (int y = 0; y < coordinatePreviewSize; y++)
+                    {
+                        var pos = new Vector2((float)x / coordinatePreviewSize, (float)y / coordinatePreviewSize);
+
+                        foreach (var filter in axis.coordinateFilters)
+                        {
+                            pos = filter.Evaluate(pos);
+                        }
+
+                        var color = new Color(pos.x, pos.y, 0, 1);
+
+                        coordinatePreviewTex.SetPixel(x, y, color, 0);
+                    }
+                }
+                coordinatePreviewTex.Apply();
             }
             return updated;
         }
