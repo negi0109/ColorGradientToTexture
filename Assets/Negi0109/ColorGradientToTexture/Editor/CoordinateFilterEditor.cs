@@ -19,6 +19,17 @@ namespace Negi0109.ColorGradientToTexture
             {
                 case CoordinateFilter.Type.Circle:
                     break;
+                case CoordinateFilter.Type.Tiling:
+                    {
+                        var changedValue = EditorGUILayout.Vector2Field("", new Vector2(filter.value1, filter.value2));
+                        changedValue = new Vector2(Mathf.Max(changedValue.x, 0), Mathf.Max(changedValue.y, 0));
+                        if (changedValue.x != filter.value1) updated = true;
+                        if (changedValue.y != filter.value2) updated = true;
+
+                        filter.value1 = changedValue.x;
+                        filter.value2 = changedValue.y;
+                    }
+                    break;
             }
 
             return updated;

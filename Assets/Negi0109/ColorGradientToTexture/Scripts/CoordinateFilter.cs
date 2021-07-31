@@ -10,9 +10,12 @@ namespace Negi0109.ColorGradientToTexture
         public enum Type
         {
             Circle,
+            Tiling
         }
 
         public Type type;
+        public float value1;
+        public float value2;
 
         public Vector2 Evaluate(Vector2 pos)
         {
@@ -24,6 +27,8 @@ namespace Negi0109.ColorGradientToTexture
                         Mathf.Min(center.magnitude, 1f),
                         Mathf.Atan2(center.y, center.x) * Mathf.Rad2Deg / 360f + .5f
                     );
+                case Type.Tiling:
+                    return new Vector2(pos.x * value1 % 1, pos.y * value2 % 1);
             }
 
             return pos;
