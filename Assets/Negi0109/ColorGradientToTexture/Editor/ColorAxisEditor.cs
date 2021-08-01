@@ -88,6 +88,7 @@ namespace Negi0109.ColorGradientToTexture
                 coordinateUpdated = true;
             }
 
+            var addCoordinateFilterIndex = -1;
             var removeCoordinateFilters = new List<CoordinateFilter>();
             foreach (var filter in axis.coordinateFilters)
             {
@@ -95,6 +96,8 @@ namespace Negi0109.ColorGradientToTexture
                 coordinateUpdated |= CoordinateFilterEditor.Editor(filter);
                 if (GUILayout.Button("x", new GUILayoutOption[] { GUILayout.Width(20) }))
                     removeCoordinateFilters.Add(filter);
+                if (GUILayout.Button("+", new GUILayoutOption[] { GUILayout.Width(20) }))
+                    addCoordinateFilterIndex = axis.coordinateFilters.IndexOf(filter);
                 EditorGUILayout.EndHorizontal();
             }
 
@@ -103,6 +106,13 @@ namespace Negi0109.ColorGradientToTexture
                 axis.coordinateFilters.Remove(removeFilter);
                 coordinateUpdated = true;
             }
+
+            if (addCoordinateFilterIndex >= 0)
+            {
+                axis.coordinateFilters.Insert(addCoordinateFilterIndex, new CoordinateFilter());
+                coordinateUpdated = true;
+            }
+
             updated |= coordinateUpdated;
 
             EditorGUILayout.EndVertical();
