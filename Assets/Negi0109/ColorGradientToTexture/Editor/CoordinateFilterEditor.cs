@@ -30,6 +30,17 @@ namespace Negi0109.ColorGradientToTexture
                         filter.value2 = changedValue.y;
                     }
                     break;
+                case CoordinateFilter.Type.Offset:
+                    {
+                        var changedValue = EditorGUILayout.Vector2Field("", new Vector2(filter.value1, filter.value2));
+                        changedValue = new Vector2(Mathf.Min(Mathf.Max(changedValue.x, 0), 1), Mathf.Min(Mathf.Max(changedValue.y, 0), 1));
+                        if (changedValue.x != filter.value1) updated = true;
+                        if (changedValue.y != filter.value2) updated = true;
+
+                        filter.value1 = changedValue.x;
+                        filter.value2 = changedValue.y;
+                    }
+                    break;
             }
 
             return updated;

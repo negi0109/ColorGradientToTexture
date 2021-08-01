@@ -10,7 +10,8 @@ namespace Negi0109.ColorGradientToTexture
         public enum Type
         {
             Circle,
-            Tiling
+            Tiling,
+            Offset,
         }
 
         public Type type;
@@ -29,6 +30,8 @@ namespace Negi0109.ColorGradientToTexture
                     );
                 case Type.Tiling:
                     return new Vector2(pos.x * value1 % 1, pos.y * value2 % 1);
+                case Type.Offset:
+                    return new Vector2((pos.x + value1) % 1, (pos.y + value2) % 1);
             }
 
             return pos;
