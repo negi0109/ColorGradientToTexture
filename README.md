@@ -35,7 +35,7 @@ Unity Package Manager から追加
                     設定値
                 </summary>
                 <div>
-                    <img width="418" src="https://user-images.githubusercontent.com/33025461/128602706-94a9c7cb-69c2-4f7d-ab19-025b85388fc0.png">
+                    <img width="300" src="https://user-images.githubusercontent.com/33025461/128602706-94a9c7cb-69c2-4f7d-ab19-025b85388fc0.png">
                 </div>
             </details>
         </td>
@@ -45,7 +45,7 @@ Unity Package Manager から追加
                     設定値
                 </summary>
                 <div>
-                    <img width="418" src="https://user-images.githubusercontent.com/33025461/128602916-f45fd0df-5e2f-43e5-a37d-e74b37195368.png">
+                    <img width="300" src="https://user-images.githubusercontent.com/33025461/128602916-f45fd0df-5e2f-43e5-a37d-e74b37195368.png">
                 </div>
             </details>
         </td>
@@ -55,7 +55,7 @@ Unity Package Manager から追加
                     設定値
                 </summary>
                 <div>
-                    <img width="418" src="https://user-images.githubusercontent.com/33025461/128603013-2fa7c77e-3b1a-4245-9a7c-2dcdfe02f69b.png">
+                    <img width="300" src="https://user-images.githubusercontent.com/33025461/128603013-2fa7c77e-3b1a-4245-9a7c-2dcdfe02f69b.png">
                 </div>
             </details>
         </td>
@@ -65,7 +65,7 @@ Unity Package Manager から追加
                     設定値
                 </summary>
                 <div>
-                    <img width="418" src="https://user-images.githubusercontent.com/33025461/128603080-6b1340ab-6134-4658-9141-e61a66b100a3.png">
+                    <img width="300" src="https://user-images.githubusercontent.com/33025461/128603080-6b1340ab-6134-4658-9141-e61a66b100a3.png">
                 </div>
             </details>
         </td>
@@ -75,7 +75,7 @@ Unity Package Manager から追加
                     設定値
                 </summary>
                 <div>
-                    <img width="418" src="https://user-images.githubusercontent.com/33025461/128603154-57dd769f-ef09-471a-9556-2abb0f400a05.png">
+                    <img width="300" src="https://user-images.githubusercontent.com/33025461/128603154-57dd769f-ef09-471a-9556-2abb0f400a05.png">
                 </div>
             </details>
         </td>
