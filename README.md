@@ -13,10 +13,19 @@ Unity Package Manager から追加
 <table>
     <tr>
         <td>
-            <img width="193" src="https://user-images.githubusercontent.com/33025461/128602677-35cf659e-bb9a-4b68-8e33-3f67faf558bf.png">
+            <img width="100" src="https://user-images.githubusercontent.com/33025461/128602677-35cf659e-bb9a-4b68-8e33-3f67faf558bf.png">
         </td>
         <td>
-            <img width="193" src="https://user-images.githubusercontent.com/33025461/128602880-bca78454-f942-4afc-93e6-b1f0f03769af.png">
+            <img width="100" src="https://user-images.githubusercontent.com/33025461/128602880-bca78454-f942-4afc-93e6-b1f0f03769af.png">
+        </td>
+        <td>
+            <img width="100" src="https://user-images.githubusercontent.com/33025461/128602988-9842f8d5-f7d1-4ba8-94d7-ee3c0f84bf43.png">
+        </td>
+        <td>
+            <img width="100" src="https://user-images.githubusercontent.com/33025461/128603059-3af55e5e-ea28-4e43-b13f-e43a20e57a70.png">
+        </td>
+        <td>
+            <img width="100" src="https://user-images.githubusercontent.com/33025461/128603142-e63b0c6f-acf1-4ee2-8b50-d93d130832ba.png">
         </td>
     </tr>
     <tr>
@@ -40,7 +49,36 @@ Unity Package Manager から追加
                 </div>
             </details>
         </td>
-
+        <td>
+            <details>
+                <summary>
+                    設定値
+                </summary>
+                <div>
+                    <img width="418" src="https://user-images.githubusercontent.com/33025461/128603013-2fa7c77e-3b1a-4245-9a7c-2dcdfe02f69b.png">
+                </div>
+            </details>
+        </td>
+        <td>
+            <details>
+                <summary>
+                    設定値
+                </summary>
+                <div>
+                    <img width="418" src="https://user-images.githubusercontent.com/33025461/128603080-6b1340ab-6134-4658-9141-e61a66b100a3.png">
+                </div>
+            </details>
+        </td>
+        <td>
+            <details>
+                <summary>
+                    設定値
+                </summary>
+                <div>
+                    <img width="418" src="https://user-images.githubusercontent.com/33025461/128603154-57dd769f-ef09-471a-9556-2abb0f400a05.png">
+                </div>
+            </details>
+        </td>
     </tr>
 </table>
 
