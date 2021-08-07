@@ -8,7 +8,43 @@ Unity Package Manager から追加
 
 `https://github.com/negi0109/ColorGradientToTexture.git?path=Assets/Negi0109/ColorGradientToTexture`
 
-## how to
+## Examples
+
+<table>
+    <tr>
+        <td>
+            <img width="193" src="https://user-images.githubusercontent.com/33025461/128602677-35cf659e-bb9a-4b68-8e33-3f67faf558bf.png">
+        </td>
+        <td>
+            <img width="193" src="https://user-images.githubusercontent.com/33025461/128602880-bca78454-f942-4afc-93e6-b1f0f03769af.png">
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <details>
+                <summary>
+                    設定値
+                </summary>
+                <div>
+                    <img width="418" src="https://user-images.githubusercontent.com/33025461/128602706-94a9c7cb-69c2-4f7d-ab19-025b85388fc0.png">
+                </div>
+            </details>
+        </td>
+        <td>
+            <details>
+                <summary>
+                    設定値
+                </summary>
+                <div>
+                    <img width="418" src="https://user-images.githubusercontent.com/33025461/128602916-f45fd0df-5e2f-43e5-a37d-e74b37195368.png">
+                </div>
+            </details>
+        </td>
+
+    </tr>
+</table>
+
+## How to
 
 <img width="193" alt="スクリーンショット 2021-08-07 22 32 03" src="https://user-images.githubusercontent.com/33025461/128601929-750c59e3-4773-4fd8-8877-c0bf7ec3e053.png">
 
