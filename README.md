@@ -115,5 +115,5 @@ Unity Package Manager から追加
 
 ### リアルタイムプレビュー (画像出力)
 - RenderTextureの設定
-<img width="300" alt="スクリーンショット 2021-08-07 23 28 01" src="https://user-images.githubusercontent.com/33025461/128603507-ed225cb4-0d86-4f7c-bc5e-7cde7c23a792.png">
+<img width="250" alt="スクリーンショット 2021-08-07 23 28 01" src="https://user-images.githubusercontent.com/33025461/128603507-ed225cb4-0d86-4f7c-bc5e-7cde7c23a792.png">
 
