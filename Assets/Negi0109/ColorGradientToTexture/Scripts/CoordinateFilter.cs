@@ -7,12 +7,21 @@ namespace Negi0109.ColorGradientToTexture
     [Serializable]
     public class CoordinateFilter
     {
+        public static string[] types = new string[] {
+            "Circle",
+            "Tiling",
+            "Offset",
+            "Reverse",
+            "X <-> Y",
+        };
+
         public enum Type
         {
             Circle,
             Tiling,
             Offset,
             Reverse,
+            Turn,
         }
 
         public Type type;
@@ -39,6 +48,8 @@ namespace Negi0109.ColorGradientToTexture
                     var y = a == 1 || a == 2;
 
                     return new Vector2(x ? 1 - pos.x : pos.x, y ? 1 - pos.y : pos.y);
+                case Type.Turn:
+                    return new Vector2(pos.y, pos.x);
             }
 
             return pos;

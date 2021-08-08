@@ -12,7 +12,7 @@ namespace Negi0109.ColorGradientToTexture
         public static bool Editor(CoordinateFilter filter)
         {
             bool updated = false;
-            var changedType = (CoordinateFilter.Type)EditorGUILayout.EnumPopup(filter.type);
+            var changedType = (CoordinateFilter.Type)EditorGUILayout.Popup((int)filter.type, CoordinateFilter.types);
 
             if (changedType != filter.type) updated = true;
             filter.type = changedType;
