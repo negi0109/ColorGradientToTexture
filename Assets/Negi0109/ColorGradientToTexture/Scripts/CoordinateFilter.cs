@@ -12,6 +12,7 @@ namespace Negi0109.ColorGradientToTexture
             Circle,
             Tiling,
             Offset,
+            Reverse,
         }
 
         public Type type;
@@ -32,6 +33,12 @@ namespace Negi0109.ColorGradientToTexture
                     return new Vector2(pos.x * value1 % 1, pos.y * value2 % 1);
                 case Type.Offset:
                     return new Vector2((pos.x + value1) % 1, (pos.y + value2) % 1);
+                case Type.Reverse:
+                    var a = (int)value1;
+                    var x = a == 0 || a == 2;
+                    var y = a == 1 || a == 2;
+
+                    return new Vector2(x ? 1 - pos.x : pos.x, y ? 1 - pos.y : pos.y);
             }
 
             return pos;

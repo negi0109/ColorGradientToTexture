@@ -7,6 +7,8 @@ namespace Negi0109.ColorGradientToTexture
 {
     public static class CoordinateFilterEditor
     {
+        private static string[] reverseModes = new string[] { "x", "y", "both" };
+
         public static bool Editor(CoordinateFilter filter)
         {
             bool updated = false;
@@ -39,6 +41,14 @@ namespace Negi0109.ColorGradientToTexture
 
                         filter.value1 = changedValue.x;
                         filter.value2 = changedValue.y;
+                    }
+                    break;
+                case CoordinateFilter.Type.Reverse:
+                    {
+                        int changedValue = EditorGUILayout.Popup((int)filter.value1, reverseModes);
+                        if (changedValue != (int)filter.value1) updated = true;
+
+                        filter.value1 = changedValue;
                     }
                     break;
             }
