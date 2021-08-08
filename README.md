@@ -27,6 +27,9 @@ Unity Package Manager から追加
         <td>
             <img width="100" src="https://user-images.githubusercontent.com/33025461/128603142-e63b0c6f-acf1-4ee2-8b50-d93d130832ba.png">
         </td>
+        <td>
+            <img width="100" src="https://user-images.githubusercontent.com/33025461/128637133-181b4d86-f816-45e7-980b-309879655f1b.png">
+        </td>
     </tr>
     <tr>
         <td>
@@ -76,6 +79,16 @@ Unity Package Manager から追加
                 </summary>
                 <div>
                     <img width="300" src="https://user-images.githubusercontent.com/33025461/128603154-57dd769f-ef09-471a-9556-2abb0f400a05.png">
+                </div>
+            </details>
+        </td>
+        <td>
+            <details>
+                <summary>
+                    設定値
+                </summary>
+                <div>
+                    <img width="300" src="https://user-images.githubusercontent.com/33025461/128637153-59340eaa-b65b-44d4-bca0-280c68d6a7e1.png">
                 </div>
             </details>
         </td>
