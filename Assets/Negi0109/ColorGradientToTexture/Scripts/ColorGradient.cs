@@ -10,13 +10,16 @@ namespace Negi0109.ColorGradientToTexture
         public readonly int colorMode;
         public ColorAxis[] axes;
         public ColorMode Mode { get => ColorMode.modes[colorMode]; }
+        public int axesCount = 2;
 
-        public ColorGradient(int colorMode)
+        public ColorGradient(int colorMode, int axesCount = 2)
         {
             this.colorMode = colorMode;
+            this.axesCount = axesCount;
             this.axes = new ColorAxis[Mode.size];
+
             for (int i = 0; i < Mode.size; i++)
-                this.axes[i] = new ColorAxis();
+                this.axes[i] = new ColorAxis(axesCount);
         }
 
         public Color GetColor(float x, float y)

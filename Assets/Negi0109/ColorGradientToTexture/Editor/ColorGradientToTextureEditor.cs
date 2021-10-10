@@ -48,9 +48,11 @@ namespace Negi0109.ColorGradientToTexture
         private void OnGUI()
         {
             var tmp_colorMode = EditorGUILayout.Popup("color", colorGradient.colorMode, ColorMode.names);
-            if (colorGradient.colorMode != tmp_colorMode)
+            var tmp_axesCount = EditorGUILayout.Toggle("y", colorGradient.axesCount == 2) ? 2 : 1;
+
+            if (colorGradient.colorMode != tmp_colorMode || colorGradient.axesCount != tmp_axesCount)
             {
-                colorGradient = new ColorGradient(tmp_colorMode);
+                colorGradient = new ColorGradient(tmp_colorMode, tmp_axesCount);
 
                 InitializeEditor();
             }
@@ -64,9 +66,18 @@ namespace Negi0109.ColorGradientToTexture
                 updated = true;
             }
 
-            textureSize = EditorGUILayout.Vector2IntField("size", textureSize);
-            textureSize.x = Math.Max(textureSize.x, 1);
-            textureSize.y = Math.Max(textureSize.y, 1);
+            if (colorGradient.axesCount == 2)
+            {
+                textureSize = EditorGUILayout.Vector2IntField("size", textureSize);
+                textureSize.x = Math.Max(textureSize.x, 1);
+                textureSize.y = Math.Max(textureSize.y, 1);
+            }
+            else
+            {
+                var width = EditorGUILayout.IntField("size", textureSize.x);
+                textureSize.x = Math.Max(width, 1);
+                textureSize.y = 1;
+            }
 
             for (int i = 0; i < colorGradient.Mode.size; i++)
                 updated |= colorAxisEditors[i].Editor(colorGradient.axes[i]);

@@ -42,12 +42,15 @@ namespace Negi0109.ColorGradientToTexture
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField(label, new GUILayoutOption[] { GUILayout.Width(12) });
 
-            var tmpDirection = EditorGUILayout.Slider(axis.yDirection, 0f, 1f);
-
-            if (tmpDirection != axis.yDirection)
+            if (axis.axesCount >= 2)
             {
-                axis.yDirection = tmpDirection;
-                updated = true;
+                var tmpDirection = EditorGUILayout.Slider(axis.yDirection, 0f, 1f);
+
+                if (tmpDirection != axis.yDirection)
+                {
+                    axis.yDirection = tmpDirection;
+                    updated = true;
+                }
             }
 
             EditorGUILayout.EndHorizontal();
@@ -67,16 +70,19 @@ namespace Negi0109.ColorGradientToTexture
             }
             EditorGUILayout.EndHorizontal();
 
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("y", new GUILayoutOption[] { GUILayout.Width(12) });
-            axis.yCurve = EditorGUILayout.CurveField(axis.yCurve);
-            for (int i = 0; i < cachedSize; i++)
+            if (axis.axesCount >= 2)
             {
-                var tmp = axis.yCurve.Evaluate(i / (float)cachedSize);
-                if (yCurveValues[i] != tmp) updated = true;
-                yCurveValues[i] = tmp;
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("y", new GUILayoutOption[] { GUILayout.Width(12) });
+                axis.yCurve = EditorGUILayout.CurveField(axis.yCurve);
+                for (int i = 0; i < cachedSize; i++)
+                {
+                    var tmp = axis.yCurve.Evaluate(i / (float)cachedSize);
+                    if (yCurveValues[i] != tmp) updated = true;
+                    yCurveValues[i] = tmp;
+                }
+                EditorGUILayout.EndHorizontal();
             }
-            EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
             GUILayout.Box(coordinatePreviewTex);
