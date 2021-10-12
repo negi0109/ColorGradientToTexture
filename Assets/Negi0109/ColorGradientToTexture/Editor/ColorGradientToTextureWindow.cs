@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,12 +8,11 @@ using UnityEditor;
 
 namespace Negi0109.ColorGradientToTexture
 {
-    public class ColorGradientToTextureEditor : EditorWindow
+    public class ColorGradientToTextureWindow : EditorWindow
     {
         private static readonly int previewSize = 150;
 
         public ColorGradient colorGradient;
-        public Vector2Int textureSize;
 
         private ColorAxisEditor[] colorAxisEditors;
         private Texture2D previewTex;
@@ -22,14 +21,13 @@ namespace Negi0109.ColorGradientToTexture
         [MenuItem("Tools/ColorGradients")]
         public static void OpenWindow()
         {
-            var window = GetWindow<ColorGradientToTextureEditor>();
+            var window = GetWindow<ColorGradientToTextureWindow>();
             window.Initialize();
             window.Show();
         }
 
         private void Initialize()
         {
-            textureSize = new Vector2Int(256, 256);
             colorGradient = new ColorGradient(0);
 
             InitializeEditor();
@@ -68,15 +66,15 @@ namespace Negi0109.ColorGradientToTexture
 
             if (colorGradient.axesCount == 2)
             {
-                textureSize = EditorGUILayout.Vector2IntField("size", textureSize);
-                textureSize.x = Math.Max(textureSize.x, 1);
-                textureSize.y = Math.Max(textureSize.y, 1);
+                colorGradient.textureSize = EditorGUILayout.Vector2IntField("size", colorGradient.textureSize);
+                colorGradient.textureSize.x = Math.Max(colorGradient.textureSize.x, 1);
+                colorGradient.textureSize.y = Math.Max(colorGradient.textureSize.y, 1);
             }
             else
             {
-                var width = EditorGUILayout.IntField("size", textureSize.x);
-                textureSize.x = Math.Max(width, 1);
-                textureSize.y = 1;
+                var width = EditorGUILayout.IntField("size", colorGradient.textureSize.x);
+                colorGradient.textureSize.x = Math.Max(width, 1);
+                colorGradient.textureSize.y = 1;
             }
 
             for (int i = 0; i < colorGradient.Mode.size; i++)
@@ -98,7 +96,7 @@ namespace Negi0109.ColorGradientToTexture
 
             if (updated && renderTexture != null)
             {
-                var previewRenderTex = new Texture2D(textureSize.x, textureSize.y, TextureFormat.ARGB32, false);
+                var previewRenderTex = new Texture2D(colorGradient.textureSize.x, colorGradient.textureSize.y, TextureFormat.ARGB32, false);
                 colorGradient.SetTexturePixel(previewRenderTex);
                 previewRenderTex.Apply();
                 Graphics.Blit(previewRenderTex, renderTexture);
@@ -117,7 +115,7 @@ namespace Negi0109.ColorGradientToTexture
             if (string.IsNullOrEmpty(filePath))
                 return;
 
-            var tex = new Texture2D(textureSize.x, textureSize.y, TextureFormat.ARGB32, false);
+            var tex = new Texture2D(colorGradient.textureSize.x, colorGradient.textureSize.y, TextureFormat.ARGB32, false);
 
             colorGradient.SetTexturePixel(tex);
 
