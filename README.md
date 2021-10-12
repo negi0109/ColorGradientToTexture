@@ -97,9 +97,6 @@ Unity Package Manager から追加
 
 ## How to
 
-<img width="193" alt="スクリーンショット 2021-08-07 22 32 03" src="https://user-images.githubusercontent.com/33025461/128601929-750c59e3-4773-4fd8-8877-c0bf7ec3e053.png">
-
-
 1. 色モードを設定
     `RGB, HSV, ...` から選択
 
@@ -121,12 +118,3 @@ Unity Package Manager から追加
         (この設定は5x5タイルでそれぞれで円形)
         
         <img width="403" alt="スクリーンショット 2021-08-07 22 42 27" src="https://user-images.githubusercontent.com/33025461/128602190-f5184406-ec14-4e28-b2c5-73089f24cf18.png">
-
-1. 画像の保存
-
-## Tips
-
-### リアルタイムプレビュー (画像出力)
-- RenderTextureの設定
-<img width="250" alt="スクリーンショット 2021-08-07 23 28 01" src="https://user-images.githubusercontent.com/33025461/128603507-ed225cb4-0d86-4f7c-bc5e-7cde7c23a792.png">
-
