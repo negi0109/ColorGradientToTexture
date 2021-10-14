@@ -39,10 +39,20 @@ namespace Negi0109.ColorGradientToTexture
 
             if (colorGradient.colorMode != tmp_colorMode || colorGradient.axesCount != tmp_axesCount)
             {
+                if (colorGradient.axesCount != tmp_axesCount)
+                {
+                    colorGradient.textureSize = new Vector2Int(
+                        colorGradient.textureSize.x,
+                        tmp_axesCount == 2 ? colorGradient.textureSize.x : 1
+                    );
+                }
+
                 colorGradient.colorMode = tmp_colorMode;
                 colorGradient.axesCount = tmp_axesCount;
                 colorGradient.SetAxes();
                 InitializeEditor();
+
+                sizeUpdated = true;
             }
 
             if (colorGradient.axesCount == 2)
