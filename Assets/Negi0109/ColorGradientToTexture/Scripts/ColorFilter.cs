@@ -13,10 +13,11 @@ namespace Negi0109.ColorGradientToTexture
             Noise,
             Repeat,
             Scale,
-            Threshold
+            Threshold,
+            Add
         }
 
-        public Type type;
+        public Type type = Type.Add;
         public float value1;
 
         public float Evaluate(float v)
@@ -34,6 +35,8 @@ namespace Negi0109.ColorGradientToTexture
                     return v * value1;
                 case Type.Threshold:
                     return v >= value1 ? 1 : 0;
+                case Type.Add:
+                    return v + value1;
                 default:
                     return v;
             }
