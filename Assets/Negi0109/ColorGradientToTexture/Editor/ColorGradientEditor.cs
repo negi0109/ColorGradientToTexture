@@ -22,6 +22,17 @@ namespace Negi0109.ColorGradientToTexture
             {
                 colorAxisEditors[i] = new ColorAxisEditor(colorGradient.Mode.axisNames[i].ToString());
             }
+
+            if (colorGradient.shareColorMode)
+            {
+                var xCurve = colorGradient.axes[0].xCurve;
+                var yCurve = colorGradient.axes[0].yCurve;
+                for (int i = 1; i < colorGradient.axes.Length; i++)
+                {
+                    colorGradient.axes[i].xCurve = xCurve;
+                    colorGradient.axes[i].yCurve = yCurve;
+                }
+            }
         }
         public void OnEnable()
         {
@@ -73,6 +84,36 @@ namespace Negi0109.ColorGradientToTexture
                 colorGradient.textureSize.y = 1;
             }
 
+            #region ShareColorMode
+
+            var tmp_shareColorMode = EditorGUILayout.Toggle("share color mode", colorGradient.shareColorMode);
+            if (tmp_shareColorMode != colorGradient.shareColorMode)
+            {
+                colorGradient.shareColorMode = tmp_shareColorMode;
+                updated |= true;
+                if (colorGradient.shareColorMode)
+                {
+                    var xCurve = colorGradient.axes[0].xCurve;
+                    var yCurve = colorGradient.axes[0].yCurve;
+                    for (int i = 1; i < colorGradient.axes.Length; i++)
+                    {
+                        colorGradient.axes[i].xCurve = xCurve;
+                        colorGradient.axes[i].yCurve = yCurve;
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < colorGradient.axes.Length; i++)
+                    {
+                        colorGradient.axes[i].xCurve = CloneAnimationCurve(colorGradient.axes[i].xCurve);
+                        if (colorGradient.axesCount == 2)
+                            colorGradient.axes[i].yCurve = CloneAnimationCurve(colorGradient.axes[i].yCurve);
+                    }
+                }
+            }
+
+            #endregion
+
             for (int i = 0; i < colorGradient.Mode.size; i++)
                 updated |= colorAxisEditors[i].Editor(colorGradient.axes[i]);
 
@@ -95,5 +136,8 @@ namespace Negi0109.ColorGradientToTexture
             if (colorGradient == null || colorGradient.texture == null) return;
             GUI.DrawTexture(r, colorGradient.texture);
         }
+
+        private AnimationCurve CloneAnimationCurve(AnimationCurve curve)
+         => new AnimationCurve((Keyframe[])curve.keys.Clone());
     }
 }

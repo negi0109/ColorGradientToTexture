@@ -17,11 +17,13 @@ namespace Negi0109.ColorGradientToTexture
         public int axesCount = 2;
         public Vector2Int textureSize;
         public Texture2D texture;
+        public bool shareColorMode;
 
-        public ColorGradient(int colorMode, int axesCount = 2)
+        public ColorGradient(int colorMode, int axesCount = 2, bool shareColorMode = false)
         {
             this.colorMode = colorMode;
             this.axesCount = axesCount;
+            this.shareColorMode = shareColorMode;
 
             SetAxes();
         }
