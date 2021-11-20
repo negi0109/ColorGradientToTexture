@@ -66,6 +66,8 @@ namespace Negi0109.ColorGradientToTexture
                 sizeUpdated = true;
             }
 
+            var modeName = ColorMode.names[colorGradient.colorMode];
+
             if (colorGradient.axesCount == 2)
             {
                 var tmpSize = EditorGUILayout.Vector2IntField("size", colorGradient.textureSize);
@@ -82,6 +84,16 @@ namespace Negi0109.ColorGradientToTexture
 
                 colorGradient.textureSize.x = Math.Max(tmpSize, 1);
                 colorGradient.textureSize.y = 1;
+            }
+
+            if (modeName.Equals("RGB"))
+            {
+                var rect = EditorGUILayout.GetControlRect();
+
+                if (GUI.Button(rect, "import UnityGradient"))
+                {
+                    PopupWindow.Show(rect, new UnityGradientToCurveWindow(colorGradient));
+                }
             }
 
             #region ShareColorMode
