@@ -41,9 +41,9 @@ namespace Negi0109.ColorGradientToTexture
                 var curves = GetCurves();
 
                 colorGradient.shareColorMode = false;
-                colorGradient.axes[0].xCurve = curves.r;
-                colorGradient.axes[1].xCurve = curves.g;
-                colorGradient.axes[2].xCurve = curves.b;
+                colorGradient.axes[0].xCurve = curves.v0;
+                colorGradient.axes[1].xCurve = curves.v1;
+                colorGradient.axes[2].xCurve = curves.v2;
 
                 editorWindow.Close();
             }
@@ -57,9 +57,9 @@ namespace Negi0109.ColorGradientToTexture
                     var curves = GetCurves();
 
                     colorGradient.shareColorMode = false;
-                    colorGradient.axes[0].yCurve = curves.r;
-                    colorGradient.axes[1].yCurve = curves.g;
-                    colorGradient.axes[2].yCurve = curves.b;
+                    colorGradient.axes[0].yCurve = curves.v0;
+                    colorGradient.axes[1].yCurve = curves.v1;
+                    colorGradient.axes[2].yCurve = curves.v2;
 
                     editorWindow.Close();
                 }
@@ -70,43 +70,58 @@ namespace Negi0109.ColorGradientToTexture
                     var curves = GetCurves();
 
                     colorGradient.shareColorMode = false;
-                    colorGradient.axes[0].xCurve = curves.r;
-                    colorGradient.axes[1].xCurve = curves.g;
-                    colorGradient.axes[2].xCurve = curves.b;
+                    colorGradient.axes[0].xCurve = curves.v0;
+                    colorGradient.axes[1].xCurve = curves.v1;
+                    colorGradient.axes[2].xCurve = curves.v2;
 
-                    colorGradient.axes[0].yCurve = new AnimationCurve((Keyframe[])curves.r.keys.Clone());
-                    colorGradient.axes[1].yCurve = new AnimationCurve((Keyframe[])curves.g.keys.Clone());
-                    colorGradient.axes[2].yCurve = new AnimationCurve((Keyframe[])curves.b.keys.Clone());
+                    colorGradient.axes[0].yCurve = new AnimationCurve((Keyframe[])curves.v0.keys.Clone());
+                    colorGradient.axes[1].yCurve = new AnimationCurve((Keyframe[])curves.v1.keys.Clone());
+                    colorGradient.axes[2].yCurve = new AnimationCurve((Keyframe[])curves.v2.keys.Clone());
 
                     editorWindow.Close();
                 }
                 position.y += LineHeight;
             }
         }
-        private (AnimationCurve r, AnimationCurve g, AnimationCurve b) GetCurves()
+        private (AnimationCurve v0, AnimationCurve v1, AnimationCurve v2) GetCurves()
         {
-            (AnimationCurve r, AnimationCurve g, AnimationCurve b) curves = (
+            (AnimationCurve v0, AnimationCurve v1, AnimationCurve v2) curves = (
                 new AnimationCurve(),
                 new AnimationCurve(),
                 new AnimationCurve()
             );
 
+            var modeName = ColorMode.names[colorGradient.colorMode];
+
             for (int i = 0; i < gradient.colorKeys.Length; i++)
             {
                 GradientColorKey key = gradient.colorKeys[i];
-                curves.r.AddKey(new Keyframe(key.time, key.color.r, 0, 0));
-                curves.g.AddKey(new Keyframe(key.time, key.color.g, 0, 0));
-                curves.b.AddKey(new Keyframe(key.time, key.color.b, 0, 0));
+                float v0 = 0, v1 = 0, v2 = 0;
+
+                if (modeName.Equals("RGB"))
+                {
+                    v0 = key.color.r;
+                    v1 = key.color.g;
+                    v2 = key.color.b;
+                }
+                else if (modeName.Equals("HSV"))
+                {
+                    Color.RGBToHSV(key.color, out v0, out v1, out v2);
+                }
+
+                curves.v0.AddKey(new Keyframe(key.time, v0, 0, 0));
+                curves.v1.AddKey(new Keyframe(key.time, v1, 0, 0));
+                curves.v2.AddKey(new Keyframe(key.time, v2, 0, 0));
             }
 
             for (int i = 0; i < gradient.colorKeys.Length; i++)
             {
-                AnimationUtility.SetKeyLeftTangentMode(curves.r, i, mode);
-                AnimationUtility.SetKeyLeftTangentMode(curves.g, i, mode);
-                AnimationUtility.SetKeyLeftTangentMode(curves.b, i, mode);
-                AnimationUtility.SetKeyRightTangentMode(curves.r, i, mode);
-                AnimationUtility.SetKeyRightTangentMode(curves.g, i, mode);
-                AnimationUtility.SetKeyRightTangentMode(curves.b, i, mode);
+                AnimationUtility.SetKeyLeftTangentMode(curves.v0, i, mode);
+                AnimationUtility.SetKeyLeftTangentMode(curves.v1, i, mode);
+                AnimationUtility.SetKeyLeftTangentMode(curves.v2, i, mode);
+                AnimationUtility.SetKeyRightTangentMode(curves.v0, i, mode);
+                AnimationUtility.SetKeyRightTangentMode(curves.v1, i, mode);
+                AnimationUtility.SetKeyRightTangentMode(curves.v2, i, mode);
             }
 
             return curves;

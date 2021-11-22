@@ -86,7 +86,7 @@ namespace Negi0109.ColorGradientToTexture
                 colorGradient.textureSize.y = 1;
             }
 
-            if (modeName.Equals("RGB"))
+            if (modeName.Equals("RGB") || modeName.Equals("HSV"))
             {
                 var rect = EditorGUILayout.GetControlRect();
 
