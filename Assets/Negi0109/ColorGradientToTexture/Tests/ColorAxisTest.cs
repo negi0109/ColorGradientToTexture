@@ -22,5 +22,17 @@ namespace Negi0109.ColorGradientToTexture.Tests
             axis.yDirection = yDirection;
             Assert.AreEqual(excepted, axis.Evaluate(0, 0));
         }
+
+        [TestCase(1, xCurveValue, TestName = "xの値のみ反映")]
+        [TestCase(2, yCurveValue, TestName = "yの値のみ反映")]
+        public void AxesCountTest(int axesCount, float excepted)
+        {
+            var axis = new ColorAxis(axesCount);
+            axis.xCurve = AnimationCurve.Linear(0, xCurveValue, 1, xCurveValue);
+            axis.yCurve = AnimationCurve.Linear(0, yCurveValue, 1, yCurveValue);
+
+            axis.yDirection = 1;
+            Assert.AreEqual(excepted, axis.Evaluate(0, 1));
+        }
     }
 }
