@@ -38,12 +38,12 @@ namespace Negi0109.ColorGradientToTexture
 
             if (GUI.Button(IndentPosition(position), "x"))
             {
-                var curves = GetCurves();
+                var (v0, v1, v2) = GetCurves();
 
                 colorGradient.shareColorMode = false;
-                colorGradient.axes[0].xCurve = curves.v0;
-                colorGradient.axes[1].xCurve = curves.v1;
-                colorGradient.axes[2].xCurve = curves.v2;
+                colorGradient.axes[0].xCurve = v0;
+                colorGradient.axes[1].xCurve = v1;
+                colorGradient.axes[2].xCurve = v2;
 
                 editorWindow.Close();
             }
@@ -54,12 +54,12 @@ namespace Negi0109.ColorGradientToTexture
             {
                 if (GUI.Button(IndentPosition(position), "y"))
                 {
-                    var curves = GetCurves();
+                    var (v0, v1, v2) = GetCurves();
 
                     colorGradient.shareColorMode = false;
-                    colorGradient.axes[0].yCurve = curves.v0;
-                    colorGradient.axes[1].yCurve = curves.v1;
-                    colorGradient.axes[2].yCurve = curves.v2;
+                    colorGradient.axes[0].yCurve = v0;
+                    colorGradient.axes[1].yCurve = v1;
+                    colorGradient.axes[2].yCurve = v2;
 
                     editorWindow.Close();
                 }
@@ -67,16 +67,16 @@ namespace Negi0109.ColorGradientToTexture
 
                 if (GUI.Button(IndentPosition(position), "x, y"))
                 {
-                    var curves = GetCurves();
+                    var (v0, v1, v2) = GetCurves();
 
                     colorGradient.shareColorMode = false;
-                    colorGradient.axes[0].xCurve = curves.v0;
-                    colorGradient.axes[1].xCurve = curves.v1;
-                    colorGradient.axes[2].xCurve = curves.v2;
+                    colorGradient.axes[0].xCurve = v0;
+                    colorGradient.axes[1].xCurve = v1;
+                    colorGradient.axes[2].xCurve = v2;
 
-                    colorGradient.axes[0].yCurve = new AnimationCurve((Keyframe[])curves.v0.keys.Clone());
-                    colorGradient.axes[1].yCurve = new AnimationCurve((Keyframe[])curves.v1.keys.Clone());
-                    colorGradient.axes[2].yCurve = new AnimationCurve((Keyframe[])curves.v2.keys.Clone());
+                    colorGradient.axes[0].yCurve = new AnimationCurve((Keyframe[])v0.keys.Clone());
+                    colorGradient.axes[1].yCurve = new AnimationCurve((Keyframe[])v1.keys.Clone());
+                    colorGradient.axes[2].yCurve = new AnimationCurve((Keyframe[])v2.keys.Clone());
 
                     editorWindow.Close();
                 }

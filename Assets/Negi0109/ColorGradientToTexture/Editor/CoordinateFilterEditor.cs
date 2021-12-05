@@ -7,7 +7,7 @@ namespace Negi0109.ColorGradientToTexture
 {
     public static class CoordinateFilterEditor
     {
-        private static string[] reverseModes = new string[] { "x", "y", "both" };
+        private static readonly string[] reverseModes = new string[] { "x", "y", "both" };
 
         public static bool Editor(CoordinateFilter filter)
         {
