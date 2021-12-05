@@ -24,7 +24,7 @@ namespace Negi0109.ColorGradientToTexture.Tests
             colorFilter.type = ColorFilter.Type.Step;
             colorFilter.value1 = step;
 
-            Assert.AreEqual(excepted, colorFilter.Evaluate(v));
+            Assert.That(colorFilter.Evaluate(v), Is.EqualTo(excepted));
         }
 
         [TestCase(2, 0.5f, 1f)]
@@ -34,7 +34,7 @@ namespace Negi0109.ColorGradientToTexture.Tests
             colorFilter.type = ColorFilter.Type.Scale;
             colorFilter.value1 = scale;
 
-            Assert.AreEqual(excepted, colorFilter.Evaluate(v));
+            Assert.That(colorFilter.Evaluate(v), Is.EqualTo(excepted));
         }
 
         [TestCase(3, 0.5f, 0.5f)]
@@ -44,7 +44,7 @@ namespace Negi0109.ColorGradientToTexture.Tests
             colorFilter.type = ColorFilter.Type.Repeat;
             colorFilter.value1 = repeat;
 
-            Assert.AreEqual(excepted, colorFilter.Evaluate(v));
+            Assert.That(colorFilter.Evaluate(v), Is.EqualTo(excepted));
         }
 
         [TestCase(1f, 0.5f, 0)]
@@ -54,7 +54,7 @@ namespace Negi0109.ColorGradientToTexture.Tests
             colorFilter.type = ColorFilter.Type.Threshold;
             colorFilter.value1 = scale;
 
-            Assert.AreEqual(excepted, colorFilter.Evaluate(v));
+            Assert.That(colorFilter.Evaluate(v), Is.EqualTo(excepted));
         }
 
         [TestCase(1f, 0.5f, 1.5f)]
@@ -64,7 +64,7 @@ namespace Negi0109.ColorGradientToTexture.Tests
             colorFilter.type = ColorFilter.Type.Add;
             colorFilter.value1 = add;
 
-            Assert.AreEqual(excepted, colorFilter.Evaluate(v));
+            Assert.That(colorFilter.Evaluate(v), Is.EqualTo(excepted));
         }
     }
 }

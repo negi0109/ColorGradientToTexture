@@ -25,7 +25,7 @@ namespace Negi0109.ColorGradientToTexture.Tests
             coordinateFilter.value1 = x;
             coordinateFilter.value2 = y;
 
-            Assert.AreEqual(new Vector2(exceptedX, exceptedY), coordinateFilter.Evaluate(new Vector2(vx, vy)));
+            Assert.That(coordinateFilter.Evaluate(new Vector2(vx, vy)), Is.EqualTo(new Vector2(exceptedX, exceptedY)));
         }
 
         [TestCase(1f, 0f, 0f, 1f)]
@@ -34,7 +34,7 @@ namespace Negi0109.ColorGradientToTexture.Tests
         {
             coordinateFilter.type = CoordinateFilter.Type.Turn;
 
-            Assert.AreEqual(new Vector2(exceptedX, exceptedY), coordinateFilter.Evaluate(new Vector2(vx, vy)));
+            Assert.That(coordinateFilter.Evaluate(new Vector2(vx, vy)), Is.EqualTo(new Vector2(exceptedX, exceptedY)));
         }
 
         [TestCase(0, 0.2f, 0.2f, 0.8f, 0.2f, TestName = "x軸のみ")]
@@ -45,7 +45,7 @@ namespace Negi0109.ColorGradientToTexture.Tests
             coordinateFilter.type = CoordinateFilter.Type.Reverse;
             coordinateFilter.value1 = a;
 
-            Assert.AreEqual(new Vector2(exceptedX, exceptedY), coordinateFilter.Evaluate(new Vector2(vx, vy)));
+            Assert.That(coordinateFilter.Evaluate(new Vector2(vx, vy)), Is.EqualTo(new Vector2(exceptedX, exceptedY)));
         }
     }
 }
