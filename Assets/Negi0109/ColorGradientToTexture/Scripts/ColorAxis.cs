@@ -30,7 +30,7 @@ namespace Negi0109.ColorGradientToTexture
             foreach (var filter in coordinateFilters)
                 pos = filter.Evaluate(pos);
 
-            float v = (1 - yDirection) * xCurve.Evaluate(pos.x) + (axesCount == 1 ? 0 : yDirection * yCurve.Evaluate(pos.y));
+            float v = axesCount == 1 ? xCurve.Evaluate(pos.x) : (1 - yDirection) * xCurve.Evaluate(pos.x) + yDirection * yCurve.Evaluate(pos.y);
 
             foreach (var filter in colorFilters)
                 v = filter.Evaluate(v);
