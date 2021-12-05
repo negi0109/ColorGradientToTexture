@@ -9,7 +9,7 @@ namespace Negi0109.ColorGradientToTexture
     {
         public AnimationCurve xCurve;
         public AnimationCurve yCurve;
-        public float yDirection;
+        public float yWeight;
         public List<ColorFilter> colorFilters;
         public List<CoordinateFilter> coordinateFilters;
         public readonly int axesCount = 0;
@@ -19,7 +19,7 @@ namespace Negi0109.ColorGradientToTexture
             this.axesCount = axesCount;
             xCurve = AnimationCurve.Linear(0, 0, 1, 1);
             yCurve = AnimationCurve.Linear(0, 0, 1, 1);
-            yDirection = 0;
+            yWeight = 0;
             colorFilters = new List<ColorFilter>(0);
             coordinateFilters = new List<CoordinateFilter>(0);
         }
@@ -30,7 +30,7 @@ namespace Negi0109.ColorGradientToTexture
             foreach (var filter in coordinateFilters)
                 pos = filter.Evaluate(pos);
 
-            float v = axesCount == 1 ? xCurve.Evaluate(pos.x) : (1 - yDirection) * xCurve.Evaluate(pos.x) + yDirection * yCurve.Evaluate(pos.y);
+            float v = axesCount == 1 ? xCurve.Evaluate(pos.x) : (1 - yWeight) * xCurve.Evaluate(pos.x) + yWeight * yCurve.Evaluate(pos.y);
 
             foreach (var filter in colorFilters)
                 v = filter.Evaluate(v);

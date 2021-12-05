@@ -44,11 +44,11 @@ namespace Negi0109.ColorGradientToTexture
 
             if (axis.axesCount >= 2)
             {
-                var tmpDirection = EditorGUILayout.Slider(axis.yDirection, 0f, 1f);
+                var tmpWeight = EditorGUILayout.Slider(axis.yWeight, 0f, 1f);
 
-                if (tmpDirection != axis.yDirection)
+                if (tmpWeight != axis.yWeight)
                 {
-                    axis.yDirection = tmpDirection;
+                    axis.yWeight = tmpWeight;
                     updated = true;
                 }
             }
