@@ -6,7 +6,7 @@ Unity上で動く画像生成ツール
 
 Unity Package Manager から追加
 
-`https://github.com/negi0109/ColorGradientToTexture.git?path=Assets/Negi0109/ColorGradientToTexture`
+https://github.com/negi0109/ColorGradientToTexture/releases/latest
 
 ## Examples
 
