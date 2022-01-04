@@ -1,6 +1,6 @@
 {
   "name": "com.negi0109.color-gradient-to-texture",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "displayName": "ColorGradientToTexture",
   "unity": "2019.4",
   "description": "Color gradient to texture",
@@ -8,5 +8,12 @@
   "author": {
     "name": "negi0109",
     "url": "https://github.com/negi0109"
-  }
+  },
+  "samples": [
+    {
+      "displayName": "Grayscale",
+      "description": "grayscale",
+      "path": "Samples~/grayscale"
+    }
+  ]
 }
