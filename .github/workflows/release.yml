@@ -1,0 +1,44 @@
+name: release
+
+on:
+  push:
+    branches: master
+
+jobs:
+  release:
+    name: release
+    runs-on: ubuntu-latest
+    env:
+      ROOT: Assets/Negi0109/ColorGradientToTexture
+    steps:
+    - uses: actions/checkout@v2
+    - name: get package
+      id: package
+      run: |
+        echo "::set-output name=data::$(cat ${{ env.ROOT }}/package.json | tr -d '\n')"
+
+    - name: add release branch
+      run: |
+        git subtree split -P "${{ env.ROOT }}" -b "${{ env.BRANCH }}"
+        git checkout "${{ env.BRANCH }}"
+        # git push -f origin "${{ env.BRANCH }}"
+      env:
+        BRANCH: release-tmp
+
+    - name: add tag
+      run: |
+        git tag -f ${{ env.TAG }}
+        git push -f origin ${{ env.TAG }}
+      env:
+        TAG: release-${{ fromJson(steps.package.outputs.data).version }}
+
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: release-${{ fromJson(steps.package.outputs.data).version }}
+        release_name: v${{ fromJson(steps.package.outputs.data).version }}
+        body: https://github.com/negi0109/ColorGradientToTexture.git#release-${{ fromJson(steps.package.outputs.data).version }}
+        draft: false
+        prerelease: false

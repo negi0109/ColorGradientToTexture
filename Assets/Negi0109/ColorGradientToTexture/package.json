@@ -8,12 +8,5 @@
   "author": {
     "name": "negi0109",
     "url": "https://github.com/negi0109"
-  },
-  "samples": [
-        {
-            "displayName": "Grayscale",
-            "description": "Grayscale",
-            "path": "Samples~/grayscale"
-        }
-    ]
+  }
 }
