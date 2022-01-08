@@ -4,7 +4,9 @@ using UnityEngine;
 
 #if UNITY_EDITOR
 using UnityEditor;
+using System.IO;
 #endif
+
 namespace Negi0109.ColorGradientToTexture
 {
     [Serializable]
@@ -62,13 +64,22 @@ namespace Negi0109.ColorGradientToTexture
         [MenuItem("Assets/Create/ColorGradient")]
         public static void Create()
         {
+            var filePath = "Assets";
+
+            if (Selection.assetGUIDs.Length != 0)
+            {
+                var path = AssetDatabase.GUIDToAssetPath(Selection.assetGUIDs[0]);
+                if (File.GetAttributes(path).HasFlag(FileAttributes.Directory)) filePath = path;
+                else filePath = Path.GetDirectoryName(path);
+            }
+
             var parent = CreateInstance<ColorGradient>();
             parent.textureSize = new Vector2Int(256, 256);
             parent.axesCount = 2;
 
             parent.SetAxes();
 
-            AssetDatabase.CreateAsset(parent, "Assets/ColorGradient.asset");
+            AssetDatabase.CreateAsset(parent, $"{filePath}/ColorGradient.asset");
 
             var texture = new Texture2D(parent.textureSize.x, parent.textureSize.y, TextureFormat.ARGB32, false);
             parent.texture = texture;
