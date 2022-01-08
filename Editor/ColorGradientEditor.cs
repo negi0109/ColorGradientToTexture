@@ -140,6 +140,9 @@ namespace Negi0109.ColorGradientToTexture
 
                 EditorUtility.SetDirty(colorGradient);
             }
+
+            if (GUILayout.Button("Bake Texture")) Bake(colorGradient);
+
         }
         public override bool HasPreviewGUI() => true;
         public override void OnPreviewGUI(Rect r, GUIStyle background)
@@ -151,5 +154,21 @@ namespace Negi0109.ColorGradientToTexture
 
         private AnimationCurve CloneAnimationCurve(AnimationCurve curve)
          => new AnimationCurve((Keyframe[])curve.keys.Clone());
+
+        private void Bake(ColorGradient colorGradient)
+        {
+            var filePath = EditorUtility.SaveFilePanelInProject("Save Asset", "default_name", "png", "");
+
+            if (string.IsNullOrEmpty(filePath))
+                return;
+
+            var tex = new Texture2D(colorGradient.textureSize.x, colorGradient.textureSize.y, TextureFormat.ARGB32, false);
+
+            colorGradient.SetTexturePixel(tex);
+
+            var bytes = tex.EncodeToPNG();
+            System.IO.File.WriteAllBytes(filePath, bytes);
+            AssetDatabase.ImportAsset(filePath, ImportAssetOptions.ForceUpdate);
+        }
     }
 }
