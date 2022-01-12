@@ -86,6 +86,7 @@ MonoBehaviour:
   axesCount: 1
   textureSize: {x: 256, y: 1}
   texture: {fileID: 999557994367418655}
+  sprite: {fileID: 0}
   shareColorMode: 0
 --- !u!28 &999557994367418655
 Texture2D:
