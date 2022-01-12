@@ -131,7 +131,18 @@ namespace Negi0109.ColorGradientToTexture
 
             updated |= sizeUpdated;
 
-            if (sizeUpdated) colorGradient.texture.Resize(colorGradient.textureSize.x, colorGradient.textureSize.y, TextureFormat.ARGB32, false);
+            if (sizeUpdated)
+            {
+                colorGradient.texture.Resize(colorGradient.textureSize.x, colorGradient.textureSize.y, TextureFormat.ARGB32, false);
+
+                if (colorGradient.sprite != null)
+                {
+                    var so = new SerializedObject(colorGradient.sprite);
+                    var rect = so.FindProperty("m_Rect");
+                    rect.rectValue = new Rect(0, 0, colorGradient.textureSize.x, colorGradient.textureSize.y);
+                    so.ApplyModifiedProperties();
+                }
+            }
 
             if (updated)
             {
