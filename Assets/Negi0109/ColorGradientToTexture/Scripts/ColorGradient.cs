@@ -84,14 +84,9 @@ namespace Negi0109.ColorGradientToTexture
 
             var texture = new Texture2D(parent.textureSize.x, parent.textureSize.y, TextureFormat.ARGB32, false);
             texture.name = "texture";
-
-            var sprite = Sprite.Create(texture, new Rect(0, 0, (float)parent.textureSize.x, (float)parent.textureSize.y), new Vector2(0.5f, 0.5f));
-            sprite.name = "sprite";
             parent.texture = texture;
-            parent.sprite = sprite;
 
             AssetDatabase.AddObjectToAsset(texture, parent);
-            AssetDatabase.AddObjectToAsset(sprite, parent);
             AssetDatabase.SaveAssets();
 
             EditorGUIUtility.PingObject(parent);

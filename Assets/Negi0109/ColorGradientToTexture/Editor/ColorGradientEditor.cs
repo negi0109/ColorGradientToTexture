@@ -144,6 +144,33 @@ namespace Negi0109.ColorGradientToTexture
                 }
             }
 
+            if (colorGradient.sprite == null)
+            {
+                if (GUILayout.Toggle(false, "Sprite"))
+                {
+                    var sprite = Sprite.Create(
+                        colorGradient.texture,
+                        new Rect(0, 0, colorGradient.textureSize.x, colorGradient.textureSize.y),
+                        new Vector2(0.5f, 0.5f)
+                    );
+                    sprite.name = "sprite";
+                    colorGradient.sprite = sprite;
+
+                    AssetDatabase.AddObjectToAsset(sprite, colorGradient);
+                    AssetDatabase.SaveAssets();
+                }
+            }
+            else
+            {
+                if (!GUILayout.Toggle(true, "Sprite"))
+                {
+                    AssetDatabase.RemoveObjectFromAsset(colorGradient.sprite);
+                    colorGradient.sprite = null;
+
+                    AssetDatabase.SaveAssets();
+                }
+            }
+
             if (updated)
             {
                 colorGradient.SetTexturePixel(colorGradient.texture);
