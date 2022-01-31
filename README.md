@@ -1,3 +1,5 @@
+[![release](https://img.shields.io/badge/Unity-2019.4+-white.svg?style=flat&logo=unity)](https://github.com/negi0109/ColorGradientToTexture)
+[![release](https://github.com/negi0109/ColorGradientToTexture/actions/workflows/release.yml/badge.svg)](https://github.com/negi0109/ColorGradientToTexture/actions/workflows/release.yml)
 # ColorGradientToTexture
 
 Unity上で動く画像生成ツール
