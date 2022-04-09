@@ -14,7 +14,9 @@ namespace Negi0109.ColorGradientToTexture
             Repeat,
             Scale,
             Threshold,
-            Add
+            Add,
+            LinearToGamma,
+            GammaToLinear,
         }
 
         public Type type = Type.Add;
@@ -37,6 +39,10 @@ namespace Negi0109.ColorGradientToTexture
                     return v >= value1 ? 1 : 0;
                 case Type.Add:
                     return v + value1;
+                case Type.GammaToLinear:
+                    return Mathf.GammaToLinearSpace(v);
+                case Type.LinearToGamma:
+                    return Mathf.LinearToGammaSpace(v);
                 default:
                     return v;
             }

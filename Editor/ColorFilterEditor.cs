@@ -65,6 +65,9 @@ namespace Negi0109.ColorGradientToTexture
                         filter.value1 = changedValue1;
                     }
                     break;
+                case ColorFilter.Type.LinearToGamma:
+                case ColorFilter.Type.GammaToLinear:
+                    break;
             }
 
             return updated;
