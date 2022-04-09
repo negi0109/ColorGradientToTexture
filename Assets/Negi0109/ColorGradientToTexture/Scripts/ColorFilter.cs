@@ -17,6 +17,7 @@ namespace Negi0109.ColorGradientToTexture
             Add,
             LinearToGamma,
             GammaToLinear,
+            OneMinus,
         }
 
         public Type type = Type.Add;
@@ -43,6 +44,8 @@ namespace Negi0109.ColorGradientToTexture
                     return Mathf.GammaToLinearSpace(v);
                 case Type.LinearToGamma:
                     return Mathf.LinearToGammaSpace(v);
+                case Type.OneMinus:
+                    return 1 - v;
                 default:
                     return v;
             }
