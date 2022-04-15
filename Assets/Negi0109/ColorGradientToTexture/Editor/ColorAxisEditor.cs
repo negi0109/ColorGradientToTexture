@@ -13,11 +13,8 @@ namespace Negi0109.ColorGradientToTexture
         private readonly string label;
         private static readonly int previewSize = 50;
         private static readonly int coordinatePreviewSize = 20;
-        private static readonly int cachedSize = 10;
         private Texture2D previewTex;
         private Texture2D coordinatePreviewTex;
-        private float[] xCurveValues;
-        private float[] yCurveValues;
 
         public ColorAxisEditor(string label)
         {
@@ -33,24 +30,19 @@ namespace Negi0109.ColorGradientToTexture
             {
                 previewTex = new Texture2D(previewSize, previewSize, TextureFormat.ARGB32, false);
                 coordinatePreviewTex = new Texture2D(coordinatePreviewSize, coordinatePreviewSize, TextureFormat.RG16, false);
-                xCurveValues = new float[cachedSize];
-                yCurveValues = new float[cachedSize];
                 coordinateUpdated = updated = true;
             }
 
+            EditorGUI.BeginChangeCheck();
+
             EditorGUILayout.BeginVertical();
             EditorGUILayout.BeginHorizontal();
+
             EditorGUILayout.LabelField(label, new GUILayoutOption[] { GUILayout.Width(12) });
 
             if (axis.axesCount >= 2)
             {
-                var tmpWeight = EditorGUILayout.Slider(axis.yWeight, 0f, 1f);
-
-                if (tmpWeight != axis.yWeight)
-                {
-                    axis.yWeight = tmpWeight;
-                    updated = true;
-                }
+                axis.yWeight = EditorGUILayout.Slider(axis.yWeight, 0f, 1f);
             }
 
             EditorGUILayout.EndHorizontal();
@@ -62,12 +54,7 @@ namespace Negi0109.ColorGradientToTexture
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("x", new GUILayoutOption[] { GUILayout.Width(12) });
             axis.xCurve = EditorGUILayout.CurveField(axis.xCurve);
-            for (int i = 0; i < cachedSize; i++)
-            {
-                var tmp = axis.xCurve.Evaluate(i / (float)cachedSize);
-                if (xCurveValues[i] != tmp) updated = true;
-                xCurveValues[i] = tmp;
-            }
+
             EditorGUILayout.EndHorizontal();
 
             if (axis.axesCount >= 2)
@@ -75,13 +62,13 @@ namespace Negi0109.ColorGradientToTexture
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("y", new GUILayoutOption[] { GUILayout.Width(12) });
                 axis.yCurve = EditorGUILayout.CurveField(axis.yCurve);
-                for (int i = 0; i < cachedSize; i++)
-                {
-                    var tmp = axis.yCurve.Evaluate(i / (float)cachedSize);
-                    if (yCurveValues[i] != tmp) updated = true;
-                    yCurveValues[i] = tmp;
-                }
+
                 EditorGUILayout.EndHorizontal();
+            }
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                updated = true;
             }
 
             EditorGUILayout.BeginHorizontal();
