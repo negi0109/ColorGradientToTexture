@@ -51,13 +51,15 @@ namespace Negi0109.ColorGradientToTexture
 
         public void SetTexturePixel(Texture2D tex)
         {
+            var axeValues = new float[Mode.size][,];
+
+            for (int i = 0; i < Mode.size; i++)
+                axeValues[i] = axes[i].Evaluate(tex.width, tex.height);
+
             for (int x = 0; x < tex.width; x++)
                 for (int y = 0; y < tex.height; y++)
                     tex.SetPixel(x, y, Mode.func(
-                        axes.Select((v) => v.Evaluate(
-                            (float)x / tex.width,
-                            (float)y / tex.height
-                        )).ToArray()
+                        axes.Select((_, i) => axeValues[i][x, y]).ToArray()
                     ), 0);
         }
 
