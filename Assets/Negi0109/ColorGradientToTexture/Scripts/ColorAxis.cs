@@ -37,5 +37,27 @@ namespace Negi0109.ColorGradientToTexture
 
             return v;
         }
+
+        public float[,] Evaluate(int width, int height)
+        {
+            var v = new float[width, height];
+
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    var pos = new Vector2((float)x / width, (float)y / width);
+
+                    foreach (var filter in coordinateFilters)
+                        pos = filter.Evaluate(pos);
+                    v[x, y] = axesCount == 1 ? xCurve.Evaluate(pos.x) : (1 - yWeight) * xCurve.Evaluate(pos.x) + yWeight * yCurve.Evaluate(pos.y);
+                }
+            }
+
+            foreach (var filter in colorFilters)
+                filter.Evaluate(ref v);
+
+            return v;
+        }
     }
 }

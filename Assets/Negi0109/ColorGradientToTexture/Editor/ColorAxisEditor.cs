@@ -149,13 +149,13 @@ namespace Negi0109.ColorGradientToTexture
 
             if (updated)
             {
+                var axisValue = axis.Evaluate(previewSize, previewSize);
+
                 for (int x = 0; x < previewSize; x++)
                 {
                     for (int y = 0; y < previewSize; y++)
                     {
-                        var xf = (float)x / previewSize;
-                        var yf = (float)y / previewSize;
-                        var v = axis.Evaluate(xf, yf);
+                        var v = axisValue[x, y];
                         var color = new Color(v, v, v, 1);
 
                         previewTex.SetPixel(x, y, color, 0);
