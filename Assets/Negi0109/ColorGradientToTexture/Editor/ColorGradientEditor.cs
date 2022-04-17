@@ -127,7 +127,7 @@ namespace Negi0109.ColorGradientToTexture
             #endregion
 
             for (int i = 0; i < colorGradient.Mode.size; i++)
-                updated |= colorAxisEditors[i].Editor(colorGradient.axes[i]);
+                updated |= colorAxisEditors[i].Editor(colorGradient, colorGradient.axes[i]);
 
             updated |= sizeUpdated;
 
