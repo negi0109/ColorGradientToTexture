@@ -21,7 +21,7 @@ namespace Negi0109.ColorGradientToTexture
             this.label = label;
         }
 
-        public bool Editor(ColorAxis axis)
+        public bool Editor(ColorGradient colorGradient, ColorAxis axis)
         {
             var updated = false;
             var coordinateUpdated = false;
@@ -161,6 +161,19 @@ namespace Negi0109.ColorGradientToTexture
                         previewTex.SetPixel(x, y, color, 0);
                     }
                 }
+
+                if (colorGradient.axesCount == 1)
+                {
+                    for (int x = 0; x < previewSize; x++)
+                    {
+                        var v = (int)(axisValue[x, 0] * previewSize);
+                        if (v >= 0 && v < previewSize)
+                        {
+                            previewTex.SetPixel(x, v, Color.green, 0);
+                        }
+                    }
+                }
+
                 previewTex.Apply();
             }
 
