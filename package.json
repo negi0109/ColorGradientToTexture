@@ -1,6 +1,6 @@
 {
   "name": "com.negi0109.color-gradient-to-texture",
-  "version": "3.7.0",
+  "version": "3.7.1",
   "displayName": "ColorGradientToTexture",
   "unity": "2019.4",
   "description": "Color gradient to texture",
@@ -14,6 +14,11 @@
       "displayName": "Grayscale",
       "description": "grayscale",
       "path": "Samples~/grayscale"
+    },
+    {
+      "displayName": "Filter",
+      "description": "filter",
+      "path": "Samples~/filters"
     }
   ]
 }

@@ -1,0 +1,225 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a82d6e86b3db945aea5fa924ae788639, type: 3}
+  m_Name: noise
+  m_EditorClassIdentifier: 
+  colorMode: 0
+  axes:
+  - xCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 1
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    yCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 1
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    yWeight: 0
+    colorFilters:
+    - type: 1
+      value1: 0.5
+      value2: 0
+    coordinateFilters: []
+  - xCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    yCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 1
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    yWeight: 0
+    colorFilters:
+    - type: 1
+      value1: -1
+      value2: 0
+    coordinateFilters: []
+  - xCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 1
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    yCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 1
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    yWeight: 0
+    colorFilters:
+    - type: 1
+      value1: 0.2
+      value2: 0
+    coordinateFilters: []
+  axesCount: 1
+  textureSize: {x: 256, y: 1}
+  texture: {fileID: 7974649098429721897}
+  sprite: {fileID: 0}
+  shareColorMode: 0
+--- !u!28 &7974649098429721897
+Texture2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: texture
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  serializedVersion: 2
+  m_Width: 256
+  m_Height: 1
+  m_CompleteImageSize: 1024
+  m_TextureFormat: 5
+  m_MipCount: 1
+  m_IsReadable: 1
+  m_IgnoreMasterTextureLimit: 0
+  m_IsPreProcessed: 0
+  m_StreamingMipmaps: 0
+  m_StreamingMipmapsPriority: 0
+  m_AlphaIsTransparency: 0
+  m_ImageCount: 1
+  m_TextureDimension: 2
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 0
+    m_WrapV: 0
+    m_WrapW: 0
+  m_LightmapFormat: 0
+  m_ColorSpace: 0
+  image data: 1024
+  _typelessdata: ff2e3714ff352822ff559b04ff731b28ff7c7309ff061632ff57d20fff4a5626ff558d2eff83980bff25b439ff3a8619ff6e4529ff362e3dff8d0419ff826a17ff67c517ff2ca734ff39ca2cff61a041ff76e730ff17de1aff7a6618ff6ace29ff24aa4aff67b939ff40d539ff81984aff3b1f3fff21ab21ff341b3aff2c6a1fff90822dff231636ff274539ff3ebe53ff543a48ff763f44ff705756ff6de056ff782257ff69cc42ff3cb044ff902c55ffa66450ff6c224aff45924dff7d2539ff4e833eff32d942ff8a314aff9e0e39ff3dc237ff86463fff70c752ff64f645ff53475bff6e4e48ff46ab63ff73b760ff90596dff520465ff95005bff84186dff87154dffb54445ff5ada44ff9c335dffaca064ff672846ff50ec47ff6d5770ff843e68ffb40554ffa29268ffb3627bff9e9152ff9b7069ff69d15aff70d872ff68485fff8e755bffa68e5dff9a8f82ffd15078ff8d5b64ffa6207affd6047aff7a2970ffb5175eff77966cff623f71ffd74f88ffb47778ffb5506bffd26e8bff834380ffdbe371ff8cb58dff77c96cff9abf86ffa00568ff9eef6effcc4185ff95e588ffe7cd95ffae9c96ffaa4d86ffb54576ff98697dffeaa77aff8b3299ffa36f7affc7a89affd2af94ffb089a1fff1ef7fff86839fff878989ff90fe9fffa7629effd024abffd8fb9fffb1a17effa15799ffa0ca80ffba8d82ffbcb8adffde9da3ffb215aeffdce783ffe64d87ff901eafff905db6ffef4baffffb7da5ffa3db8cffc72d8fffd7b699fffa65a7ffff048fffa21aa4ffffe499fffd3f97ffa441baffff11aaffb4dfc2ffd60dafffbe93baffe713a1fff1a3bbffa528aaffa8f9aaffff8699ffcae8cbffbeb6b8ffe3b8c6ffc31cafffa09badffff45befffbefb8ffa574adffdb69bbffffd5aaffff66a5ffdb08bcffff49d7ffff0bcbffffa6b8ffff15d8ffd640c4ffff74b8ffca4dd3ffcaa2cfffbafad7ffcf1edcffffb4c9ffff02d7ffc816e4ffd433cbffffefc9ffe468dfffff48c1ffffcedefffa83d5ffc546e6ffd1cdbbffffd8c1ffdb0adfffd6b0d8ffff5cccffff83e1ffc997d4ffffd2defff9fce6fff708cffff031e8ffff88cbffcb19cbffffd9e6ffff17d4ffff46d5fff937dfffdc05d1ffff2bccffffc6fdffffb7fdffff39f7ffffeaeaffff58efffffe8feffff74eaffd7f7dfffff05faffded3ffffff02dbffff84d7ffff3ffffffffefcffff0bfaffed4ce4ffff32faffe021ffffff23e7fffcecfffff80bfaffffa4ebffe732faffff8df6ffff76feffffb7fbffff69ffffff10f2ffffafffffffa9f2ffff82ffffff0cf6ffff3af8ffff8ffffffff5ffffff3bffffffedffffffd7f8fff71affffff47fffffb4bffffff81ffffffa7ffffff5bffffff5fffffffb2ffffff5affffff04ffffff9bffffffd9ffffffa2ff
+  m_StreamData:
+    offset: 0
+    size: 0
+    path: 
