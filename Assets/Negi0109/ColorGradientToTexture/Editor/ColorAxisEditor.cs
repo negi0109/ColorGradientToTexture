@@ -149,21 +149,36 @@ namespace Negi0109.ColorGradientToTexture
 
             if (updated)
             {
-                var axisValue = axis.Evaluate(previewSize, previewSize);
-
-                for (int x = 0; x < previewSize; x++)
+                if (colorGradient.axesCount == 2)
                 {
-                    for (int y = 0; y < previewSize; y++)
-                    {
-                        var v = axisValue[x, y];
-                        var color = new Color(v, v, v, 1);
+                    var axisValue = axis.Evaluate(previewSize, previewSize);
 
-                        previewTex.SetPixel(x, y, color, 0);
+                    for (int x = 0; x < previewSize; x++)
+                    {
+                        for (int y = 0; y < previewSize; y++)
+                        {
+                            var v = axisValue[x, y];
+                            var color = new Color(v, v, v, 1);
+
+                            previewTex.SetPixel(x, y, color, 0);
+                        }
                     }
                 }
-
-                if (colorGradient.axesCount == 1)
+                else
                 {
+                    var axisValue = axis.Evaluate(previewSize, 1);
+
+                    for (int x = 0; x < previewSize; x++)
+                    {
+                        for (int y = 0; y < previewSize; y++)
+                        {
+                            var v = axisValue[x, 0];
+                            var color = new Color(v, v, v, 1);
+
+                            previewTex.SetPixel(x, y, color, 0);
+                        }
+                    }
+
                     for (int x = 0; x < previewSize; x++)
                     {
                         var v = (int)(axisValue[x, 0] * previewSize);
