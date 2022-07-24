@@ -1,0 +1,22 @@
+name: add bug to project
+on:
+  issues:
+    types: [opened]
+env:
+  PROJECT_OWNER: negi0109
+  PROJECT_NUMBER: 3
+  GITHUB_TOKEN: ${{ secrets.PROJECT_OWNER_TOKEN }}
+jobs:
+  manage_project:
+    name: Projects(Beta)にbug issueを登録する
+    runs-on: ubuntu-latest
+    if: contains(github.event.issue.labels.*.name, 'bug')
+    steps:
+      - name: Add Issue to Project
+        id: add-issue-to-project
+        uses: monry/actions-add-issue-to-project@v1
+        with:
+          github-token: ${{ env.GITHUB_TOKEN }}
+          project-owner: ${{ env.PROJECT_OWNER }}
+          project-number: ${{ env.PROJECT_NUMBER }}
+          issue-id: ${{ github.event.issue.node_id }}
