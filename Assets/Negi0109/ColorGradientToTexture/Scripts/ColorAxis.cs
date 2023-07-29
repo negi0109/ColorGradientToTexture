@@ -46,7 +46,7 @@ namespace Negi0109.ColorGradientToTexture
             {
                 for (int y = 0; y < height; y++)
                 {
-                    var pos = new Vector2((float)x / width, (float)y / width);
+                    var pos = new Vector2((float)x / width, (float)y / height);
 
                     foreach (var filter in coordinateFilters)
                         pos = filter.Evaluate(pos);
