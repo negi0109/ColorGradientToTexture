@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
 namespace Negi0109.ColorGradientToTexture
 {
@@ -27,10 +27,14 @@ namespace Negi0109.ColorGradientToTexture
                     break;
                 case ColorFilter.Type.Noise:
                     {
+                        EditorGUIUtility.labelWidth = 60f;
                         var changedValue1 = EditorGUILayout.Slider("weight", filter.value1, -1f, 1f);
                         if (changedValue1 != filter.value1) updated = true;
+                        var changedValue2 = EditorGUILayout.IntField("seed", (int)filter.value2);
+                        if (changedValue2 != filter.value2) updated = true;
 
                         filter.value1 = changedValue1;
+                        filter.value2 = changedValue2;
                     }
                     break;
                 case ColorFilter.Type.Repeat:

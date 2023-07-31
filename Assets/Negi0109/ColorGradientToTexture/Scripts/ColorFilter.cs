@@ -32,8 +32,6 @@ namespace Negi0109.ColorGradientToTexture
                 case Type.Step:
                     var step = 1f / (int)value1;
                     return (int)(v / step) * step;
-                case Type.Noise:
-                    return v + UnityEngine.Random.Range(0f, 1f) * value1;
                 case Type.Repeat:
                     return v * value1 % 1f;
                 case Type.Scale:
@@ -60,6 +58,16 @@ namespace Negi0109.ColorGradientToTexture
 
             switch (type)
             {
+                case Type.Noise:
+                    var r = new System.Random((int)value2);
+                    for (int x = 0; x < width; x++)
+                    {
+                        for (int y = 0; y < height; y++)
+                        {
+                            v[x, y] += value1 * r.Next() / int.MaxValue;
+                        }
+                    }
+                    break;
                 case Type.Cumulate:
                     {
                         var type1 = (int)value1;
