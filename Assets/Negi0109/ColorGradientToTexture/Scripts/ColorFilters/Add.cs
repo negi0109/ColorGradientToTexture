@@ -9,13 +9,10 @@ namespace Negi0109.ColorGradientToTexture.Filters {
 
         public override bool Editor()
         {
-            bool updated = false;
-            var changedValue = EditorGUILayout.FloatField("value", value);
-            if (changedValue != value) updated = true;
-
-            value = changedValue;
-
-            return updated;
+            return Watch(
+                () => value,
+                () => { value = EditorGUILayout.FloatField("value", value); }
+            );
         }
     }
 
