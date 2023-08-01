@@ -10,6 +10,8 @@ namespace Negi0109.ColorGradientToTexture
         public AnimationCurve xCurve;
         public AnimationCurve yCurve;
         public float yWeight;
+
+        [SerializeReference]
         public List<ColorFilter> colorFilters;
         public List<CoordinateFilter> coordinateFilters;
         public readonly int axesCount = 0;
