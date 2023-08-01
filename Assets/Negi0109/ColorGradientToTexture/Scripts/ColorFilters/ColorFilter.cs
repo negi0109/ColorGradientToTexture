@@ -1,3 +1,6 @@
+using System;
+using UnityEditor;
+
 namespace Negi0109.ColorGradientToTexture {
     [System.Serializable]
     public abstract class ColorFilter {
@@ -19,5 +22,15 @@ namespace Negi0109.ColorGradientToTexture {
         }
 
         public abstract bool Editor();
+
+        public static bool Watch<T>(Func<T> value, Action action)
+            where T : IEquatable<T>
+        {
+            var prevValue = value();
+
+            action();
+
+            return !prevValue.Equals(value());
+        }
     }
 }
