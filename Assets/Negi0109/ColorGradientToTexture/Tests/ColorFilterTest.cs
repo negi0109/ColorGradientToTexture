@@ -8,63 +8,50 @@ namespace Negi0109.ColorGradientToTexture.Tests
 {
     public class ColorFilterTest
     {
-        // ColorFilter colorFilter;
+        [TestCase(2, 0.5f, 0.5f)]
+        [TestCase(2, 0.49f, 0f)]
+        [TestCase(2, 1f, 1f)]
+        public void Step(int step, float v, float excepted)
+        {
+            var filter = new Filters.Step() { step = step };
 
-        // [SetUp]
-        // public void SetUp()
-        // {
-        //     colorFilter = new ColorFilter();
-        // }
+            Assert.That(filter.Evaluate(v), Is.EqualTo(excepted));
+        }
 
-        // [TestCase(2, 0.5f, 0.5f)]
-        // [TestCase(2, 0.49f, 0f)]
-        // [TestCase(2, 1f, 1f)]
-        // public void Step(int step, float v, float excepted)
-        // {
-        //     colorFilter.type = ColorFilter.Type.Step;
-        //     colorFilter.value1 = step;
+        [TestCase(2, 0.5f, 1f)]
+        [TestCase(2, 1f, 2f)]
+        public void Scale(float scale, float v, float excepted)
+        {
+            var filter = new Filters.Scale() { value = scale };
 
-        //     Assert.That(colorFilter.Evaluate(v), Is.EqualTo(excepted));
-        // }
+            Assert.That(filter.Evaluate(v), Is.EqualTo(excepted));
+        }
 
-        // [TestCase(2, 0.5f, 1f)]
-        // [TestCase(2, 1f, 2f)]
-        // public void Scale(float scale, float v, float excepted)
-        // {
-        //     colorFilter.type = ColorFilter.Type.Scale;
-        //     colorFilter.value1 = scale;
+        [TestCase(3, 0.5f, 0.5f)]
+        [TestCase(3, 1f, 0f)]
+        public void Repeat(int count, float v, float excepted)
+        {
+            var filter = new Filters.Repeat() { count = count };
 
-        //     Assert.That(colorFilter.Evaluate(v), Is.EqualTo(excepted));
-        // }
+            Assert.That(filter.Evaluate(v), Is.EqualTo(excepted));
+        }
 
-        // [TestCase(3, 0.5f, 0.5f)]
-        // [TestCase(3, 1f, 0f)]
-        // public void Repeat(float repeat, float v, float excepted)
-        // {
-        //     colorFilter.type = ColorFilter.Type.Repeat;
-        //     colorFilter.value1 = repeat;
+        [TestCase(1f, 0.5f, 0)]
+        [TestCase(1f, 1f, 1)]
+        public void Threshold(float value, float v, float excepted)
+        {
+            var filter = new Filters.Threshold() { value = value };
 
-        //     Assert.That(colorFilter.Evaluate(v), Is.EqualTo(excepted));
-        // }
+            Assert.That(filter.Evaluate(v), Is.EqualTo(excepted));
+        }
 
-        // [TestCase(1f, 0.5f, 0)]
-        // [TestCase(1f, 1f, 1)]
-        // public void Threshold(float scale, float v, float excepted)
-        // {
-        //     colorFilter.type = ColorFilter.Type.Threshold;
-        //     colorFilter.value1 = scale;
+        [TestCase(1f, 0.5f, 1.5f)]
+        [TestCase(1f, 1f, 2f)]
+        public void Add(float value, float v, float excepted)
+        {
+            var filter = new Filters.Add() { value = value };
 
-        //     Assert.That(colorFilter.Evaluate(v), Is.EqualTo(excepted));
-        // }
-
-        // [TestCase(1f, 0.5f, 1.5f)]
-        // [TestCase(1f, 1f, 2f)]
-        // public void Add(float add, float v, float excepted)
-        // {
-        //     colorFilter.type = ColorFilter.Type.Add;
-        //     colorFilter.value1 = add;
-
-        //     Assert.That(colorFilter.Evaluate(v), Is.EqualTo(excepted));
-        // }
+            Assert.That(filter.Evaluate(v), Is.EqualTo(excepted));
+        }
     }
 }
