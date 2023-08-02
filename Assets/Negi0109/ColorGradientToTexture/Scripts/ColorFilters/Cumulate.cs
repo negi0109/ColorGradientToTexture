@@ -26,83 +26,40 @@ namespace Negi0109.ColorGradientToTexture.Filters
 
         public override void EvaluateAll(ref float[,] v)
         {
-            var width = v.GetLength(0);
-            var height = v.GetLength(1);
+            Utils.ArraySeeker<float> _seeker;
 
             switch (direction)
             {
                 case Direction.X01:
-                    for (int y = 0; y < height; y++)
-                    {
-                        for (int x = 1; x < width; x++)
-                        {
-                            v[x, y] = v[x - 1, y] + v[x, y];
-                        }
-
-                        var a = 1f;
-                        if (division == Division.Max) a = v[width - 1, y];
-                        else if (division == Division.Volume) a = width;
-                        else if (division == Division.One) a = 1;
-
-                        if (a != 1f)
-                            for (int x = 0; x < width; x++)
-                                v[x, y] = v[x, y] / a;
-                    }
+                    _seeker = new Utils.ArraySeeker<float>(v, 0, false);
                     break;
                 case Direction.Y01:
-                    for (int x = 0; x < width; x++)
-                    {
-                        for (int y = 1; y < height; y++)
-                        {
-                            v[x, y] = v[x, y - 1] + v[x, y];
-                        }
-
-                        var a = 1f;
-                        if (division == Division.Max) a = v[x, height - 1];
-                        else if (division == Division.Volume) a = height;
-                        else if (division == Division.One) a = 1;
-
-                        if (a != 1f)
-                            for (int y = 0; y < height; y++)
-                                v[x, y] = v[x, y] / a;
-                    }
+                    _seeker = new Utils.ArraySeeker<float>(v, 1, false);
                     break;
                 case Direction.X10:
-                    for (int y = 0; y < height; y++)
-                    {
-                        for (int x = width - 2; x >= 0; x--)
-                        {
-                            v[x, y] = v[x + 1, y] + v[x, y];
-                        }
-
-                        var a = 1f;
-                        if (division == Division.Max) a = v[0, y];
-                        else if (division == Division.Volume) a = width;
-                        else if (division == Division.One) a = 1;
-
-                        if (a != 1f)
-                            for (int x = 0; x < width; x++)
-                                v[x, y] = v[x, y] / a;
-                    }
+                    _seeker = new Utils.ArraySeeker<float>(v, 0, true);
                     break;
                 case Direction.Y10:
-                    for (int x = 0; x < width; x++)
-                    {
-                        for (int y = height - 2; y >= 0; y--)
-                        {
-                            v[x, y] = v[x, y + 1] + v[x, y];
-                        }
-
-                        var a = 1f;
-                        if (division == Division.Max) a = v[x, 0];
-                        else if (division == Division.Volume) a = height;
-                        else if (division == Division.One) a = 1;
-
-                        if (a != 1f)
-                            for (int y = 0; y < height; y++)
-                                v[x, y] = v[x, y] / a;
-                    }
+                    _seeker = new Utils.ArraySeeker<float>(v, 1, true);
                     break;
+                default:
+                    _seeker = new Utils.ArraySeeker<float>(v, 0, false);
+                    break;
+            }
+
+            foreach (var line in _seeker)
+            {
+                var length = line.GetLength();
+                for (int i = 1; i < length; i++)
+                    line[i] = line[i - 1] + line[i];
+
+                var a = 1f;
+                if (division == Division.Max) a = line[length - 1];
+                else if (division == Division.Volume) a = length;
+                else if (division == Division.One) a = 1;
+
+                for (int i = 0; i < length; i++)
+                    line[i] = line[i] / a;
             }
         }
 
