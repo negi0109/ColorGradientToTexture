@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.IO;
 using System.Linq;
 using UnityEditor;
+using UnityEngine;
 
 namespace Negi0109.ColorGradientToTexture
 {
@@ -132,7 +132,8 @@ namespace Negi0109.ColorGradientToTexture
 
             // Debug.Log(string.Join( ", ", colorFilterClassNameArray));
 
-            axis.colorFilters = axis.colorFilters.Select(filter => {
+            axis.colorFilters = axis.colorFilters.Select(filter =>
+            {
                 var current = filter;
 
                 EditorGUILayout.BeginHorizontal();
@@ -140,10 +141,11 @@ namespace Negi0109.ColorGradientToTexture
                     var currentClassIndex = Array.IndexOf(colorFilterClassNameArray, filter.GetType().Name);
                     var nextClassIndex = EditorGUILayout.Popup(currentClassIndex, colorFilterClassNameArray);
 
-                    if (nextClassIndex != currentClassIndex) {
+                    if (nextClassIndex != currentClassIndex)
+                    {
                         updated |= true;
 
-                        var nextFilter = (ColorFilter) Activator.CreateInstance(colorFilterClassDictionary[colorFilterClassNameArray[nextClassIndex]]);
+                        var nextFilter = (ColorFilter)Activator.CreateInstance(colorFilterClassDictionary[colorFilterClassNameArray[nextClassIndex]]);
                         current = axis.colorFilters[axis.colorFilters.IndexOf(filter)] = nextFilter;
                     }
                 }

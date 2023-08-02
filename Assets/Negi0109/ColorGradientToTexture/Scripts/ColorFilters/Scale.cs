@@ -1,10 +1,11 @@
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
-namespace Negi0109.ColorGradientToTexture.Filters {
-
+namespace Negi0109.ColorGradientToTexture.Filters
+{
     [System.Serializable]
-    public class Scale : ColorFilter {
+    public class Scale : ColorFilter
+    {
         public float value = 1f;
 
         public override float Evaluate(float v) => v * value;
@@ -17,5 +18,4 @@ namespace Negi0109.ColorGradientToTexture.Filters {
             );
         }
     }
-
 }

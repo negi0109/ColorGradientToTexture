@@ -2,10 +2,11 @@ using System;
 using UnityEditor;
 using UnityEngine;
 
-namespace Negi0109.ColorGradientToTexture.Filters {
-
+namespace Negi0109.ColorGradientToTexture.Filters
+{
     [System.Serializable]
-    public class Noise : ColorFilter {
+    public class Noise : ColorFilter
+    {
 
         public float weight = 0.5f;
         public int seed = UnityEngine.Random.Range(0, int.MaxValue);
@@ -26,7 +27,8 @@ namespace Negi0109.ColorGradientToTexture.Filters {
             }
         }
 
-        public override bool Editor() {
+        public override bool Editor()
+        {
             EditorGUILayout.BeginVertical();
             EditorGUIUtility.labelWidth = 60f;
 
@@ -35,7 +37,7 @@ namespace Negi0109.ColorGradientToTexture.Filters {
                 () => { weight = EditorGUILayout.Slider("weight", weight, 0f, 1f); }
             );
             updated |= Watch(
-                () => (int) seed,
+                () => (int)seed,
                 () => { seed = EditorGUILayout.IntField("seed", seed); }
             );
 
@@ -45,5 +47,4 @@ namespace Negi0109.ColorGradientToTexture.Filters {
             return updated;
         }
     }
-
 }

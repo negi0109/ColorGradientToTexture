@@ -1,9 +1,11 @@
 using UnityEditor;
 
-namespace Negi0109.ColorGradientToTexture.Filters {
+namespace Negi0109.ColorGradientToTexture.Filters
+{
 
     [System.Serializable]
-    public class Add : ColorFilter {
+    public class Add : ColorFilter
+    {
         public float value;
         public override float Evaluate(float v) => v + value;
 

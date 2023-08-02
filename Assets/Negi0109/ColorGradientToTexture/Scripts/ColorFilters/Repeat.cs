@@ -1,10 +1,10 @@
 using UnityEngine;
-using UnityEditor;
 
-namespace Negi0109.ColorGradientToTexture.Filters {
-
+namespace Negi0109.ColorGradientToTexture.Filters
+{
     [System.Serializable]
-    public class Repeat : ColorFilter {
+    public class Repeat : ColorFilter
+    {
         public int count = 1;
 
         public override float Evaluate(float v) => v * count % 1f;

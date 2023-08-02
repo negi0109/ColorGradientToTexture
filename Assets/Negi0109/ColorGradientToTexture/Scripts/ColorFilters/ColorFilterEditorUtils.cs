@@ -1,14 +1,18 @@
+using System;
 using UnityEditor;
 using UnityEngine;
-using System;
 
-namespace Negi0109.ColorGradientToTexture {
-    public static class ColorFilterEditorUtils {
-        public static bool IntField(string name, ref int value, Func<int, int> func = null) {
+namespace Negi0109.ColorGradientToTexture
+{
+    public static class ColorFilterEditorUtils
+    {
+        public static bool IntField(string name, ref int value, Func<int, int> func = null)
+        {
             int v = value;
             var updated = Watch(
                 () => v,
-                () => {
+                () =>
+                {
                     v = EditorGUILayout.IntField("count", v);
                     if (func != null) v = func(v);
                 }

@@ -1,18 +1,21 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Negi0109.ColorGradientToTexture.Filters {
-
+namespace Negi0109.ColorGradientToTexture.Filters
+{
     [System.Serializable]
-    public class Cumulate : ColorFilter {
-        public enum Direction {
+    public class Cumulate : ColorFilter
+    {
+        public enum Direction
+        {
             [InspectorName("X 0 -> 1")] X01,
             [InspectorName("Y 0 -> 1")] Y01,
             [InspectorName("X 0 <- 1")] X10,
             [InspectorName("Y 0 <- 1")] Y10
         }
 
-        public enum Division {
+        public enum Division
+        {
             Max,
             Volume,
             One,
@@ -103,18 +106,20 @@ namespace Negi0109.ColorGradientToTexture.Filters {
             }
         }
 
-        public override bool Editor() {
+        public override bool Editor()
+        {
             EditorGUILayout.BeginVertical();
             EditorGUIUtility.labelWidth = 60f;
 
             var updated = Watch(
-                () => (int) direction,
-                () => { direction = (Direction) EditorGUILayout.EnumPopup(direction); }
+                () => (int)direction,
+                () => { direction = (Direction)EditorGUILayout.EnumPopup(direction); }
             );
             updated |= Watch(
-                () => (int) division,
-                () => {
-                    division = (Division) EditorGUILayout.Popup(
+                () => (int)division,
+                () =>
+                {
+                    division = (Division)EditorGUILayout.Popup(
                         (int)division,
                         new string[][] {
                             new string[]{ "Last (X1)", "Width", "One" },
@@ -132,5 +137,4 @@ namespace Negi0109.ColorGradientToTexture.Filters {
             return updated;
         }
     }
-
 }

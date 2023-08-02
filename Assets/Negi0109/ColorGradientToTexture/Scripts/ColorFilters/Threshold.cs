@@ -1,9 +1,10 @@
 using UnityEditor;
 
-namespace Negi0109.ColorGradientToTexture.Filters {
-
+namespace Negi0109.ColorGradientToTexture.Filters
+{
     [System.Serializable]
-    public class Threshold : ColorFilter {
+    public class Threshold : ColorFilter
+    {
         public float value;
         public override float Evaluate(float v) => (v >= value ? 1 : 0);
 
@@ -15,5 +16,4 @@ namespace Negi0109.ColorGradientToTexture.Filters {
             );
         }
     }
-
 }

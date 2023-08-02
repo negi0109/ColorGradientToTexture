@@ -1,9 +1,11 @@
 using System;
 using UnityEditor;
 
-namespace Negi0109.ColorGradientToTexture {
+namespace Negi0109.ColorGradientToTexture
+{
     [System.Serializable]
-    public abstract class ColorFilter {
+    public abstract class ColorFilter
+    {
         public static ColorFilter DefaultFilter { get => new Filters.Scale(); }
 
         public virtual float Evaluate(float v) => v;
