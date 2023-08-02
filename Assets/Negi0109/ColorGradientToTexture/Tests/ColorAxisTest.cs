@@ -20,7 +20,7 @@ namespace Negi0109.ColorGradientToTexture.Tests
             axis.yCurve = AnimationCurve.Linear(0, yCurveValue, 1, yCurveValue);
 
             axis.yWeight = yWeight;
-            Assert.That(axis.Evaluate(0, 0), Is.EqualTo(excepted));
+            Assert.That(axis.Evaluate(0f, 0f), Is.EqualTo(excepted));
         }
 
         [TestCase(1, xCurveValue, TestName = "xの値のみ反映")]
@@ -32,7 +32,7 @@ namespace Negi0109.ColorGradientToTexture.Tests
             axis.yCurve = AnimationCurve.Linear(0, yCurveValue, 1, yCurveValue);
 
             axis.yWeight = 1;
-            Assert.That(axis.Evaluate(0, 1), Is.EqualTo(excepted));
+            Assert.That(axis.Evaluate(0f, 1f), Is.EqualTo(excepted));
         }
     }
 }
