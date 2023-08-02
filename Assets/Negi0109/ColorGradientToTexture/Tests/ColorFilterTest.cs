@@ -53,5 +53,14 @@ namespace Negi0109.ColorGradientToTexture.Tests
 
             Assert.That(filter.Evaluate(v), Is.EqualTo(excepted));
         }
+
+        [TestCase(1f, 0f)]
+        [TestCase(0.2f, 0.8f)]
+        public void OneMinus(float v, float excepted)
+        {
+            var filter = new Filters.OneMinus();
+
+            Assert.That(filter.Evaluate(v), Is.EqualTo(excepted));
+        }
     }
 }
