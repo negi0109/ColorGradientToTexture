@@ -24,7 +24,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
         public Direction direction;
         public Division division;
 
-        public override void Evaluate(ref float[,] v)
+        public override void EvaluateAll(ref float[,] v)
         {
             var width = v.GetLength(0);
             var height = v.GetLength(1);

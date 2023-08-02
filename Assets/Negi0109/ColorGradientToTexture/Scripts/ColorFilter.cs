@@ -9,7 +9,7 @@ namespace Negi0109.ColorGradientToTexture
         public static ColorFilter DefaultFilter { get => new Filters.Scale(); }
 
         public virtual float Evaluate(float v) => v;
-        public virtual void Evaluate(ref float[,] v)
+        public virtual void EvaluateAll(ref float[,] v)
         {
             var width = v.GetLength(0);
             var height = v.GetLength(1);
@@ -23,7 +23,7 @@ namespace Negi0109.ColorGradientToTexture
             }
         }
 
-        public abstract bool Editor();
+        public virtual bool Editor() => false;
 
         public static bool Watch<T>(Func<T> value, Action action)
             where T : IEquatable<T>

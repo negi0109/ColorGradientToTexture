@@ -11,7 +11,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
         public float weight = 0.5f;
         public int seed = UnityEngine.Random.Range(0, int.MaxValue);
 
-        public override void Evaluate(ref float[,] v)
+        public override void EvaluateAll(ref float[,] v)
         {
             var width = v.GetLength(0);
             var height = v.GetLength(1);
