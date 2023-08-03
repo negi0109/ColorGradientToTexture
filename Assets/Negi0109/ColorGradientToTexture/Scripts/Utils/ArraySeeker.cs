@@ -45,7 +45,13 @@ namespace Negi0109.ColorGradientToTexture.Utils
             else return _body.GetLength(0);
         }
 
-        public ArraySeekerLine<T> GetLine(int index) => new ArraySeekerLine<T>(_body, _dimension, index, _backward);
+        public int GetLineLength()
+        {
+            if (_dimension == 0) return _body.GetLength(0);
+            else return _body.GetLength(1);
+        }
+
+        public ArraySeekerLine<T> GetLine(int index) => new ArraySeekerLine<T>(this, index);
         public ArraySeekerLineEnumerable<T> GetLines() => new ArraySeekerLineEnumerable<T>(new ArraySeekerLineEnumerator<T>(this));
 
         public ArraySeeker(T[,] body, int dimension, bool backward)
@@ -58,20 +64,16 @@ namespace Negi0109.ColorGradientToTexture.Utils
 
     public class ArraySeekerLineEnumerable<T> : IEnumerable<ArraySeekerLine<T>>
     {
-        IEnumerator<ArraySeekerLine<T>> _enumerator;
+        private readonly IEnumerator<ArraySeekerLine<T>> _enumerator;
+
         public ArraySeekerLineEnumerable(IEnumerator<ArraySeekerLine<T>> enumerator)
         {
             _enumerator = enumerator;
         }
-        public IEnumerator<ArraySeekerLine<T>> GetEnumerator()
-        {
-            return _enumerator;
-        }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        public IEnumerator<ArraySeekerLine<T>> GetEnumerator() => _enumerator;
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 
     public class ArraySeekerLineEnumerator<T> : IEnumerator<ArraySeekerLine<T>>
@@ -87,10 +89,8 @@ namespace Negi0109.ColorGradientToTexture.Utils
             _currentIndex = -1;
         }
 
-        public ArraySeekerLine<T> Current
-        {
-            get => _seeker.GetLine(_currentIndex);
-        }
+        public ArraySeekerLine<T> Current { get => _seeker.GetLine(_currentIndex); }
+
         object IEnumerator.Current => Current;
 
         public bool MoveNext()
@@ -107,60 +107,29 @@ namespace Negi0109.ColorGradientToTexture.Utils
             _currentIndex = -1;
         }
 
-        public void Dispose()
-        {
-        }
+        public void Dispose() { }
     }
 
     public class ArraySeekerLine<T>
     {
-        private readonly T[,] _body;
-        private readonly int _dimension;
+        private readonly ArraySeeker<T> _seeker;
         private readonly int _index;
-        private readonly bool _backward;
 
         public T this[int i]
         {
-            set
-            {
-                if (_backward)
-                {
-                    if (_dimension == 0) _body[_body.GetLength(0) - i - 1, _index] = value;
-                    else _body[_index, _body.GetLength(1) - i - 1] = value;
-                }
-                else
-                {
-                    if (_dimension == 0) _body[i, _index] = value;
-                    else _body[_index, i] = value;
-                }
-            }
-            get
-            {
-                if (_backward)
-                {
-                    if (_dimension == 0) return _body[_body.GetLength(0) - i - 1, _index];
-                    else return _body[_index, _body.GetLength(1) - i - 1];
-                }
-                else
-                {
-                    if (_dimension == 0) return _body[i, _index];
-                    else return _body[_index, i];
-                }
-            }
+            set { _seeker[i, _index] = value; }
+            get => _seeker[i, _index];
         }
 
-        internal ArraySeekerLine(T[,] body, int dimension, int index, bool backward)
+        internal ArraySeekerLine(ArraySeeker<T> seeker, int index)
         {
-            _body = body;
-            _dimension = dimension;
+            _seeker = seeker;
             _index = index;
-            _backward = backward;
         }
 
         public int GetLength()
         {
-            if (_dimension == 0) return _body.GetLength(0);
-            return _body.GetLength(1);
+            return _seeker.GetLineLength();
         }
     }
 }
