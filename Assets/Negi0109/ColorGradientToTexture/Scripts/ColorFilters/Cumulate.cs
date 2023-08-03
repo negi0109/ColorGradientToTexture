@@ -47,7 +47,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
                     break;
             }
 
-            foreach (var line in _seeker)
+            foreach (var line in _seeker.GetLines())
             {
                 var length = line.GetLength();
                 for (int i = 1; i < length; i++)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Negi0109.ColorGradientToTexture.Utils
 {
-    public class ArraySeeker<T> : IEnumerable<OneLine<T>>
+    public class ArraySeeker<T>
     {
         private readonly T[,] _body;
         private readonly int _dimension;
@@ -45,7 +45,8 @@ namespace Negi0109.ColorGradientToTexture.Utils
             else return _body.GetLength(0);
         }
 
-        public OneLine<T> GetLine(int index) => new OneLine<T>(_body, _dimension, index, _backward);
+        public ArraySeekerLine<T> GetLine(int index) => new ArraySeekerLine<T>(_body, _dimension, index, _backward);
+        public ArraySeekerLineEnumerable<T> GetLines() => new ArraySeekerLineEnumerable<T>(new ArraySeekerLineEnumerator<T>(this));
 
         public ArraySeeker(T[,] body, int dimension, bool backward)
         {
@@ -53,10 +54,18 @@ namespace Negi0109.ColorGradientToTexture.Utils
             _dimension = dimension;
             _backward = backward;
         }
+    }
 
-        public IEnumerator<OneLine<T>> GetEnumerator()
+    public class ArraySeekerLineEnumerable<T> : IEnumerable<ArraySeekerLine<T>>
+    {
+        IEnumerator<ArraySeekerLine<T>> _enumerator;
+        public ArraySeekerLineEnumerable(IEnumerator<ArraySeekerLine<T>> enumerator)
         {
-            return new OneLineEnumerator<T>(this);
+            _enumerator = enumerator;
+        }
+        public IEnumerator<ArraySeekerLine<T>> GetEnumerator()
+        {
+            return _enumerator;
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -65,20 +74,20 @@ namespace Negi0109.ColorGradientToTexture.Utils
         }
     }
 
-    public class OneLineEnumerator<T> : IEnumerator<OneLine<T>>
+    public class ArraySeekerLineEnumerator<T> : IEnumerator<ArraySeekerLine<T>>
     {
         private ArraySeeker<T> _seeker;
         private int _currentIndex;
         private int _length;
 
-        public OneLineEnumerator(ArraySeeker<T> seeker)
+        public ArraySeekerLineEnumerator(ArraySeeker<T> seeker)
         {
             _seeker = seeker;
             _length = seeker.GetLineCount();
             _currentIndex = -1;
         }
 
-        public OneLine<T> Current
+        public ArraySeekerLine<T> Current
         {
             get => _seeker.GetLine(_currentIndex);
         }
@@ -103,7 +112,7 @@ namespace Negi0109.ColorGradientToTexture.Utils
         }
     }
 
-    public class OneLine<T>
+    public class ArraySeekerLine<T>
     {
         private readonly T[,] _body;
         private readonly int _dimension;
@@ -140,7 +149,7 @@ namespace Negi0109.ColorGradientToTexture.Utils
             }
         }
 
-        internal OneLine(T[,] body, int dimension, int index, bool backward)
+        internal ArraySeekerLine(T[,] body, int dimension, int index, bool backward)
         {
             _body = body;
             _dimension = dimension;
