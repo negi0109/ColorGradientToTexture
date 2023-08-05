@@ -17,7 +17,7 @@ namespace Negi0109.ColorGradientToTexture.Utils
             new ArraySegment2D<T>(body).GetAll().SetValues(func);
         }
 
-        public static ArraySegment2DBase<T> GetSeeker<T>(T[,] body, int dimension = 0, bool backward = false)
+        public static ArraySegment2DBase<T> GetSegment<T>(T[,] body, int dimension = 0, bool backward = false)
         {
             return new ArraySegment2D<T>(body).Dimension(dimension).Backward(backward);
         }
@@ -55,18 +55,18 @@ namespace Negi0109.ColorGradientToTexture.Utils
 
         public class LineEnumerator : IEnumerator<OneLine>
         {
-            private ArraySegment2DBase<T> _seeker;
+            private ArraySegment2DBase<T> _segment;
             private int _currentIndex;
             private int _length;
 
-            public LineEnumerator(ArraySegment2DBase<T> seeker)
+            public LineEnumerator(ArraySegment2DBase<T> segment)
             {
-                _seeker = seeker;
-                _length = seeker.GetLineCount();
+                _segment = segment;
+                _length = segment.GetLineCount();
                 _currentIndex = -1;
             }
 
-            public OneLine Current { get => _seeker.GetLine(_currentIndex); }
+            public OneLine Current { get => _segment.GetLine(_currentIndex); }
 
             object IEnumerator.Current => Current;
 
@@ -105,44 +105,44 @@ namespace Negi0109.ColorGradientToTexture.Utils
 
         public class OneLine : Line
         {
-            private readonly ArraySegment2DBase<T> _seeker;
+            private readonly ArraySegment2DBase<T> _segment;
             private readonly int _index;
 
             public override T this[int i]
             {
-                set { _seeker[i, _index] = value; }
-                get => _seeker[i, _index];
+                set { _segment[i, _index] = value; }
+                get => _segment[i, _index];
             }
 
-            internal OneLine(ArraySegment2DBase<T> seeker, int index)
+            internal OneLine(ArraySegment2DBase<T> segment, int index)
             {
-                _seeker = seeker;
+                _segment = segment;
                 _index = index;
             }
 
             public override int GetLength()
             {
-                return _seeker.GetLineLength();
+                return _segment.GetLineLength();
             }
         }
 
         public class AllLine : Line
         {
-            private readonly ArraySegment2DBase<T> _seeker;
+            private readonly ArraySegment2DBase<T> _segment;
             public override T this[int i]
             {
-                set { _seeker[i % _seeker.GetLineLength(), i / _seeker.GetLineLength()] = value; }
-                get => _seeker[i % _seeker.GetLineLength(), i / _seeker.GetLineLength()];
+                set { _segment[i % _segment.GetLineLength(), i / _segment.GetLineLength()] = value; }
+                get => _segment[i % _segment.GetLineLength(), i / _segment.GetLineLength()];
             }
 
-            internal AllLine(ArraySegment2DBase<T> seeker)
+            internal AllLine(ArraySegment2DBase<T> segment)
             {
-                _seeker = seeker;
+                _segment = segment;
             }
 
             public override int GetLength()
             {
-                return _seeker.GetLineLength() * _seeker.GetLineCount();
+                return _segment.GetLineLength() * _segment.GetLineCount();
             }
         }
     }
@@ -163,30 +163,30 @@ namespace Negi0109.ColorGradientToTexture.Utils
 
         public sealed class DimensionReverse : ArraySegment2DBase<T>
         {
-            private readonly ArraySegment2DBase<T> _seeker;
+            private readonly ArraySegment2DBase<T> _segment;
 
             public override T this[int i0, int i1]
             {
-                set => _seeker[i1, i0] = value;
-                get => _seeker[i1, i0];
+                set => _segment[i1, i0] = value;
+                get => _segment[i1, i0];
             }
 
-            public DimensionReverse(ArraySegment2DBase<T> seeker) { _seeker = seeker; }
-            public override int GetLength(int dimension) => _seeker.GetLength(1 - dimension);
+            public DimensionReverse(ArraySegment2DBase<T> segment) { _segment = segment; }
+            public override int GetLength(int dimension) => _segment.GetLength(1 - dimension);
         }
 
         public sealed class SeekBackward : ArraySegment2DBase<T>
         {
-            private readonly ArraySegment2DBase<T> _seeker;
+            private readonly ArraySegment2DBase<T> _segment;
 
             public override T this[int i0, int i1]
             {
-                set => _seeker[_seeker.GetLength(0) - i0 - 1, _seeker.GetLength(1) - i1 - 1] = value;
-                get => _seeker[_seeker.GetLength(0) - i0 - 1, _seeker.GetLength(1) - i1 - 1];
+                set => _segment[_segment.GetLength(0) - i0 - 1, _segment.GetLength(1) - i1 - 1] = value;
+                get => _segment[_segment.GetLength(0) - i0 - 1, _segment.GetLength(1) - i1 - 1];
             }
 
-            public SeekBackward(ArraySegment2DBase<T> seeker) { _seeker = seeker; }
-            public override int GetLength(int dimension) => _seeker.GetLength(dimension);
+            public SeekBackward(ArraySegment2DBase<T> segment) { _segment = segment; }
+            public override int GetLength(int dimension) => _segment.GetLength(dimension);
         }
     }
 }

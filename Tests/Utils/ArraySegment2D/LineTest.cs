@@ -36,11 +36,11 @@ namespace Negi0109.ColorGradientToTexture.Utils.Tests
             {
                 int s0 = 2;
                 int s1 = 3;
-                var seeker = new ArraySegment2DStub(s0, s1);
+                var segment = new ArraySegment2DStub(s0, s1);
 
                 for (int i1 = 0; i1 < s1; i1++)
                 {
-                    var line = seeker.GetLine(i1);
+                    var line = segment.GetLine(i1);
                     for (int i0 = 0; i0 < line.Length; i0++)
                         Assert.That(line[i0], Is.EqualTo((i0, i1)));
                 }

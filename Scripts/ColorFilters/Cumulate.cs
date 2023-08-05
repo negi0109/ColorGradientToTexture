@@ -26,12 +26,12 @@ namespace Negi0109.ColorGradientToTexture.Filters
 
         public override void EvaluateAll(ref float[,] array)
         {
-            Utils.ArraySegment2DBase<float> _seeker = new Utils.ArraySegment2D<float>(array);
+            Utils.ArraySegment2DBase<float> _segment = new Utils.ArraySegment2D<float>(array);
 
-            if (direction == Direction.Y01 || direction == Direction.Y10) _seeker = _seeker.Dimension(1);
-            if (direction == Direction.X10 || direction == Direction.Y10) _seeker = _seeker.Backward(true);
+            if (direction == Direction.Y01 || direction == Direction.Y10) _segment = _segment.Dimension(1);
+            if (direction == Direction.X10 || direction == Direction.Y10) _segment = _segment.Backward(true);
 
-            foreach (var line in _seeker.GetLines())
+            foreach (var line in _segment.GetLines())
             {
                 var last = 0f;
                 line.SetValues(v => last = last + v);
