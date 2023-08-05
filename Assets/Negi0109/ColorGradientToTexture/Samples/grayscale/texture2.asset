@@ -298,6 +298,8 @@ MonoBehaviour:
   texture: {fileID: 999557994367418655}
   sprite: {fileID: -3723756951342590431}
   shareColorMode: 0
+  references:
+    version: 1
 --- !u!28 &999557994367418655
 Texture2D:
   m_ObjectHideFlags: 0
