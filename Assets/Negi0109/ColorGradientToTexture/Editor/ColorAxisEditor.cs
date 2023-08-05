@@ -75,103 +75,136 @@ namespace Negi0109.ColorGradientToTexture
             GUILayout.Box(coordinatePreviewTex);
 
             EditorGUILayout.BeginVertical();
-            if (GUILayout.Button("Add Coordinate"))
+
+
+            // CoordinateFilter
             {
-                axis.coordinateFilters.Add(new CoordinateFilter());
-                coordinateUpdated = true;
-            }
-
-            var addCoordinateFilterIndex = -1;
-            var removeCoordinateFilters = new List<CoordinateFilter>();
-            foreach (var filter in axis.coordinateFilters)
-            {
-                EditorGUILayout.BeginHorizontal();
-                coordinateUpdated |= CoordinateFilterEditor.Editor(filter);
-                if (GUILayout.Button("x", new GUILayoutOption[] { GUILayout.Width(20) }))
-                    removeCoordinateFilters.Add(filter);
-                if (GUILayout.Button("+", new GUILayoutOption[] { GUILayout.Width(20) }))
-                    addCoordinateFilterIndex = axis.coordinateFilters.IndexOf(filter);
-                EditorGUILayout.EndHorizontal();
-            }
-
-            foreach (var removeFilter in removeCoordinateFilters)
-            {
-                axis.coordinateFilters.Remove(removeFilter);
-                coordinateUpdated = true;
-            }
-
-            if (addCoordinateFilterIndex >= 0)
-            {
-                axis.coordinateFilters.Insert(addCoordinateFilterIndex, new CoordinateFilter());
-                coordinateUpdated = true;
-            }
-
-            updated |= coordinateUpdated;
-
-            EditorGUILayout.EndVertical();
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.EndVertical();
-            EditorGUILayout.EndHorizontal();
-
-            if (GUILayout.Button("Add Filter"))
-            {
-                axis.colorFilters.Add(ColorFilter.DefaultFilter);
-                updated = true;
-            }
-
-            var addColorFilterIndex = -1;
-            var removeColorFilters = new List<ColorFilter>();
-
-            var colorFilterClasses = System.Reflection.Assembly.GetAssembly(typeof(ColorFilter))
-                .GetTypes()
-                .Where(x => x.IsSubclassOf(typeof(ColorFilter)) && !x.IsAbstract);
-
-            var colorFilterClassDictionary = colorFilterClasses.ToDictionary(v => v.Name);
-            var colorFilterClassNameArray = colorFilterClasses.Select(v => v.Name).ToArray();
-
-            // Debug.Log(string.Join( ", ", colorFilterClassNameArray));
-
-            axis.colorFilters = axis.colorFilters.Select(filter =>
-            {
-                var current = filter;
-
-                EditorGUILayout.BeginHorizontal();
+                if (GUILayout.Button("Add Coordinate"))
                 {
-                    var currentClassIndex = Array.IndexOf(colorFilterClassNameArray, filter.GetType().Name);
-                    var nextClassIndex = EditorGUILayout.Popup(currentClassIndex, colorFilterClassNameArray);
-
-                    if (nextClassIndex != currentClassIndex)
-                    {
-                        updated |= true;
-
-                        var nextFilter = (ColorFilter)Activator.CreateInstance(colorFilterClassDictionary[colorFilterClassNameArray[nextClassIndex]]);
-                        current = axis.colorFilters[axis.colorFilters.IndexOf(filter)] = nextFilter;
-                    }
+                    axis.coordinateFilters.Add(CoordinateFilter.DefaultFilter);
+                    coordinateUpdated = true;
                 }
 
-                updated |= current.Editor();
+                var addCoordinateFilterIndex = -1;
+                var removeCoordinateFilters = new List<CoordinateFilter>();
 
-                // filter
-                if (GUILayout.Button("x", new GUILayoutOption[] { GUILayout.Width(20) }))
-                    removeColorFilters.Add(current);
-                if (GUILayout.Button("+", new GUILayoutOption[] { GUILayout.Width(20) }))
-                    addColorFilterIndex = axis.colorFilters.IndexOf(current);
-                EditorGUILayout.EndHorizontal();
+                var coordinateFilterClasses = System.Reflection.Assembly.GetAssembly(typeof(CoordinateFilter))
+                    .GetTypes()
+                    .Where(x => x.IsSubclassOf(typeof(CoordinateFilter)) && !x.IsAbstract);
 
-                return current;
-            }).ToList();
+                var coordinateFilterClassDictionary = coordinateFilterClasses.ToDictionary(v => v.Name);
+                var coordinateFilterClassNameArray = coordinateFilterClasses.Select(v => v.Name).ToArray();
 
-            foreach (var removeFilter in removeColorFilters)
-            {
-                axis.colorFilters.Remove(removeFilter);
-                updated = true;
+                axis.coordinateFilters = axis.coordinateFilters.Select(filter =>
+                    {
+                        EditorGUILayout.BeginHorizontal();
+                        var current = filter;
+                        {
+                            var currentClassIndex = Array.IndexOf(coordinateFilterClassNameArray, filter.GetType().Name);
+                            var nextClassIndex = EditorGUILayout.Popup(currentClassIndex, coordinateFilterClassNameArray);
+
+                            if (nextClassIndex != currentClassIndex)
+                            {
+                                coordinateUpdated |= true;
+
+                                var nextFilter = (CoordinateFilter)Activator.CreateInstance(coordinateFilterClassDictionary[coordinateFilterClassNameArray[nextClassIndex]]);
+                                current = axis.coordinateFilters[axis.coordinateFilters.IndexOf(filter)] = nextFilter;
+                            }
+                        }
+
+                        coordinateUpdated |= current.Editor();
+                        if (GUILayout.Button("x", new GUILayoutOption[] { GUILayout.Width(20) }))
+                            removeCoordinateFilters.Add(filter);
+                        if (GUILayout.Button("+", new GUILayoutOption[] { GUILayout.Width(20) }))
+                            addCoordinateFilterIndex = axis.coordinateFilters.IndexOf(filter);
+                        EditorGUILayout.EndHorizontal();
+
+                        return current;
+                    }
+                ).ToList();
+
+                foreach (var removeFilter in removeCoordinateFilters)
+                {
+                    axis.coordinateFilters.Remove(removeFilter);
+                    coordinateUpdated = true;
+                }
+
+                if (addCoordinateFilterIndex >= 0)
+                {
+                    axis.coordinateFilters.Insert(addCoordinateFilterIndex, CoordinateFilter.DefaultFilter);
+                    coordinateUpdated = true;
+                }
+
+                updated |= coordinateUpdated;
             }
 
-            if (addColorFilterIndex >= 0)
+            EditorGUILayout.EndVertical();
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.EndVertical();
+            EditorGUILayout.EndHorizontal();
+
+            // ColorFilter
             {
-                axis.colorFilters.Insert(addColorFilterIndex, ColorFilter.DefaultFilter);
-                updated = true;
+                if (GUILayout.Button("Add Filter"))
+                {
+                    axis.colorFilters.Add(ColorFilter.DefaultFilter);
+                    updated = true;
+                }
+
+                var addColorFilterIndex = -1;
+                var removeColorFilters = new List<ColorFilter>();
+
+                var colorFilterClasses = System.Reflection.Assembly.GetAssembly(typeof(ColorFilter))
+                    .GetTypes()
+                    .Where(x => x.IsSubclassOf(typeof(ColorFilter)) && !x.IsAbstract);
+
+                var colorFilterClassDictionary = colorFilterClasses.ToDictionary(v => v.Name);
+                var colorFilterClassNameArray = colorFilterClasses.Select(v => v.Name).ToArray();
+
+                // Debug.Log(string.Join( ", ", colorFilterClassNameArray));
+
+                axis.colorFilters = axis.colorFilters.Select(filter =>
+                {
+                    var current = filter;
+
+                    EditorGUILayout.BeginHorizontal();
+                    {
+                        var currentClassIndex = Array.IndexOf(colorFilterClassNameArray, filter.GetType().Name);
+                        var nextClassIndex = EditorGUILayout.Popup(currentClassIndex, colorFilterClassNameArray);
+
+                        if (nextClassIndex != currentClassIndex)
+                        {
+                            updated |= true;
+
+                            var nextFilter = (ColorFilter)Activator.CreateInstance(colorFilterClassDictionary[colorFilterClassNameArray[nextClassIndex]]);
+                            current = axis.colorFilters[axis.colorFilters.IndexOf(filter)] = nextFilter;
+                        }
+                    }
+
+                    updated |= current.Editor();
+
+                    // filter
+                    if (GUILayout.Button("x", new GUILayoutOption[] { GUILayout.Width(20) }))
+                        removeColorFilters.Add(current);
+                    if (GUILayout.Button("+", new GUILayoutOption[] { GUILayout.Width(20) }))
+                        addColorFilterIndex = axis.colorFilters.IndexOf(current);
+                    EditorGUILayout.EndHorizontal();
+
+                    return current;
+                }).ToList();
+
+                foreach (var removeFilter in removeColorFilters)
+                {
+                    axis.colorFilters.Remove(removeFilter);
+                    updated = true;
+                }
+
+                if (addColorFilterIndex >= 0)
+                {
+                    axis.colorFilters.Insert(addColorFilterIndex, ColorFilter.DefaultFilter);
+                    updated = true;
+                }
             }
 
             EditorGUILayout.EndVertical();
