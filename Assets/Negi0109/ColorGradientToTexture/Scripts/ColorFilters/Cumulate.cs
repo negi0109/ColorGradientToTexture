@@ -26,26 +26,10 @@ namespace Negi0109.ColorGradientToTexture.Filters
 
         public override void EvaluateAll(ref float[,] array)
         {
-            Utils.ArraySeeker<float> _seeker;
+            Utils.ArraySeekerBase<float> _seeker = new Utils.ArraySeeker<float>(array);
 
-            switch (direction)
-            {
-                case Direction.X01:
-                    _seeker = new Utils.ArraySeeker<float>(array, 0, false);
-                    break;
-                case Direction.Y01:
-                    _seeker = new Utils.ArraySeeker<float>(array, 1, false);
-                    break;
-                case Direction.X10:
-                    _seeker = new Utils.ArraySeeker<float>(array, 0, true);
-                    break;
-                case Direction.Y10:
-                    _seeker = new Utils.ArraySeeker<float>(array, 1, true);
-                    break;
-                default:
-                    _seeker = new Utils.ArraySeeker<float>(array, 0, false);
-                    break;
-            }
+            if (direction == Direction.Y01 || direction == Direction.Y10) _seeker = _seeker.Dimension(1);
+            if (direction == Direction.X10 || direction == Direction.Y10) _seeker = _seeker.Backward(true);
 
             foreach (var line in _seeker.GetLines())
             {

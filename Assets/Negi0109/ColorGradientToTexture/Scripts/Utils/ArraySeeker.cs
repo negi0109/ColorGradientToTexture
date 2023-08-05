@@ -4,9 +4,10 @@ using System.Collections.Generic;
 
 namespace Negi0109.ColorGradientToTexture.Utils
 {
+
     public static class ArraySeekerUtils
     {
-        public static ArraySeeker<T>.AllLine GetAll<T>(T[,] body)
+        public static ArraySeekerBase<T>.AllLine GetAll<T>(T[,] body)
         {
             return new ArraySeeker<T>(body).GetAll();
         }
@@ -15,66 +16,28 @@ namespace Negi0109.ColorGradientToTexture.Utils
         {
             new ArraySeeker<T>(body).GetAll().SetValues(func);
         }
+
+        public static ArraySeekerBase<T> GetSeeker<T>(T[,] body, int dimension = 0, bool backward = false)
+        {
+            return new ArraySeeker<T>(body).Dimension(dimension).Backward(backward);
+        }
     }
 
-    public class ArraySeeker<T>
+    public abstract class ArraySeekerBase<T>
     {
-        private readonly T[,] _body;
-        private readonly int _dimension;
-        private bool _backward = false;
-
-        public T this[int i0, int i1]
-        {
-            set
-            {
-                if (_backward)
-                {
-                    if (_dimension == 0) _body[_body.GetLength(0) - i0 - 1, i1] = value;
-                    else _body[i1, _body.GetLength(1) - i0 - 1] = value;
-                }
-                else
-                {
-                    if (_dimension == 0) _body[i0, i1] = value;
-                    else _body[i1, i0] = value;
-                }
-            }
-            get
-            {
-                if (_backward)
-                {
-                    if (_dimension == 0) return _body[_body.GetLength(0) - i0 - 1, i1];
-                    else return _body[i1, _body.GetLength(1) - i0 - 1];
-                }
-                else
-                {
-                    if (_dimension == 0) return _body[i0, i1];
-                    else return _body[i1, i0];
-                }
-            }
-        }
-
-        public int GetLineCount()
-        {
-            if (_dimension == 0) return _body.GetLength(1);
-            else return _body.GetLength(0);
-        }
-
-        public int GetLineLength()
-        {
-            if (_dimension == 0) return _body.GetLength(0);
-            else return _body.GetLength(1);
-        }
+        public abstract T this[int i0, int i1] { get; set; }
 
         public OneLine GetLine(int index) => new OneLine(this, index);
         public AllLine GetAll() => new AllLine(this);
         public LineEnumerable GetLines() => new LineEnumerable(new LineEnumerator(this));
 
-        public ArraySeeker(T[,] body, int dimension = 0, bool backward = false)
-        {
-            _body = body;
-            _dimension = dimension;
-            _backward = backward;
-        }
+        public int GetLineCount() => GetLength(1);
+        public int GetLineLength() => GetLength(0);
+
+        public abstract int GetLength(int dimension);
+
+        public ArraySeekerBase<T> Dimension(int dimension) => dimension == 0 ? this : new ArraySeeker<T>.DimensionReverse(this);
+        public ArraySeekerBase<T> Backward(bool backward = true) => backward ? new ArraySeeker<T>.SeekBackward(this) : this;
 
         public class LineEnumerable : IEnumerable<OneLine>
         {
@@ -92,11 +55,11 @@ namespace Negi0109.ColorGradientToTexture.Utils
 
         public class LineEnumerator : IEnumerator<OneLine>
         {
-            private ArraySeeker<T> _seeker;
+            private ArraySeekerBase<T> _seeker;
             private int _currentIndex;
             private int _length;
 
-            public LineEnumerator(ArraySeeker<T> seeker)
+            public LineEnumerator(ArraySeekerBase<T> seeker)
             {
                 _seeker = seeker;
                 _length = seeker.GetLineCount();
@@ -142,7 +105,7 @@ namespace Negi0109.ColorGradientToTexture.Utils
 
         public class OneLine : Line
         {
-            private readonly ArraySeeker<T> _seeker;
+            private readonly ArraySeekerBase<T> _seeker;
             private readonly int _index;
 
             public override T this[int i]
@@ -151,7 +114,7 @@ namespace Negi0109.ColorGradientToTexture.Utils
                 get => _seeker[i, _index];
             }
 
-            internal OneLine(ArraySeeker<T> seeker, int index)
+            internal OneLine(ArraySeekerBase<T> seeker, int index)
             {
                 _seeker = seeker;
                 _index = index;
@@ -165,14 +128,14 @@ namespace Negi0109.ColorGradientToTexture.Utils
 
         public class AllLine : Line
         {
-            private readonly ArraySeeker<T> _seeker;
+            private readonly ArraySeekerBase<T> _seeker;
             public override T this[int i]
             {
                 set { _seeker[i % _seeker.GetLineLength(), i / _seeker.GetLineLength()] = value; }
                 get => _seeker[i % _seeker.GetLineLength(), i / _seeker.GetLineLength()];
             }
 
-            internal AllLine(ArraySeeker<T> seeker)
+            internal AllLine(ArraySeekerBase<T> seeker)
             {
                 _seeker = seeker;
             }
@@ -181,6 +144,49 @@ namespace Negi0109.ColorGradientToTexture.Utils
             {
                 return _seeker.GetLineLength() * _seeker.GetLineCount();
             }
+        }
+    }
+
+    public sealed class ArraySeeker<T> : ArraySeekerBase<T>
+    {
+        private readonly T[,] _body;
+
+        public override T this[int i0, int i1]
+        {
+            set => _body[i0, i1] = value;
+            get => _body[i0, i1];
+        }
+
+        public override int GetLength(int dimension) => _body.GetLength(dimension);
+
+        public ArraySeeker(T[,] body) { _body = body; }
+
+        public sealed class DimensionReverse : ArraySeekerBase<T>
+        {
+            private readonly ArraySeekerBase<T> _seeker;
+
+            public override T this[int i0, int i1]
+            {
+                set => _seeker[i1, i0] = value;
+                get => _seeker[i1, i0];
+            }
+
+            public DimensionReverse(ArraySeekerBase<T> seeker) { _seeker = seeker; }
+            public override int GetLength(int dimension) => _seeker.GetLength(1 - dimension);
+        }
+
+        public sealed class SeekBackward : ArraySeekerBase<T>
+        {
+            private readonly ArraySeekerBase<T> _seeker;
+
+            public override T this[int i0, int i1]
+            {
+                set => _seeker[_seeker.GetLength(0) - i0 - 1, _seeker.GetLength(1) - i1 - 1] = value;
+                get => _seeker[_seeker.GetLength(0) - i0 - 1, _seeker.GetLength(1) - i1 - 1];
+            }
+
+            public SeekBackward(ArraySeekerBase<T> seeker) { _seeker = seeker; }
+            public override int GetLength(int dimension) => _seeker.GetLength(dimension);
         }
     }
 }
