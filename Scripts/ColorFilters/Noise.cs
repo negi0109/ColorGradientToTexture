@@ -15,7 +15,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
         {
             var r = new System.Random(seed);
 
-            Utils.ArraySeekerUtils.SetValues(array, v => v + weight * r.Next() / int.MaxValue);
+            Utils.ArraySegment2DUtils.SetValues(array, v => v + weight * r.Next() / int.MaxValue);
         }
 
         public override bool Editor()
