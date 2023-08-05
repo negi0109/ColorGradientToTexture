@@ -24,42 +24,37 @@ namespace Negi0109.ColorGradientToTexture.Filters
         public Direction direction;
         public Division division;
 
-        public override void EvaluateAll(ref float[,] v)
+        public override void EvaluateAll(ref float[,] array)
         {
             Utils.ArraySeeker<float> _seeker;
 
             switch (direction)
             {
                 case Direction.X01:
-                    _seeker = new Utils.ArraySeeker<float>(v, 0, false);
+                    _seeker = new Utils.ArraySeeker<float>(array, 0, false);
                     break;
                 case Direction.Y01:
-                    _seeker = new Utils.ArraySeeker<float>(v, 1, false);
+                    _seeker = new Utils.ArraySeeker<float>(array, 1, false);
                     break;
                 case Direction.X10:
-                    _seeker = new Utils.ArraySeeker<float>(v, 0, true);
+                    _seeker = new Utils.ArraySeeker<float>(array, 0, true);
                     break;
                 case Direction.Y10:
-                    _seeker = new Utils.ArraySeeker<float>(v, 1, true);
+                    _seeker = new Utils.ArraySeeker<float>(array, 1, true);
                     break;
                 default:
-                    _seeker = new Utils.ArraySeeker<float>(v, 0, false);
+                    _seeker = new Utils.ArraySeeker<float>(array, 0, false);
                     break;
             }
 
             foreach (var line in _seeker.GetLines())
             {
-                var length = line.GetLength();
-                for (int i = 1; i < length; i++)
-                    line[i] = line[i - 1] + line[i];
+                var last = 0f;
+                line.SetValues(v => last = last + v);
 
-                var a = 1f;
-                if (division == Division.Max) a = line[length - 1];
-                else if (division == Division.Volume) a = length;
-                else if (division == Division.One) a = 1;
-
-                for (int i = 0; i < length; i++)
-                    line[i] = line[i] / a;
+                if (division == Division.Max) line.SetValues(v => v / last);
+                else if (division == Division.Volume) line.SetValues(v => v / line.Length);
+                else if (division == Division.One) { }
             }
         }
 

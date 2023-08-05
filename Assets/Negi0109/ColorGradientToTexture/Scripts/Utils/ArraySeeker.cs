@@ -1,8 +1,22 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace Negi0109.ColorGradientToTexture.Utils
 {
+    public static class ArraySeekerUtils
+    {
+        public static ArraySeeker<T>.AllLine GetAll<T>(T[,] body)
+        {
+            return new ArraySeeker<T>(body).GetAll();
+        }
+
+        public static void SetValues<T>(T[,] body, Func<T, T> func)
+        {
+            new ArraySeeker<T>(body).GetAll().SetValues(func);
+        }
+    }
+
     public class ArraySeeker<T>
     {
         private readonly T[,] _body;
@@ -112,8 +126,18 @@ namespace Negi0109.ColorGradientToTexture.Utils
 
         public abstract class Line
         {
+            public int Length => GetLength();
             public abstract int GetLength();
             public abstract T this[int i] { get; set; }
+
+            public void SetValues(Func<T, T> func)
+            {
+                var length = GetLength();
+                for (int i = 0; i < length; i++)
+                {
+                    this[i] = func(this[i]);
+                }
+            }
         }
 
         public class OneLine : Line
@@ -138,6 +162,7 @@ namespace Negi0109.ColorGradientToTexture.Utils
                 return _seeker.GetLineLength();
             }
         }
+
         public class AllLine : Line
         {
             private readonly ArraySeeker<T> _seeker;

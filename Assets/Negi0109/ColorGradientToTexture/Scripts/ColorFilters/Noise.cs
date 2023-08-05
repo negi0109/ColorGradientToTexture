@@ -11,15 +11,11 @@ namespace Negi0109.ColorGradientToTexture.Filters
         public float weight = 0.5f;
         public int seed = new System.Random().Next();
 
-        public override void EvaluateAll(ref float[,] v)
+        public override void EvaluateAll(ref float[,] array)
         {
-            var all = new Utils.ArraySeeker<float>(v).GetAll();
             var r = new System.Random(seed);
 
-            for (int i = 0; i < all.GetLength(); i++)
-            {
-                all[i] += weight * r.Next() / int.MaxValue;
-            }
+            Utils.ArraySeekerUtils.SetValues(array, v => v + weight * r.Next() / int.MaxValue);
         }
 
         public override bool Editor()
