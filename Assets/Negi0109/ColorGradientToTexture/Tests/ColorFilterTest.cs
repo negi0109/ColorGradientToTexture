@@ -16,14 +16,14 @@ namespace Negi0109.ColorGradientToTexture.Tests.ColorFilterTests
 
         [TestCase(0f, 1f, 1f)]
         [TestCase(0.3f, 0.7f, 0.7f)]
-        public void EvaluateAll(float v, float stubValue, float excepted)
+        public void EvaluateAll(float v, float stubValue, float expected)
         {
             float[,] array = { { v, v, v, v } };
             var filter = new FilterStub() { value = stubValue };
 
             filter.EvaluateAll(ref array);
 
-            Assert.That(array, Is.EqualTo(new float[,] { { excepted, excepted, excepted, excepted } }));
+            Assert.That(array, Is.EqualTo(new float[,] { { expected, expected, expected, expected } }));
         }
     }
 
@@ -33,56 +33,56 @@ namespace Negi0109.ColorGradientToTexture.Tests.ColorFilterTests
         [TestCase(2, 0.5f, 0.5f)]
         [TestCase(2, 0.49f, 0f)]
         [TestCase(2, 1f, 1f)]
-        public void Step(int step, float v, float excepted)
+        public void Step(int step, float v, float expected)
         {
             var filter = new Filters.Step() { step = step };
 
-            Assert.That(filter.Evaluate(v), Is.EqualTo(excepted));
+            Assert.That(filter.Evaluate(v), Is.EqualTo(expected));
         }
 
         [TestCase(2, 0.5f, 1f)]
         [TestCase(2, 1f, 2f)]
-        public void Scale(float scale, float v, float excepted)
+        public void Scale(float scale, float v, float expected)
         {
             var filter = new Filters.Scale() { value = scale };
 
-            Assert.That(filter.Evaluate(v), Is.EqualTo(excepted));
+            Assert.That(filter.Evaluate(v), Is.EqualTo(expected));
         }
 
         [TestCase(3, 0.5f, 0.5f)]
         [TestCase(3, 1f, 0f)]
-        public void Repeat(int count, float v, float excepted)
+        public void Repeat(int count, float v, float expected)
         {
             var filter = new Filters.Repeat() { count = count };
 
-            Assert.That(filter.Evaluate(v), Is.EqualTo(excepted));
+            Assert.That(filter.Evaluate(v), Is.EqualTo(expected));
         }
 
         [TestCase(1f, 0.5f, 0)]
         [TestCase(1f, 1f, 1)]
-        public void Threshold(float value, float v, float excepted)
+        public void Threshold(float value, float v, float expected)
         {
             var filter = new Filters.Threshold() { value = value };
 
-            Assert.That(filter.Evaluate(v), Is.EqualTo(excepted));
+            Assert.That(filter.Evaluate(v), Is.EqualTo(expected));
         }
 
         [TestCase(1f, 0.5f, 1.5f)]
         [TestCase(1f, 1f, 2f)]
-        public void Add(float value, float v, float excepted)
+        public void Add(float value, float v, float expected)
         {
             var filter = new Filters.Add() { value = value };
 
-            Assert.That(filter.Evaluate(v), Is.EqualTo(excepted));
+            Assert.That(filter.Evaluate(v), Is.EqualTo(expected));
         }
 
         [TestCase(1f, 0f)]
         [TestCase(0.2f, 0.8f)]
-        public void OneMinus(float v, float excepted)
+        public void OneMinus(float v, float expected)
         {
             var filter = new Filters.OneMinus();
 
-            Assert.That(filter.Evaluate(v), Is.EqualTo(excepted));
+            Assert.That(filter.Evaluate(v), Is.EqualTo(expected));
         }
 
         [TestCase(1, 2, 3, 1, 3, 6, Filters.Cumulate.Division.One)]
