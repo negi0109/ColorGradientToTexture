@@ -51,8 +51,8 @@ namespace Negi0109.ColorGradientToTexture.Utils
             else return _body.GetLength(1);
         }
 
-        public ArraySeekerLine<T> GetLine(int index) => new ArraySeekerLine<T>(this, index);
-        public ArraySeekerLineEnumerable<T> GetLines() => new ArraySeekerLineEnumerable<T>(new ArraySeekerLineEnumerator<T>(this));
+        public Line GetLine(int index) => new Line(this, index);
+        public LineEnumerable GetLines() => new LineEnumerable(new LineEnumerator(this));
 
         public ArraySeeker(T[,] body, int dimension, bool backward)
         {
@@ -60,76 +60,76 @@ namespace Negi0109.ColorGradientToTexture.Utils
             _dimension = dimension;
             _backward = backward;
         }
-    }
 
-    public class ArraySeekerLineEnumerable<T> : IEnumerable<ArraySeekerLine<T>>
-    {
-        private readonly IEnumerator<ArraySeekerLine<T>> _enumerator;
-
-        public ArraySeekerLineEnumerable(IEnumerator<ArraySeekerLine<T>> enumerator)
+        public class LineEnumerable : IEnumerable<Line>
         {
-            _enumerator = enumerator;
-        }
+            private readonly IEnumerator<Line> _enumerator;
 
-        public IEnumerator<ArraySeekerLine<T>> GetEnumerator() => _enumerator;
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-    }
-
-    public class ArraySeekerLineEnumerator<T> : IEnumerator<ArraySeekerLine<T>>
-    {
-        private ArraySeeker<T> _seeker;
-        private int _currentIndex;
-        private int _length;
-
-        public ArraySeekerLineEnumerator(ArraySeeker<T> seeker)
-        {
-            _seeker = seeker;
-            _length = seeker.GetLineCount();
-            _currentIndex = -1;
-        }
-
-        public ArraySeekerLine<T> Current { get => _seeker.GetLine(_currentIndex); }
-
-        object IEnumerator.Current => Current;
-
-        public bool MoveNext()
-        {
-            if (_currentIndex + 1 < _length)
+            public LineEnumerable(IEnumerator<Line> enumerator)
             {
-                _currentIndex++;
-                return true;
+                _enumerator = enumerator;
             }
-            else return false;
-        }
-        public void Reset()
-        {
-            _currentIndex = -1;
-        }
 
-        public void Dispose() { }
-    }
+            public IEnumerator<Line> GetEnumerator() => _enumerator;
 
-    public class ArraySeekerLine<T>
-    {
-        private readonly ArraySeeker<T> _seeker;
-        private readonly int _index;
-
-        public T this[int i]
-        {
-            set { _seeker[i, _index] = value; }
-            get => _seeker[i, _index];
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         }
 
-        internal ArraySeekerLine(ArraySeeker<T> seeker, int index)
+        public class LineEnumerator : IEnumerator<Line>
         {
-            _seeker = seeker;
-            _index = index;
+            private ArraySeeker<T> _seeker;
+            private int _currentIndex;
+            private int _length;
+
+            public LineEnumerator(ArraySeeker<T> seeker)
+            {
+                _seeker = seeker;
+                _length = seeker.GetLineCount();
+                _currentIndex = -1;
+            }
+
+            public Line Current { get => _seeker.GetLine(_currentIndex); }
+
+            object IEnumerator.Current => Current;
+
+            public bool MoveNext()
+            {
+                if (_currentIndex + 1 < _length)
+                {
+                    _currentIndex++;
+                    return true;
+                }
+                else return false;
+            }
+            public void Reset()
+            {
+                _currentIndex = -1;
+            }
+
+            public void Dispose() { }
         }
 
-        public int GetLength()
+        public class Line
         {
-            return _seeker.GetLineLength();
+            private readonly ArraySeeker<T> _seeker;
+            private readonly int _index;
+
+            public T this[int i]
+            {
+                set { _seeker[i, _index] = value; }
+                get => _seeker[i, _index];
+            }
+
+            internal Line(ArraySeeker<T> seeker, int index)
+            {
+                _seeker = seeker;
+                _index = index;
+            }
+
+            public int GetLength()
+            {
+                return _seeker.GetLineLength();
+            }
         }
     }
 }
