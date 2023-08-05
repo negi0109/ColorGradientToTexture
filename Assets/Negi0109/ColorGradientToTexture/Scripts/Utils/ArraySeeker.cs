@@ -51,31 +51,32 @@ namespace Negi0109.ColorGradientToTexture.Utils
             else return _body.GetLength(1);
         }
 
-        public Line GetLine(int index) => new Line(this, index);
+        public OneLine GetLine(int index) => new OneLine(this, index);
+        public AllLine GetAll() => new AllLine(this);
         public LineEnumerable GetLines() => new LineEnumerable(new LineEnumerator(this));
 
-        public ArraySeeker(T[,] body, int dimension, bool backward)
+        public ArraySeeker(T[,] body, int dimension = 0, bool backward = false)
         {
             _body = body;
             _dimension = dimension;
             _backward = backward;
         }
 
-        public class LineEnumerable : IEnumerable<Line>
+        public class LineEnumerable : IEnumerable<OneLine>
         {
-            private readonly IEnumerator<Line> _enumerator;
+            private readonly IEnumerator<OneLine> _enumerator;
 
-            public LineEnumerable(IEnumerator<Line> enumerator)
+            public LineEnumerable(IEnumerator<OneLine> enumerator)
             {
                 _enumerator = enumerator;
             }
 
-            public IEnumerator<Line> GetEnumerator() => _enumerator;
+            public IEnumerator<OneLine> GetEnumerator() => _enumerator;
 
             IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         }
 
-        public class LineEnumerator : IEnumerator<Line>
+        public class LineEnumerator : IEnumerator<OneLine>
         {
             private ArraySeeker<T> _seeker;
             private int _currentIndex;
@@ -88,7 +89,7 @@ namespace Negi0109.ColorGradientToTexture.Utils
                 _currentIndex = -1;
             }
 
-            public Line Current { get => _seeker.GetLine(_currentIndex); }
+            public OneLine Current { get => _seeker.GetLine(_currentIndex); }
 
             object IEnumerator.Current => Current;
 
@@ -109,26 +110,51 @@ namespace Negi0109.ColorGradientToTexture.Utils
             public void Dispose() { }
         }
 
-        public class Line
+        public abstract class Line
+        {
+            public abstract int GetLength();
+            public abstract T this[int i] { get; set; }
+        }
+
+        public class OneLine : Line
         {
             private readonly ArraySeeker<T> _seeker;
             private readonly int _index;
 
-            public T this[int i]
+            public override T this[int i]
             {
                 set { _seeker[i, _index] = value; }
                 get => _seeker[i, _index];
             }
 
-            internal Line(ArraySeeker<T> seeker, int index)
+            internal OneLine(ArraySeeker<T> seeker, int index)
             {
                 _seeker = seeker;
                 _index = index;
             }
 
-            public int GetLength()
+            public override int GetLength()
             {
                 return _seeker.GetLineLength();
+            }
+        }
+        public class AllLine : Line
+        {
+            private readonly ArraySeeker<T> _seeker;
+            public override T this[int i]
+            {
+                set { _seeker[i % _seeker.GetLineLength(), i / _seeker.GetLineLength()] = value; }
+                get => _seeker[i % _seeker.GetLineLength(), i / _seeker.GetLineLength()];
+            }
+
+            internal AllLine(ArraySeeker<T> seeker)
+            {
+                _seeker = seeker;
+            }
+
+            public override int GetLength()
+            {
+                return _seeker.GetLineLength() * _seeker.GetLineCount();
             }
         }
     }

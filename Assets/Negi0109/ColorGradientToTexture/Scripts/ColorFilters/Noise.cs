@@ -13,17 +13,12 @@ namespace Negi0109.ColorGradientToTexture.Filters
 
         public override void EvaluateAll(ref float[,] v)
         {
-            var width = v.GetLength(0);
-            var height = v.GetLength(1);
-
+            var all = new Utils.ArraySeeker<float>(v).GetAll();
             var r = new System.Random(seed);
 
-            for (int x = 0; x < width; x++)
+            for (int i = 0; i < all.GetLength(); i++)
             {
-                for (int y = 0; y < height; y++)
-                {
-                    v[x, y] += weight * r.Next() / int.MaxValue;
-                }
+                all[i] += weight * r.Next() / int.MaxValue;
             }
         }
 
