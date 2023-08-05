@@ -6,9 +6,9 @@ using UnityEngine.TestTools;
 
 namespace Negi0109.ColorGradientToTexture.Utils.Tests
 {
-    namespace ArraySeekerTest
+    namespace ArraySegment2DTest
     {
-        public class LineStub : Utils.ArraySeekerBase<int>.Line
+        public class LineStub : Utils.ArraySegment2DBase<int>.Line
         {
             public override int GetLength() => _body.Length;
             public override int this[int i] { get => _body[i]; set => _body[i] = value; }
@@ -20,7 +20,7 @@ namespace Negi0109.ColorGradientToTexture.Utils.Tests
             }
         }
 
-        public class ArraySeekerStub : Utils.ArraySeekerBase<(int, int)>
+        public class ArraySegment2DStub : Utils.ArraySegment2DBase<(int, int)>
         {
             public readonly (int, int)[,] body;
 
@@ -31,7 +31,7 @@ namespace Negi0109.ColorGradientToTexture.Utils.Tests
             }
             public override int GetLength(int dimension) => body.GetLength(dimension);
 
-            public ArraySeekerStub(int s0, int s1)
+            public ArraySegment2DStub(int s0, int s1)
             {
                 this.body = new (int, int)[s0, s1];
 

@@ -5,25 +5,25 @@ using System.Collections.Generic;
 namespace Negi0109.ColorGradientToTexture.Utils
 {
 
-    public static class ArraySeekerUtils
+    public static class ArraySegment2DUtils
     {
-        public static ArraySeekerBase<T>.AllLine GetAll<T>(T[,] body)
+        public static ArraySegment2DBase<T>.AllLine GetAll<T>(T[,] body)
         {
-            return new ArraySeeker<T>(body).GetAll();
+            return new ArraySegment2D<T>(body).GetAll();
         }
 
         public static void SetValues<T>(T[,] body, Func<T, T> func)
         {
-            new ArraySeeker<T>(body).GetAll().SetValues(func);
+            new ArraySegment2D<T>(body).GetAll().SetValues(func);
         }
 
-        public static ArraySeekerBase<T> GetSeeker<T>(T[,] body, int dimension = 0, bool backward = false)
+        public static ArraySegment2DBase<T> GetSeeker<T>(T[,] body, int dimension = 0, bool backward = false)
         {
-            return new ArraySeeker<T>(body).Dimension(dimension).Backward(backward);
+            return new ArraySegment2D<T>(body).Dimension(dimension).Backward(backward);
         }
     }
 
-    public abstract class ArraySeekerBase<T>
+    public abstract class ArraySegment2DBase<T>
     {
         public abstract T this[int i0, int i1] { get; set; }
 
@@ -36,8 +36,8 @@ namespace Negi0109.ColorGradientToTexture.Utils
 
         public abstract int GetLength(int dimension);
 
-        public ArraySeekerBase<T> Dimension(int dimension) => dimension == 0 ? this : new ArraySeeker<T>.DimensionReverse(this);
-        public ArraySeekerBase<T> Backward(bool backward = true) => backward ? new ArraySeeker<T>.SeekBackward(this) : this;
+        public ArraySegment2DBase<T> Dimension(int dimension) => dimension == 0 ? this : new ArraySegment2D<T>.DimensionReverse(this);
+        public ArraySegment2DBase<T> Backward(bool backward = true) => backward ? new ArraySegment2D<T>.SeekBackward(this) : this;
 
         public class LineEnumerable : IEnumerable<OneLine>
         {
@@ -55,11 +55,11 @@ namespace Negi0109.ColorGradientToTexture.Utils
 
         public class LineEnumerator : IEnumerator<OneLine>
         {
-            private ArraySeekerBase<T> _seeker;
+            private ArraySegment2DBase<T> _seeker;
             private int _currentIndex;
             private int _length;
 
-            public LineEnumerator(ArraySeekerBase<T> seeker)
+            public LineEnumerator(ArraySegment2DBase<T> seeker)
             {
                 _seeker = seeker;
                 _length = seeker.GetLineCount();
@@ -105,7 +105,7 @@ namespace Negi0109.ColorGradientToTexture.Utils
 
         public class OneLine : Line
         {
-            private readonly ArraySeekerBase<T> _seeker;
+            private readonly ArraySegment2DBase<T> _seeker;
             private readonly int _index;
 
             public override T this[int i]
@@ -114,7 +114,7 @@ namespace Negi0109.ColorGradientToTexture.Utils
                 get => _seeker[i, _index];
             }
 
-            internal OneLine(ArraySeekerBase<T> seeker, int index)
+            internal OneLine(ArraySegment2DBase<T> seeker, int index)
             {
                 _seeker = seeker;
                 _index = index;
@@ -128,14 +128,14 @@ namespace Negi0109.ColorGradientToTexture.Utils
 
         public class AllLine : Line
         {
-            private readonly ArraySeekerBase<T> _seeker;
+            private readonly ArraySegment2DBase<T> _seeker;
             public override T this[int i]
             {
                 set { _seeker[i % _seeker.GetLineLength(), i / _seeker.GetLineLength()] = value; }
                 get => _seeker[i % _seeker.GetLineLength(), i / _seeker.GetLineLength()];
             }
 
-            internal AllLine(ArraySeekerBase<T> seeker)
+            internal AllLine(ArraySegment2DBase<T> seeker)
             {
                 _seeker = seeker;
             }
@@ -147,7 +147,7 @@ namespace Negi0109.ColorGradientToTexture.Utils
         }
     }
 
-    public sealed class ArraySeeker<T> : ArraySeekerBase<T>
+    public sealed class ArraySegment2D<T> : ArraySegment2DBase<T>
     {
         private readonly T[,] _body;
 
@@ -159,11 +159,11 @@ namespace Negi0109.ColorGradientToTexture.Utils
 
         public override int GetLength(int dimension) => _body.GetLength(dimension);
 
-        public ArraySeeker(T[,] body) { _body = body; }
+        public ArraySegment2D(T[,] body) { _body = body; }
 
-        public sealed class DimensionReverse : ArraySeekerBase<T>
+        public sealed class DimensionReverse : ArraySegment2DBase<T>
         {
-            private readonly ArraySeekerBase<T> _seeker;
+            private readonly ArraySegment2DBase<T> _seeker;
 
             public override T this[int i0, int i1]
             {
@@ -171,13 +171,13 @@ namespace Negi0109.ColorGradientToTexture.Utils
                 get => _seeker[i1, i0];
             }
 
-            public DimensionReverse(ArraySeekerBase<T> seeker) { _seeker = seeker; }
+            public DimensionReverse(ArraySegment2DBase<T> seeker) { _seeker = seeker; }
             public override int GetLength(int dimension) => _seeker.GetLength(1 - dimension);
         }
 
-        public sealed class SeekBackward : ArraySeekerBase<T>
+        public sealed class SeekBackward : ArraySegment2DBase<T>
         {
-            private readonly ArraySeekerBase<T> _seeker;
+            private readonly ArraySegment2DBase<T> _seeker;
 
             public override T this[int i0, int i1]
             {
@@ -185,7 +185,7 @@ namespace Negi0109.ColorGradientToTexture.Utils
                 get => _seeker[_seeker.GetLength(0) - i0 - 1, _seeker.GetLength(1) - i1 - 1];
             }
 
-            public SeekBackward(ArraySeekerBase<T> seeker) { _seeker = seeker; }
+            public SeekBackward(ArraySegment2DBase<T> seeker) { _seeker = seeker; }
             public override int GetLength(int dimension) => _seeker.GetLength(dimension);
         }
     }

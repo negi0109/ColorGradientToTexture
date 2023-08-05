@@ -6,7 +6,7 @@ using UnityEngine.TestTools;
 
 namespace Negi0109.ColorGradientToTexture.Utils.Tests
 {
-    namespace ArraySeekerTest
+    namespace ArraySegment2DTest
     {
         public class LineTest
         {
@@ -24,7 +24,7 @@ namespace Negi0109.ColorGradientToTexture.Utils.Tests
             [TestCase(1, 3)]
             public void AllLine(int s0, int s1)
             {
-                var all = new ArraySeekerStub(s0, s1).GetAll();
+                var all = new ArraySegment2DStub(s0, s1).GetAll();
                 for (int i = 0; i < all.Length; i++)
                 {
                     Assert.That(all[i], Is.EqualTo((i % s0, i / s0)));
@@ -36,7 +36,7 @@ namespace Negi0109.ColorGradientToTexture.Utils.Tests
             {
                 int s0 = 2;
                 int s1 = 3;
-                var seeker = new ArraySeekerStub(s0, s1);
+                var seeker = new ArraySegment2DStub(s0, s1);
 
                 for (int i1 = 0; i1 < s1; i1++)
                 {
