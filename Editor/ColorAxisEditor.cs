@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.IO;
 using System.Linq;
 using UnityEditor;
+using UnityEngine;
 
 namespace Negi0109.ColorGradientToTexture
 {
@@ -116,22 +116,51 @@ namespace Negi0109.ColorGradientToTexture
 
             if (GUILayout.Button("Add Filter"))
             {
-                axis.colorFilters.Add(new ColorFilter());
+                axis.colorFilters.Add(ColorFilter.DefaultFilter);
                 updated = true;
             }
 
             var addColorFilterIndex = -1;
             var removeColorFilters = new List<ColorFilter>();
-            foreach (var filter in axis.colorFilters)
+
+            var colorFilterClasses = System.Reflection.Assembly.GetAssembly(typeof(ColorFilter))
+                .GetTypes()
+                .Where(x => x.IsSubclassOf(typeof(ColorFilter)) && !x.IsAbstract);
+
+            var colorFilterClassDictionary = colorFilterClasses.ToDictionary(v => v.Name);
+            var colorFilterClassNameArray = colorFilterClasses.Select(v => v.Name).ToArray();
+
+            // Debug.Log(string.Join( ", ", colorFilterClassNameArray));
+
+            axis.colorFilters = axis.colorFilters.Select(filter =>
             {
+                var current = filter;
+
                 EditorGUILayout.BeginHorizontal();
-                updated |= ColorFilterEditor.Editor(filter);
+                {
+                    var currentClassIndex = Array.IndexOf(colorFilterClassNameArray, filter.GetType().Name);
+                    var nextClassIndex = EditorGUILayout.Popup(currentClassIndex, colorFilterClassNameArray);
+
+                    if (nextClassIndex != currentClassIndex)
+                    {
+                        updated |= true;
+
+                        var nextFilter = (ColorFilter)Activator.CreateInstance(colorFilterClassDictionary[colorFilterClassNameArray[nextClassIndex]]);
+                        current = axis.colorFilters[axis.colorFilters.IndexOf(filter)] = nextFilter;
+                    }
+                }
+
+                updated |= current.Editor();
+
+                // filter
                 if (GUILayout.Button("x", new GUILayoutOption[] { GUILayout.Width(20) }))
-                    removeColorFilters.Add(filter);
+                    removeColorFilters.Add(current);
                 if (GUILayout.Button("+", new GUILayoutOption[] { GUILayout.Width(20) }))
-                    addColorFilterIndex = axis.colorFilters.IndexOf(filter);
+                    addColorFilterIndex = axis.colorFilters.IndexOf(current);
                 EditorGUILayout.EndHorizontal();
-            }
+
+                return current;
+            }).ToList();
 
             foreach (var removeFilter in removeColorFilters)
             {
@@ -141,7 +170,7 @@ namespace Negi0109.ColorGradientToTexture
 
             if (addColorFilterIndex >= 0)
             {
-                axis.colorFilters.Insert(addColorFilterIndex, new ColorFilter());
+                axis.colorFilters.Insert(addColorFilterIndex, ColorFilter.DefaultFilter);
                 updated = true;
             }
 

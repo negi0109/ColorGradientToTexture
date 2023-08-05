@@ -64,63 +64,7 @@ MonoBehaviour:
       m_RotationOrder: 4
     yWeight: 0
     colorFilters:
-    - type: 1
-      value1: 0.5
-      value2: 0
-    coordinateFilters: []
-  - xCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 34
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 34
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    yCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 0
-        outSlope: 1
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 1
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    yWeight: 0
-    colorFilters:
-    - type: 1
-      value1: -1
-      value2: 0
+    - id: 0
     coordinateFilters: []
   - xCurve:
       serializedVersion: 2
@@ -172,16 +116,89 @@ MonoBehaviour:
       m_RotationOrder: 4
     yWeight: 0
     colorFilters:
-    - type: 1
-      value1: 0.2
-      value2: 0
+    - id: 1
     coordinateFilters: []
-  axesCount: 1
+  - xCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 1
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    yCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 1
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    yWeight: 0
+    colorFilters:
+    - id: 2
+    - id: 3
+    coordinateFilters: []
+  axesCount: 2
   textureSize: {x: 256, y: 1}
-  texture: {fileID: 7974649098429721897}
+  texture: {fileID: 6930448630100827917}
   sprite: {fileID: 0}
   shareColorMode: 0
---- !u!28 &7974649098429721897
+  references:
+    version: 1
+    00000000:
+      type: {class: Noise, ns: Negi0109.ColorGradientToTexture.Filters, asm: ColorGradientToTextute}
+      data:
+        weight: 0.5
+        seed: 2090812356
+    00000001:
+      type: {class: Noise, ns: Negi0109.ColorGradientToTexture.Filters, asm: ColorGradientToTextute}
+      data:
+        weight: 0.5
+        seed: 1428630806
+    00000002:
+      type: {class: Noise, ns: Negi0109.ColorGradientToTexture.Filters, asm: ColorGradientToTextute}
+      data:
+        weight: 0.5
+        seed: 1848804670
+    00000003:
+      type: {class: Noise, ns: Negi0109.ColorGradientToTexture.Filters, asm: ColorGradientToTextute}
+      data:
+        weight: 0.5
+        seed: 1665911723
+--- !u!28 &6930448630100827917
 Texture2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -218,7 +235,7 @@ Texture2D:
   m_LightmapFormat: 0
   m_ColorSpace: 0
   image data: 1024
-  _typelessdata: ff6f602fff515031ff5d4d0cff11fa2dff124e1bff7cd913ff60a90aff61321eff3be90eff452527ff5f5318ff4c5834ff72b129ff3de016ff88a022ff83cf25ff897038ff8dbd1dff84e519ff572932ff76561dff782333ff4b5838ff74763fff4f0f3dff727838ff602e2fff604a4dff7a3d2eff1f492aff637837ff9d6338ff97e821ff51ed28ff38d923ff913836ff93144dff5e5355ffa46828ff2e2342ff2af042ff988d3fff6dc046ff5a5243ff621f33ff616434ff769730ff8df849ff520635ff9eaf32ff974951ff79aa3cff4e9b4dff6f6d5aff8b624dff3a5a37ff91e461ff99cb6bff9e8541ffb2a165ffae6348ff495863ffba3f45ff822641ff69a872ff8dd641ff76445dffb11a6cffb00964ffad305bff569259ff79396fff4fda56ff53cf73ffa65f4fffbebb72ffc3a570ffbeb66fffcdd15cffaac375ff981783ff719e73ffc6d45dffb0b771ffa23681ff912160ff652f63ff7bbc72ff598a5eff9c757bff9e4e82ffaa666eff61bb73ffcdba83ff7df482ff7e446bffda3b71ff638c8cff93e585ffaa6195ffa25f91ff7d0684ff7e6075ffa52f74ffd83e74ffb4d482ffae787cffda6f7cffc71b81ff753c7cff8a1777ffa9558fffd60d84ffc0ca95ffd1f995ffcc3d8bff7d5c8bffd9c9a7ffe2ef88ff81097aff8ef788ff9bfa8affa29793ffb3449bffb7198dfff4f182ffd44ea8ff8f95a5ffd0ebaefff82486ff8b3783ff8b32b4ffcdd9a8ffdcf888ffe0f198ff9cf5b3ffcde796ff93cd89fffc15abffd448b1ffd7ca8dfff71f9cffaebb93ffeec2acff95ba9effff82a5ffba10beffd09db9ffb9cbb3ffedc4b6ff9fd0b9ffbf62aaffff63c3ffa429aaffc38ba5ffb45bb5ffafd9beffdb2cbaff9fe69fffe4f8c8ffff9bbcffe3c9b2ffce3eb4ffc9ecb8ffa360b1ffff85d3ffff17c4ffc1d5afffebabc6ffff2ed3ffffaccafff21acfffddf7b8ffff4bcfffd908bcffd1acd4fffff3b3ffbc0cbcffff85cfffd930c5ffddb3e0ffff31e2ffffceb8ffe49fe1ffbaf8beffff8db9ffff7dc8ffc35be8fff199e5ffff8fc0ffd2e6d5ffc06ddeffd3b9e3ffd384d4ffe543f2ffffe6d6ffe2a8e7ffd69bf7ffffbfc8ffff4febffffa4d2fff22bcbfffd2bd2ffd61ff3ffea22f2ffff66e9fff1cee0ffffced2ffff2ff7ffffb5d1ffd242fefff4d0d4ffd618f6ffff7fe9fffff1ffffff90faffdbb6eafff742d9ffffd0f2ffff65f5ffff67e8ffffe4dfffff5cfffffc72f6fff467e3ffffcee7ffffadebffffe0e6ffff9cfefff432ffffffb2f0ffffa5fffff59bfaffffcef2ffff62ffffff35ffffff2affffff1dffffff29ffffff4affffff4af3fffffcfaffff2bf5fffff5ffffff2af9ffff21ffffff8dffffff5effffff84ffffff81ffffffd6ffffffe4ffffff11ffffff91ffffffc9ffffff42ff
+  _typelessdata: ff5c342dff7b7b72ff7c8098ff13459eff3f4499ff58428eff3b7beeff5b2050ff743c86ff4a17b7ff1e27b8ff85505fff5c82a5ff681cb9ff666695ff594a93ff6616cfff6c3a49ff895793ff725934ff848b50ff517c46ff852ac6ff1d2f91ff4a29acff952fe9ff572936ff746162ff586fa8ff4a408eff9881ffff83246eff9c6b5bff5228d3ff422b73ff5754a3ff5d9dedff6b9fa8ff6f2e5cff618ac6ff3e28ffff3e8992ff3255b9ff4c97acff5e70ccff86899cff3971a9ffab675bff728b81ff5b5cfbff8d825aff439ab2ff517092ff64b4ddff8e3f69ff5783b2ff439ff8ffad9fd4ff986ac1ff796580ff526aa8ff986bdeff5683faff7d504cff866affff70599fffbfbbdaff61b2ffff7e499fff686bcbff5687ffff565284ff5969c9ff85aaaaff939087ffa5619dff7f88ecff9b747bffa1a1a8ffa783f3ffc0a1ffff91a8c1ff68bdc6ff657bffffa6a69cffbfd0ffff9d9ec6ffa4a1e9ffb0d5d6ff5995aeff83a499ffa06e89ffc4a5d7ff67baffff8293ffff99b0a0ffdd7bffffaa7be3ffbba3ffff668effffc0c5baffd1b8f8ffa798ffff869bb1ff81d0f8ffb4add3ffe8afe8ffcbc4e7ffd1a5d6ffeadfcdffda7effffabaeffff9082ffff76ecd3ffbfcae1ffc7c9eeffb8b6ffff7b92ffffe2b3ffffd2a5ffffdfc7e5ffa8a7feffbfebe1ffb4c3fffff5d7c3ffc7abffffa4bfffff85c2ffff97abaeff8ff4fcffdffcffffeca5a1fff7e8f4ffd4acffffffd8ffff8bffc7ffffacffffffbfb2ffffc8baff9198e8fff7c2f7fff3fbfffff49fb5ffe999ffffa3bcfffffd9bffffb692fefff5e0ffffd098ffffe4f3ccffffa4ffffffffc8fff4f3ffffffacffffb5f5ecffc6cdeaffc2fdc8ffa4ffffffc3f6ffffedd9ffffc4a2c9ffffa2ffffead0effffae7ffffc4ffdeffa7ffffffedfffffff7ffcfffb1d0fffff2ffd7ffffdbfffff8b7ffffb9ffffffffdcffffffffffffb0fffffff8cdffffffffffffd7ceffffbfffffffdae2fffff8fffffffef4fffffeffffffd0ffffffffffffffc6fffffffffffffff0ffffffffdcffffffd9fffffffaffffffffffffe9c5ecffffccf5fffff6ffffe1ffffffd4ffffffffd7ffffd7ffffffecf7ffffffddffffffeefffffff4fffffff9fffff4cedfffffedfffffffaffffddeaffffeaffffffffe7ffffffffffffffffffffeddcfffffde1ffffffe5ffffffffffffd8ffffffffffffffffffffffffffffffffe5fffffafcffffffe8fffffffffaffffffffffffffffffffffffffe8fffffffffffffffffffffffffffffffffffffffefffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfffffffffffffffffffffffffffff9fffffffffffffffffffffffffffffffffffffffcffffffffffffffffffff
   m_StreamData:
     offset: 0
     size: 0
