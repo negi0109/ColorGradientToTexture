@@ -13,6 +13,7 @@ namespace Negi0109.ColorGradientToTexture
 
         [SerializeReference]
         public List<ColorFilter> colorFilters;
+        [SerializeReference]
         public List<CoordinateFilter> coordinateFilters;
         public readonly int axesCount = 0;
 
