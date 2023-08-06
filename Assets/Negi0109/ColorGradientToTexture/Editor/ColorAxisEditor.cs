@@ -79,59 +79,24 @@ namespace Negi0109.ColorGradientToTexture
 
             // CoordinateFilter
             {
+                axis.coordinateFilters = axis.coordinateFilters.SelectMany((value) =>
+                {
+                    var result = new List<CoordinateFilter>();
+                    EditorGUILayout.BeginHorizontal();
+
+                    coordinateUpdated |= PopupSubClass(ref value);
+                    coordinateUpdated |= value.Editor();
+
+                    if (!GUILayout.Button("x", new GUILayoutOption[] { GUILayout.Width(20) })) result.Add(value);
+                    if (GUILayout.Button("+", new GUILayoutOption[] { GUILayout.Width(20) })) result.Add(CoordinateFilter.DefaultFilter);
+                    EditorGUILayout.EndHorizontal();
+
+                    return result;
+                }).ToList();
+
                 if (GUILayout.Button("Add Coordinate"))
                 {
                     axis.coordinateFilters.Add(CoordinateFilter.DefaultFilter);
-                    coordinateUpdated = true;
-                }
-
-                var addCoordinateFilterIndex = -1;
-                var removeCoordinateFilters = new List<CoordinateFilter>();
-
-                var coordinateFilterClasses = System.Reflection.Assembly.GetAssembly(typeof(CoordinateFilter))
-                    .GetTypes()
-                    .Where(x => x.IsSubclassOf(typeof(CoordinateFilter)) && !x.IsAbstract);
-
-                var coordinateFilterClassDictionary = coordinateFilterClasses.ToDictionary(v => v.Name);
-                var coordinateFilterClassNameArray = coordinateFilterClasses.Select(v => v.Name).ToArray();
-
-                axis.coordinateFilters = axis.coordinateFilters.Select(filter =>
-                    {
-                        EditorGUILayout.BeginHorizontal();
-                        var current = filter;
-                        {
-                            var currentClassIndex = Array.IndexOf(coordinateFilterClassNameArray, filter.GetType().Name);
-                            var nextClassIndex = EditorGUILayout.Popup(currentClassIndex, coordinateFilterClassNameArray);
-
-                            if (nextClassIndex != currentClassIndex)
-                            {
-                                coordinateUpdated |= true;
-
-                                var nextFilter = (CoordinateFilter)Activator.CreateInstance(coordinateFilterClassDictionary[coordinateFilterClassNameArray[nextClassIndex]]);
-                                current = axis.coordinateFilters[axis.coordinateFilters.IndexOf(filter)] = nextFilter;
-                            }
-                        }
-
-                        coordinateUpdated |= current.Editor();
-                        if (GUILayout.Button("x", new GUILayoutOption[] { GUILayout.Width(20) }))
-                            removeCoordinateFilters.Add(filter);
-                        if (GUILayout.Button("+", new GUILayoutOption[] { GUILayout.Width(20) }))
-                            addCoordinateFilterIndex = axis.coordinateFilters.IndexOf(filter);
-                        EditorGUILayout.EndHorizontal();
-
-                        return current;
-                    }
-                ).ToList();
-
-                foreach (var removeFilter in removeCoordinateFilters)
-                {
-                    axis.coordinateFilters.Remove(removeFilter);
-                    coordinateUpdated = true;
-                }
-
-                if (addCoordinateFilterIndex >= 0)
-                {
-                    axis.coordinateFilters.Insert(addCoordinateFilterIndex, CoordinateFilter.DefaultFilter);
                     coordinateUpdated = true;
                 }
 
@@ -146,63 +111,25 @@ namespace Negi0109.ColorGradientToTexture
 
             // ColorFilter
             {
+                axis.colorFilters = axis.colorFilters.SelectMany((value) =>
+                {
+                    var result = new List<ColorFilter>();
+                    EditorGUILayout.BeginHorizontal();
+
+                    updated |= PopupSubClass(ref value);
+                    updated |= value.Editor();
+
+                    if (!GUILayout.Button("x", new GUILayoutOption[] { GUILayout.Width(20) })) result.Add(value);
+                    if (GUILayout.Button("+", new GUILayoutOption[] { GUILayout.Width(20) })) result.Add(ColorFilter.DefaultFilter);
+
+                    EditorGUILayout.EndHorizontal();
+
+                    return result;
+                }).ToList();
+
                 if (GUILayout.Button("Add Filter"))
                 {
                     axis.colorFilters.Add(ColorFilter.DefaultFilter);
-                    updated = true;
-                }
-
-                var addColorFilterIndex = -1;
-                var removeColorFilters = new List<ColorFilter>();
-
-                var colorFilterClasses = System.Reflection.Assembly.GetAssembly(typeof(ColorFilter))
-                    .GetTypes()
-                    .Where(x => x.IsSubclassOf(typeof(ColorFilter)) && !x.IsAbstract);
-
-                var colorFilterClassDictionary = colorFilterClasses.ToDictionary(v => v.Name);
-                var colorFilterClassNameArray = colorFilterClasses.Select(v => v.Name).ToArray();
-
-                // Debug.Log(string.Join( ", ", colorFilterClassNameArray));
-
-                axis.colorFilters = axis.colorFilters.Select(filter =>
-                {
-                    var current = filter;
-
-                    EditorGUILayout.BeginHorizontal();
-                    {
-                        var currentClassIndex = Array.IndexOf(colorFilterClassNameArray, filter.GetType().Name);
-                        var nextClassIndex = EditorGUILayout.Popup(currentClassIndex, colorFilterClassNameArray);
-
-                        if (nextClassIndex != currentClassIndex)
-                        {
-                            updated |= true;
-
-                            var nextFilter = (ColorFilter)Activator.CreateInstance(colorFilterClassDictionary[colorFilterClassNameArray[nextClassIndex]]);
-                            current = axis.colorFilters[axis.colorFilters.IndexOf(filter)] = nextFilter;
-                        }
-                    }
-
-                    updated |= current.Editor();
-
-                    // filter
-                    if (GUILayout.Button("x", new GUILayoutOption[] { GUILayout.Width(20) }))
-                        removeColorFilters.Add(current);
-                    if (GUILayout.Button("+", new GUILayoutOption[] { GUILayout.Width(20) }))
-                        addColorFilterIndex = axis.colorFilters.IndexOf(current);
-                    EditorGUILayout.EndHorizontal();
-
-                    return current;
-                }).ToList();
-
-                foreach (var removeFilter in removeColorFilters)
-                {
-                    axis.colorFilters.Remove(removeFilter);
-                    updated = true;
-                }
-
-                if (addColorFilterIndex >= 0)
-                {
-                    axis.colorFilters.Insert(addColorFilterIndex, ColorFilter.DefaultFilter);
                     updated = true;
                 }
             }
@@ -275,6 +202,22 @@ namespace Negi0109.ColorGradientToTexture
                 coordinatePreviewTex.Apply();
             }
             return updated;
+        }
+
+        public bool PopupSubClass<T>(ref T value)
+        {
+            var classes = System.Reflection.Assembly.GetAssembly(typeof(T))
+                .GetTypes()
+                .Where(x => x.IsSubclassOf(typeof(T)) && !x.IsAbstract).ToList();
+            var classNameArray = classes.Select(v => v.Name).ToArray();
+
+
+            var currentClassIndex = Array.IndexOf(classNameArray, value.GetType().Name);
+            var nextClassIndex = EditorGUILayout.Popup(currentClassIndex, classNameArray);
+            if (currentClassIndex == nextClassIndex) return false;
+
+            value = (T)Activator.CreateInstance(classes[nextClassIndex]);
+            return true;
         }
     }
 }
