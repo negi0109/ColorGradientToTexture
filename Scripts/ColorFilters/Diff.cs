@@ -1,10 +1,11 @@
 using UnityEditor;
 using UnityEngine;
+using System.Linq;
 
 namespace Negi0109.ColorGradientToTexture.Filters
 {
     [System.Serializable]
-    public class Cumulate : ColorFilter
+    public class Diff : ColorFilter
     {
         public enum Direction
         {
@@ -17,7 +18,6 @@ namespace Negi0109.ColorGradientToTexture.Filters
         public enum Division
         {
             Max,
-            Volume,
             One,
         }
 
@@ -31,13 +31,15 @@ namespace Negi0109.ColorGradientToTexture.Filters
             if (direction == Direction.Y01 || direction == Direction.Y10) _segment = _segment.Dimension(1);
             if (direction == Direction.X10 || direction == Direction.Y10) _segment = _segment.Backward(true);
 
-            foreach (var line in _segment.GetLines())
+            foreach (var line in _segment.Backward().GetLines())
             {
-                var last = 0f;
-                line.SetValues(v => last = last + v);
+                line.SetValues((v, i) => v - (i + 1 < line.Count ? line[i + 1] : 0));
 
-                if (division == Division.Max) line.SetValues(v => v / last);
-                else if (division == Division.Volume) line.SetValues(v => v / line.Count);
+                if (division == Division.Max)
+                {
+                    var max = line.Max();
+                    line.SetValues(v => v / max);
+                }
                 else if (division == Division.One) { }
             }
         }
@@ -58,10 +60,10 @@ namespace Negi0109.ColorGradientToTexture.Filters
                     division = (Division)EditorGUILayout.Popup(
                         (int)division,
                         new string[][] {
-                            new string[]{ "Last (X1)", "Width", "One" },
-                            new string[]{ "Last (Y1)", "Height", "One" },
-                            new string[]{ "Last (X0)", "Width", "One" },
-                            new string[]{ "Last (Y0)", "Height", "One" }
+                            new string[]{ "Max", "Width", "One" },
+                            new string[]{ "Max", "Height", "One" },
+                            new string[]{ "Max", "Width", "One" },
+                            new string[]{ "Max", "Height", "One" }
                         }[(int)direction]
                     );
                 }
