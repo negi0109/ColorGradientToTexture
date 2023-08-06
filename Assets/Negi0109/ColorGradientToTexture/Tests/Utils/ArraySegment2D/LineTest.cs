@@ -25,7 +25,7 @@ namespace Negi0109.ColorGradientToTexture.Utils.Tests
             public void AllLine(int s0, int s1)
             {
                 var all = new ArraySegment2DStub(s0, s1).GetAll();
-                for (int i = 0; i < all.Length; i++)
+                for (int i = 0; i < all.Count; i++)
                 {
                     Assert.That(all[i], Is.EqualTo((i % s0, i / s0)));
                 }
@@ -41,7 +41,7 @@ namespace Negi0109.ColorGradientToTexture.Utils.Tests
                 for (int i1 = 0; i1 < s1; i1++)
                 {
                     var line = segment.GetLine(i1);
-                    for (int i0 = 0; i0 < line.Length; i0++)
+                    for (int i0 = 0; i0 < line.Count; i0++)
                         Assert.That(line[i0], Is.EqualTo((i0, i1)));
                 }
             }

@@ -29,7 +29,12 @@ namespace Negi0109.ColorGradientToTexture.Utils
 
         public OneLine GetLine(int index) => new OneLine(this, index);
         public AllLine GetAll() => new AllLine(this);
-        public LineEnumerable GetLines() => new LineEnumerable(new LineEnumerator(this));
+        public LineEnumerable GetLines() => new LineEnumerable(GetEnumerator());
+
+        public IEnumerator<OneLine> GetEnumerator()
+        {
+            for (int i = 0; i < this.GetLineCount(); i++) yield return this.GetLine(i);
+        }
 
         public int GetLineCount() => GetLength(1);
         public int GetLineLength() => GetLength(0);
@@ -53,54 +58,46 @@ namespace Negi0109.ColorGradientToTexture.Utils
             IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         }
 
-        public class LineEnumerator : IEnumerator<OneLine>
+        public abstract class Line : IList<T>
         {
-            private ArraySegment2DBase<T> _segment;
-            private int _currentIndex;
-            private int _length;
-
-            public LineEnumerator(ArraySegment2DBase<T> segment)
-            {
-                _segment = segment;
-                _length = segment.GetLineCount();
-                _currentIndex = -1;
-            }
-
-            public OneLine Current { get => _segment.GetLine(_currentIndex); }
-
-            object IEnumerator.Current => Current;
-
-            public bool MoveNext()
-            {
-                if (_currentIndex + 1 < _length)
-                {
-                    _currentIndex++;
-                    return true;
-                }
-                else return false;
-            }
-            public void Reset()
-            {
-                _currentIndex = -1;
-            }
-
-            public void Dispose() { }
-        }
-
-        public abstract class Line
-        {
-            public int Length => GetLength();
+            public int Count => GetLength();
             public abstract int GetLength();
             public abstract T this[int i] { get; set; }
 
-            public void SetValues(Func<T, T> func)
+            public void SetValues(Func<T, T> func) => SetValues((v, i) => func(v));
+            public void SetValues(Func<T, int, T> func)
             {
-                var length = GetLength();
-                for (int i = 0; i < length; i++)
+                for (int i = 0; i < Count; i++) this[i] = func(this[i], i);
+            }
+
+            public IEnumerator<T> GetEnumerator()
+            {
+                for (int i = 0; i < Count; i++) yield return this[i];
+            }
+
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+            public int IndexOf(T item)
+            {
+                for (int i = 0; i < Count; i++) if (this[i].Equals(item)) return i;
+                return -1;
+            }
+
+            public void CopyTo(T[] array, int arrayIndex)
+            {
+                for (int i = 0; i < Count; i++)
                 {
-                    this[i] = func(this[i]);
+                    array[arrayIndex + i] = this[i];
                 }
             }
+
+            public bool IsReadOnly => false;
+            public bool Contains(T item) => IndexOf(item) >= 0;
+            public void Clear() => throw new NotImplementedException();
+            public void Add(T item) => throw new NotImplementedException();
+            public void Insert(int index, T item) => throw new NotImplementedException();
+            public bool Remove(T item) => throw new NotImplementedException();
+            public void RemoveAt(int index) => throw new NotImplementedException();
         }
 
         public class OneLine : Line
