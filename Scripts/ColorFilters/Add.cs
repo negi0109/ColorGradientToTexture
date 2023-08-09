@@ -17,5 +17,4 @@ namespace Negi0109.ColorGradientToTexture.Filters
             );
         }
     }
-
 }
