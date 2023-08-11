@@ -1,4 +1,4 @@
-[![release](https://img.shields.io/badge/Unity-2019.4+-white.svg?style=flat&logo=unity)](https://github.com/negi0109/ColorGradientToTexture)
+[![release](https://img.shields.io/badge/Unity-2020.0+-white.svg?style=flat&logo=unity)](https://github.com/negi0109/ColorGradientToTexture)
 [![release](https://github.com/negi0109/ColorGradientToTexture/actions/workflows/release.yml/badge.svg)](https://github.com/negi0109/ColorGradientToTexture/actions/workflows/release.yml)
 # ColorGradientToTexture
 

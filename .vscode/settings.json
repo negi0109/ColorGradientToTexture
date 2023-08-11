@@ -53,7 +53,5 @@
         "temp/":true,
         "Temp/":true
     },
-    "editor.defaultFormatter": "ms-dotnettools.csharp",
-    "omnisharp.enableMsBuildLoadProjectsOnDemand": true,
-    "omnisharp.enableRoslynAnalyzers": true
+    "dotnet.defaultSolution": "ColorGradientToTexture.sln"
 }
