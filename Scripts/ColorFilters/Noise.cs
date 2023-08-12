@@ -1,6 +1,4 @@
-using System;
 using UnityEditor;
-using UnityEngine;
 
 namespace Negi0109.ColorGradientToTexture.Filters
 {
@@ -28,7 +26,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
                 () => { weight = EditorGUILayout.Slider("weight", weight, 0f, 1f); }
             );
             updated |= Watch(
-                () => (int)seed,
+                () => seed,
                 () => { seed = EditorGUILayout.IntField("seed", seed); }
             );
 

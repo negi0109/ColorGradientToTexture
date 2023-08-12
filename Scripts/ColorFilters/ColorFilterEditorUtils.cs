@@ -1,6 +1,5 @@
 using System;
 using UnityEditor;
-using UnityEngine;
 
 namespace Negi0109.ColorGradientToTexture
 {

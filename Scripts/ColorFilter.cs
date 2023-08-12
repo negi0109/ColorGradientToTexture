@@ -1,9 +1,8 @@
 using System;
-using UnityEditor;
 
 namespace Negi0109.ColorGradientToTexture
 {
-    [System.Serializable]
+    [Serializable]
     public abstract class ColorFilter
     {
         public static ColorFilter DefaultFilter { get => new Filters.Scale(); }
