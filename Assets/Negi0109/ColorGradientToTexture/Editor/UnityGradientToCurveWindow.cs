@@ -13,8 +13,8 @@ namespace Negi0109.ColorGradientToTexture
         public UnityGradientToCurveWindow(ColorGradient colorGradient)
         {
             this.colorGradient = colorGradient;
-            this.gradient = new Gradient();
-            this.mode = AnimationUtility.TangentMode.Linear;
+            gradient = new Gradient();
+            mode = AnimationUtility.TangentMode.Linear;
         }
 
         public override void OnGUI(Rect rect)

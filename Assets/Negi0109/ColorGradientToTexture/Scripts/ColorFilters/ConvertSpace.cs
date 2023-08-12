@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using UnityEditor;
 using UnityEngine;
 
@@ -14,14 +15,12 @@ namespace Negi0109.ColorGradientToTexture.Filters
 
         public ConvertType type;
         public override float Evaluate(float v)
-        {
-            switch (type)
-            {
-                case ConvertType.GammaToLinear: return Mathf.GammaToLinearSpace(v);
-                case ConvertType.LinearToGamma: return Mathf.LinearToGammaSpace(v);
-                default: return v;
-            }
-        }
+         => type switch
+         {
+             ConvertType.GammaToLinear => Mathf.GammaToLinearSpace(v),
+             ConvertType.LinearToGamma => Mathf.LinearToGammaSpace(v),
+             _ => v
+         };
 
         public override bool Editor()
         {

@@ -84,8 +84,10 @@ namespace Negi0109.ColorGradientToTexture
 
             AssetDatabase.CreateAsset(parent, $"{filePath}/ColorGradient.asset");
 
-            var texture = new Texture2D(parent.textureSize.x, parent.textureSize.y, TextureFormat.ARGB32, false);
-            texture.name = "texture";
+            var texture = new Texture2D(parent.textureSize.x, parent.textureSize.y, TextureFormat.ARGB32, false)
+            {
+                name = "texture"
+            };
             parent.texture = texture;
 
             AssetDatabase.AddObjectToAsset(texture, parent);

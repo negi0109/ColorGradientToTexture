@@ -12,23 +12,15 @@ namespace Negi0109.ColorGradientToTexture.Filters
         public Type type;
         public float value;
 
-        public float GetValue(Utils.ArraySegment2DBase<float> segment = null)
+        public float GetValue(Utils.ArraySegment2DBase<float> segment)
+        => type switch
         {
-            if (type != Type.Free && segment == null) throw new ArgumentException();
-
-            switch (type)
-            {
-                case Type.Free:
-                    return value; break;
-                case Type.Avg:
-                    return segment.GetAll().Average(); break;
-                case Type.Min:
-                    return segment.GetAll().Min(); break;
-                case Type.Max:
-                    return segment.GetAll().Max(); break;
-                default: return 0;
-            }
-        }
+            Type.Free => value,
+            Type.Avg => segment.GetAll().Average(),
+            Type.Min => segment.GetAll().Min(),
+            Type.Max => segment.GetAll().Max(),
+            _ => 0
+        };
 
         public bool Editor()
         {
