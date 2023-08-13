@@ -9,7 +9,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
     [System.Serializable]
     public class Formula : ColorFilter
     {
-        public string formula;
+        public string formula = "";
         private string compiledFormula;
         private Func<float, float, float, float> compiled;
 
@@ -53,8 +53,8 @@ namespace Negi0109.ColorGradientToTexture.Filters
             public static Func<float, float, float, float> Compile(string formula)
             {
                 var tokens = Tokenize(formula);
-
-                if (tokens.Count == 1)
+                if (tokens.Count == 0) return (float v, float x, float y) => v;
+                else if (tokens.Count == 1)
                 {
                     var token = tokens[0];
                     if (token is ConstantToken)
