@@ -52,28 +52,42 @@ namespace Negi0109.ColorGradientToTexture.Filters
 
             public static Func<float, float, float, float> Compile(string formula)
             {
-                var tokens = Tokenize(formula);
-                if (tokens.Count == 0) return (float v, float x, float y) => v;
-                else if (tokens.Count == 1)
+                var tokens = Tokenize(formula).ToArray();
+
+                if (tokens.Length == 0) return (float v, float x, float y) => v;
+                else if (tokens.Length == 1)
                 {
-                    var token = tokens[0];
+                    var body = ParseExpression(new ArraySegment<Token>(tokens));
+                    var lambda = Expression.Lambda<Func<float, float, float, float>>(body, vParams, xParams, yParams);
+
+                    return lambda.Compile();
+                }
+
+                return (float v, float x, float y) => v;
+            }
+
+            public static Expression ParseExpression(ArraySegment<Token> tokens)
+            {
+                if (tokens.Count == 1)
+                {
+                    var token = tokens.Array[tokens.Offset];
+
                     if (token is ConstantToken)
                     {
-                        var constant = ((ConstantToken)token).value;
-                        return (float v, float x, float y) => constant;
+                        return Expression.Constant(((ConstantToken)token).value);
                     }
                     else if (token is VariableToken)
                     {
                         switch (((VariableToken)token).value)
                         {
-                            case "v": return (float v, float x, float y) => v;
-                            case "x": return (float v, float x, float y) => x;
-                            case "y": return (float v, float x, float y) => y;
+                            case "v": return vParams;
+                            case "x": return xParams;
+                            case "y": return yParams;
                         }
                     }
                 }
 
-                return (float v, float x, float y) => v;
+                return Expression.Constant(1f);
             }
 
             public class Token
