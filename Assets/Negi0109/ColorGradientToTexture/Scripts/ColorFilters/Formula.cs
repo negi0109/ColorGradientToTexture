@@ -2,6 +2,7 @@ using UnityEditor;
 using UnityEngine;
 using System;
 using System.Linq.Expressions;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace Negi0109.ColorGradientToTexture.Filters
@@ -55,7 +56,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
                 var tokens = Tokenize(formula).ToArray();
 
                 if (tokens.Length == 0) return (float v, float x, float y) => v;
-                else if (tokens.Length == 1)
+                else if (tokens.Length > 0)
                 {
                     var body = ParseExpression(new ArraySegment<Token>(tokens));
                     var lambda = Expression.Lambda<Func<float, float, float, float>>(body, vParams, xParams, yParams);
@@ -86,6 +87,37 @@ namespace Negi0109.ColorGradientToTexture.Filters
                         }
                     }
                 }
+                else
+                {
+                    var lowPriority = 1000;
+                    var lowPriorityOperatorIndex = 0;
+
+                    for (int i = tokens.Count - 1; i >= 0; i--)
+                    {
+                        if (tokens.Array[tokens.Offset + i] is OperatorToken)
+                        {
+                            var token = tokens.Array[tokens.Offset + i] as OperatorToken;
+                            if (token.Priority < lowPriority)
+                            {
+                                lowPriorityOperatorIndex = i;
+                                lowPriority = token.Priority;
+                            }
+                        }
+                    }
+                    Debug.Log(string.Join(",", tokens.Select(v => v.ToString())));
+                    Debug.Log($"{tokens.Count} {lowPriorityOperatorIndex} {tokens.Array[tokens.Offset + lowPriorityOperatorIndex]}");
+
+                    return ((OperatorToken)tokens.Array[tokens.Offset + lowPriorityOperatorIndex]).GetExpression(
+                        ParseExpression(new ArraySegment<Token>(
+                            tokens.Array, tokens.Offset, lowPriorityOperatorIndex
+                        )),
+                        ParseExpression(new ArraySegment<Token>(
+                            tokens.Array,
+                            tokens.Offset + lowPriorityOperatorIndex + 1,
+                            tokens.Count - lowPriorityOperatorIndex - 1
+                        ))
+                    );
+                }
 
                 return Expression.Constant(1f);
             }
@@ -101,8 +133,27 @@ namespace Negi0109.ColorGradientToTexture.Filters
             public class ConstantToken : Token { public float value; }
             public class OperatorToken : Token
             {
-                public enum Operator { Add, Subtract, Multiply, Divide, LeftBracket, RightBracket }
                 public Operator value;
+                public enum Operator { Add, Subtract, Multiply, Divide, LeftBracket, RightBracket }
+                public int Priority =>
+                    value switch
+                    {
+                        Operator.Add => 1,
+                        Operator.Subtract => 1,
+                        Operator.Multiply => 2,
+                        Operator.Divide => 2,
+                        _ => 0
+                    };
+
+                public Expression GetExpression(Expression v0, Expression v1) =>
+                    value switch
+                    {
+                        Operator.Add => Expression.Add(v0, v1),
+                        Operator.Subtract => Expression.Subtract(v0, v1),
+                        Operator.Multiply => Expression.Multiply(v0, v1),
+                        Operator.Divide => Expression.Divide(v0, v1),
+                        _ => Expression.Constant(1f)
+                    };
             }
 
             public static List<Token> Tokenize(string text)
@@ -111,6 +162,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
 
                 for (var i = 0; i < text.Length; i++)
                 {
+                    Debug.Log($"{i}: {text[i]}");
                     switch (text[i])
                     {
                         case '(':
@@ -121,6 +173,15 @@ namespace Negi0109.ColorGradientToTexture.Filters
                             break;
                         case '+':
                             tokens.Add(new OperatorToken() { value = OperatorToken.Operator.Add });
+                            break;
+                        case '-':
+                            tokens.Add(new OperatorToken() { value = OperatorToken.Operator.Subtract });
+                            break;
+                        case '*':
+                            tokens.Add(new OperatorToken() { value = OperatorToken.Operator.Multiply });
+                            break;
+                        case '/':
+                            tokens.Add(new OperatorToken() { value = OperatorToken.Operator.Divide });
                             break;
                         case '0':
                         case '1':
@@ -134,7 +195,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
                         case '9':
                             {
                                 GetFloat(text, i, out int length, out float value);
-                                i += length;
+                                Debug.Log($"{i} {length}: {value}");
                                 tokens.Add(new ConstantToken() { value = value });
                             }
                             break;
@@ -154,6 +215,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
                                 {
                                     tokens.Add(new VariableToken() { value = token });
                                 }
+                                i += tokenLength - 1;
                             }
                             break;
                     }
