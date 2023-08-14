@@ -136,8 +136,23 @@ namespace Negi0109.ColorGradientToTexture.Filters
                     _ => 0
                 };
 
-            public Expression GetExpression(Expression v0, Expression v1) =>
-                value switch
+            public Expression GetExpression(Expression v0, Expression v1)
+            {
+                if (v0 is ConstantExpression v0c && v1 is ConstantExpression v1c)
+                {
+                    var v0f = (float)v0c.Value;
+                    var v1f = (float)v1c.Value;
+                    return value switch
+                    {
+                        Operator.Add => Expression.Constant(v0f + v1f),
+                        Operator.Subtract => Expression.Constant(v0f - v1f),
+                        Operator.Multiply => Expression.Constant(v0f * v1f),
+                        Operator.Divide => Expression.Constant(v0f / v1f),
+                        _ => Expression.Constant(1f)
+                    };
+                }
+
+                return value switch
                 {
                     Operator.Add => Expression.Add(v0, v1),
                     Operator.Subtract => Expression.Subtract(v0, v1),
@@ -145,6 +160,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
                     Operator.Divide => Expression.Divide(v0, v1),
                     _ => Expression.Constant(1f)
                 };
+            }
         }
 
         [Serializable]

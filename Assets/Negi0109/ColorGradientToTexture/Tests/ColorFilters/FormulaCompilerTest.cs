@@ -24,6 +24,7 @@ namespace Negi0109.ColorGradientToTexture.Tests.ColorFilterTests
             var func = lambda.Compile();
 
             Assert.That(func(), Is.EqualTo(e));
+            Assert.That(body, Is.InstanceOf(typeof(ConstantExpression)), "Compiler optimization");
         }
 
         [TestCase("2*(v+1", "No matching ')' for '('", 2)]
