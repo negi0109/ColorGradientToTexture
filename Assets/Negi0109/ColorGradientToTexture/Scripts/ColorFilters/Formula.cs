@@ -187,6 +187,9 @@ namespace Negi0109.ColorGradientToTexture.Filters
                                         i = j;
                                         break;
                                     }
+
+                                    if (j == text.Length - 1)
+                                        throw new FormatException($"No matching ')' for '(' at {i}");
                                 }
                                 break;
                             }

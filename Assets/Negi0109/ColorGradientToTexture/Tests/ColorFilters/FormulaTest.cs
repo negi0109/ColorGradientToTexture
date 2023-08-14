@@ -1,3 +1,4 @@
+using System;
 using NUnit.Framework;
 
 namespace Negi0109.ColorGradientToTexture.Tests.ColorFilterTests
@@ -25,6 +26,15 @@ namespace Negi0109.ColorGradientToTexture.Tests.ColorFilterTests
             filter.EvaluateAll(ref ar);
 
             Assert.That(ar, Is.EqualTo(new float[,] { { e1, e2 }, { e3, e4 } }));
+        }
+
+        [TestCase("2*(v+1", "No matching ')' for '(' at 2")]
+        public void ThrowParseError(string formula, string message)
+        {
+            var exception = Assert.Throws<FormatException>(
+                () => Filters.Formula.FormulaCompiler.Compile(formula)
+            );
+            Assert.That(exception.Message, Is.EqualTo(message));
         }
     }
 }
