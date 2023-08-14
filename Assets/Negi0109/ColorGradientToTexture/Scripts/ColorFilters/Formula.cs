@@ -71,24 +71,9 @@ namespace Negi0109.ColorGradientToTexture.Filters
             {
                 if (tokens.Count == 1)
                 {
-                    var token = tokens.Array[tokens.Offset];
-
-                    if (token is ConstantToken)
+                    if (tokens.Array[tokens.Offset] is MonomialToken token)
                     {
-                        return Expression.Constant(((ConstantToken)token).value);
-                    }
-                    else if (token is VariableToken)
-                    {
-                        switch (((VariableToken)token).value)
-                        {
-                            case "v": return vParams;
-                            case "x": return xParams;
-                            case "y": return yParams;
-                        }
-                    }
-                    else if (token is FormulaToken)
-                    {
-                        return ((FormulaToken)token).GetExpression();
+                        return token.GetExpression();
                     }
                 }
                 else
@@ -98,9 +83,8 @@ namespace Negi0109.ColorGradientToTexture.Filters
 
                     for (int i = tokens.Count - 1; i >= 0; i--)
                     {
-                        if (tokens.Array[tokens.Offset + i] is OperatorToken)
+                        if (tokens.Array[tokens.Offset + i] is OperatorToken token)
                         {
-                            var token = tokens.Array[tokens.Offset + i] as OperatorToken;
                             if (token.Priority < lowPriority)
                             {
                                 lowPriorityOperatorIndex = i;
@@ -124,15 +108,37 @@ namespace Negi0109.ColorGradientToTexture.Filters
                 return Expression.Constant(1f);
             }
 
-            public class Token
+            public class Token { }
+
+            public abstract class MonomialToken : Token
             {
-                public enum Type { Operator, Function, Constant, Variable }
-                public Type type;
+                public abstract Expression GetExpression();
             }
 
             public class FunctionToken : Token { public string func; }
-            public class VariableToken : Token { public string value; }
-            public class ConstantToken : Token { public float value; }
+            public class VariableToken : MonomialToken
+            {
+
+                public string value;
+                public override Expression GetExpression()
+                    => value switch
+                    {
+                        "x" => xParams,
+                        "y" => yParams,
+                        "v" => vParams,
+                        _ => vParams
+                    };
+            }
+            public class ConstantToken : MonomialToken
+            {
+                public float value;
+                public override Expression GetExpression() => Expression.Constant(value);
+            }
+            public class FormulaToken : MonomialToken
+            {
+                public Token[] tokens;
+                public override Expression GetExpression() => ParseExpression(new ArraySegment<Token>(tokens));
+            }
             public class OperatorToken : Token
             {
                 public Operator value;
@@ -156,11 +162,6 @@ namespace Negi0109.ColorGradientToTexture.Filters
                         Operator.Divide => Expression.Divide(v0, v1),
                         _ => Expression.Constant(1f)
                     };
-            }
-            public class FormulaToken : Token
-            {
-                public Token[] tokens;
-                public Expression GetExpression() => ParseExpression(new ArraySegment<Token>(tokens));
             }
 
             public static Token[] Tokenize(string text)
@@ -202,24 +203,15 @@ namespace Negi0109.ColorGradientToTexture.Filters
                         case '/':
                             tokens.Add(new OperatorToken() { value = OperatorToken.Operator.Divide });
                             break;
-                        case '0':
-                        case '1':
-                        case '2':
-                        case '3':
-                        case '4':
-                        case '5':
-                        case '6':
-                        case '7':
-                        case '8':
-                        case '9':
+                        case ' ': break;
+                        default:
+                            if (char.IsDigit(text[i]))
                             {
                                 GetFloat(text, i, out int length, out float value);
                                 i += length - 1;
                                 tokens.Add(new ConstantToken() { value = value });
                             }
-                            break;
-                        default:
-                            if (text[i] == ' ') continue;
+                            else
                             {
                                 var index = text.IndexOfAny(new char[] {
                                     '(', ')', '+', '-', '*', '/', '%'
@@ -243,10 +235,6 @@ namespace Negi0109.ColorGradientToTexture.Filters
                 return tokens.ToArray();
             }
 
-            // text = 0.333
-            // begin = 0
-            // value = 0.333f
-            // length = 5
             public static void GetFloat(string text, int begin, out int length, out float value)
             {
                 for (var i = text.Length - begin; i >= 1; i--)
