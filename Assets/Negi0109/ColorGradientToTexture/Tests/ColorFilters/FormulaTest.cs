@@ -28,13 +28,14 @@ namespace Negi0109.ColorGradientToTexture.Tests.ColorFilterTests
             Assert.That(ar, Is.EqualTo(new float[,] { { e1, e2 }, { e3, e4 } }));
         }
 
-        [TestCase("2*(v+1", "No matching ')' for '(' at 2")]
-        public void ThrowParseError(string formula, string message)
+        [TestCase("2*(v+1", "No matching ')' for '('", 2)]
+        public void ThrowParseError(string formula, string message, int location)
         {
-            var exception = Assert.Throws<FormatException>(
-                () => Filters.Formula.FormulaCompiler.Compile(formula)
+            var exception = Assert.Throws<Filters.FormulaCompiler.ParseException>(
+                () => Filters.FormulaCompiler.Compile(formula)
             );
             Assert.That(exception.Message, Is.EqualTo(message));
+            Assert.That(exception.location, Is.EqualTo(location));
         }
     }
 }
