@@ -22,7 +22,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
             {
                 for (int y = 0; y < array.GetLength(1); y++)
                 {
-                    array[x, y] = compiled(array[x, y], (float)x, (float)y);
+                    array[x, y] = compiled(array[x, y], x, y);
                 }
             }
         }
@@ -53,7 +53,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
 
             public static Func<float, float, float, float> Compile(string formula)
             {
-                var tokens = Tokenize(formula).ToArray();
+                var tokens = Tokenize(formula);
 
                 if (tokens.Length == 0) return (float v, float x, float y) => v;
                 else if (tokens.Length > 0)
@@ -86,6 +86,10 @@ namespace Negi0109.ColorGradientToTexture.Filters
                             case "y": return yParams;
                         }
                     }
+                    else if (token is FormulaToken)
+                    {
+                        return ((FormulaToken)token).GetExpression();
+                    }
                 }
                 else
                 {
@@ -104,8 +108,6 @@ namespace Negi0109.ColorGradientToTexture.Filters
                             }
                         }
                     }
-                    Debug.Log(string.Join(",", tokens.Select(v => v.ToString())));
-                    Debug.Log($"{tokens.Count} {lowPriorityOperatorIndex} {tokens.Array[tokens.Offset + lowPriorityOperatorIndex]}");
 
                     return ((OperatorToken)tokens.Array[tokens.Offset + lowPriorityOperatorIndex]).GetExpression(
                         ParseExpression(new ArraySegment<Token>(
@@ -155,22 +157,39 @@ namespace Negi0109.ColorGradientToTexture.Filters
                         _ => Expression.Constant(1f)
                     };
             }
+            public class FormulaToken : Token
+            {
+                public Token[] tokens;
+                public Expression GetExpression() => ParseExpression(new ArraySegment<Token>(tokens));
+            }
 
-            public static List<Token> Tokenize(string text)
+            public static Token[] Tokenize(string text)
             {
                 List<Token> tokens = new List<Token>();
 
                 for (var i = 0; i < text.Length; i++)
                 {
-                    Debug.Log($"{i}: {text[i]}");
                     switch (text[i])
                     {
                         case '(':
-                            tokens.Add(new OperatorToken() { value = OperatorToken.Operator.LeftBracket });
-                            break;
-                        case ')':
-                            tokens.Add(new OperatorToken() { value = OperatorToken.Operator.RightBracket });
-                            break;
+                            {
+                                int nest = 1;
+
+                                for (var j = i + 1; j < text.Length; j++)
+                                {
+                                    var chr = text[j];
+                                    if (chr == '(') nest++;
+                                    if (chr == ')') nest--;
+                                    if (nest == 0)
+                                    {
+                                        tokens.Add(new FormulaToken() { tokens = Tokenize(text.Substring(i + 1, j - i - 1)) });
+                                        i = j;
+                                        break;
+                                    }
+                                }
+                                break;
+                            }
+                        case ')': break;
                         case '+':
                             tokens.Add(new OperatorToken() { value = OperatorToken.Operator.Add });
                             break;
@@ -195,7 +214,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
                         case '9':
                             {
                                 GetFloat(text, i, out int length, out float value);
-                                Debug.Log($"{i} {length}: {value}");
+                                i += length - 1;
                                 tokens.Add(new ConstantToken() { value = value });
                             }
                             break;
@@ -205,7 +224,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
                                 var index = text.IndexOfAny(new char[] {
                                     '(', ')', '+', '-', '*', '/', '%'
                                 }, i);
-                                var tokenLength = 0;
+                                int tokenLength;
                                 if (index == -1) tokenLength = text.Length - i;
                                 else tokenLength = index - i;
 
@@ -221,7 +240,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
                     }
                 }
 
-                return tokens;
+                return tokens.ToArray();
             }
 
             // text = 0.333

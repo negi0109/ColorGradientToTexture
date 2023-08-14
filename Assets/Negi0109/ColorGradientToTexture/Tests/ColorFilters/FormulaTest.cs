@@ -16,6 +16,7 @@ namespace Negi0109.ColorGradientToTexture.Tests.ColorFilterTests
         [TestCase("v*2", 2f, 4f, 6f, 8f)]
         [TestCase("v/2", 0.5f, 1f, 1.5f, 2f)]
         [TestCase("v+1*2", 3f, 4f, 5f, 6f)]
+        [TestCase("(v+1)*2", 4f, 6f, 8f, 10f)]
         [TestCase("2*v+1", 3f, 5f, 7f, 9f)]
         public void Evaluate(string formula, float e1, float e2, float e3, float e4)
         {
