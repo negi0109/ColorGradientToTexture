@@ -203,7 +203,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
                             }
                             break;
                         }
-                    case ')': break;
+                    case ')': throw new ParseException($"No matching '(' for ')'", i);
                     case '+':
                         tokens.Add(new OperatorToken(i, i) { value = OperatorToken.Operator.Add });
                         break;

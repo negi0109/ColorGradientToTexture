@@ -27,6 +27,7 @@ namespace Negi0109.ColorGradientToTexture.Tests.ColorFilterTests
             Assert.That(body, Is.InstanceOf(typeof(ConstantExpression)), "Compiler optimization");
         }
 
+        [TestCase("2*)+3", "No matching '(' for ')'", 2)]
         [TestCase("2*(v+1", "No matching ')' for '('", 2)]
         public void ThrowParseError(string formula, string message, int location)
         {
