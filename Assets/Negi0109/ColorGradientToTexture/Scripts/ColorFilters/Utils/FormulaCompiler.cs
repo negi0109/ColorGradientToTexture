@@ -166,11 +166,18 @@ namespace Negi0109.ColorGradientToTexture.Filters
         [Serializable]
         public class ParseException : Exception
         {
-            public readonly int location;
+            public readonly int begin;
+            public readonly int end;
 
             public ParseException(string message, int location) : base(message)
             {
-                this.location = location;
+                this.begin = location;
+                this.end = location;
+            }
+            public ParseException(string message, int location, int end) : base(message)
+            {
+                this.begin = location;
+                this.end = end;
             }
         }
 
@@ -233,10 +240,15 @@ namespace Negi0109.ColorGradientToTexture.Filters
                             if (index == -1) tokenLength = text.Length - i;
                             else tokenLength = index - i;
 
+                            tokenLength = Mathf.Max(tokenLength, 0);
                             var token = text.Substring(i, tokenLength);
                             if (allParams.Contains(token))
                             {
                                 tokens.Add(new VariableToken(i, i + tokenLength - 1) { value = token });
+                            }
+                            else
+                            {
+                                throw new ParseException($"{token} is undefined identifier", i, i + tokenLength - 1);
                             }
                             i += tokenLength - 1;
                         }

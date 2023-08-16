@@ -27,15 +27,17 @@ namespace Negi0109.ColorGradientToTexture.Tests.ColorFilterTests
             Assert.That(body, Is.InstanceOf(typeof(ConstantExpression)), "Compiler optimization");
         }
 
-        [TestCase("2*)+3", "No matching '(' for ')'", 2)]
-        [TestCase("2*(v+1", "No matching ')' for '('", 2)]
-        public void ThrowParseError(string formula, string message, int location)
+        [TestCase("2*2+hoge", "hoge is undefined identifier", 4, 7)]
+        [TestCase("2*)+3", "No matching '(' for ')'", 2, 2)]
+        [TestCase("2*(v+1", "No matching ')' for '('", 2, 2)]
+        public void ThrowParseError(string formula, string message, int begin, int end)
         {
             var exception = Assert.Throws<Filters.FormulaCompiler.ParseException>(
                 () => Filters.FormulaCompiler.GetExpression(formula)
             );
             Assert.That(exception.Message, Is.EqualTo(message));
-            Assert.That(exception.location, Is.EqualTo(location));
+            Assert.That(exception.begin, Is.EqualTo(begin));
+            Assert.That(exception.end, Is.EqualTo(end));
         }
     }
 }
