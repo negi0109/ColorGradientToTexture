@@ -39,11 +39,17 @@ namespace Negi0109.ColorGradientToTexture.Filters
                 {
                     return token.GetExpression();
                 }
+
+                throw new ParseException(
+                    "operator is nothing",
+                    tokens.Array[tokens.Offset].begin,
+                    tokens.Array[tokens.Offset].end
+                );
             }
             else
             {
                 var lowPriority = 1000;
-                var lowPriorityOperatorIndex = 0;
+                var lowPriorityOperatorIndex = -1;
 
                 for (int i = tokens.Count - 1; i >= 0; i--)
                 {
@@ -57,7 +63,25 @@ namespace Negi0109.ColorGradientToTexture.Filters
                     }
                 }
 
-                return ((OperatorToken)tokens.Array[tokens.Offset + lowPriorityOperatorIndex]).GetExpression(
+                if (lowPriorityOperatorIndex == -1)
+                {
+                    throw new ParseException(
+                        "operator is nothing",
+                        tokens.Array[tokens.Offset].begin,
+                        tokens.Array[tokens.Offset + tokens.Count - 1].end
+                    );
+                }
+
+                var operatorToken = (OperatorToken)tokens.Array[tokens.Offset + lowPriorityOperatorIndex];
+
+
+                if (lowPriorityOperatorIndex == tokens.Count - 1)
+                    throw new ParseException($"right operand of '{operatorToken.value}' is nothing", operatorToken.begin);
+
+                if (lowPriorityOperatorIndex == 0)
+                    throw new ParseException($"left operand of '{operatorToken.value}' is nothing", operatorToken.begin);
+
+                return operatorToken.GetExpression(
                     ParseExpression(new ArraySegment<Token>(
                         tokens.Array, tokens.Offset, lowPriorityOperatorIndex
                     )),
@@ -68,8 +92,6 @@ namespace Negi0109.ColorGradientToTexture.Filters
                     ))
                 );
             }
-
-            return Expression.Constant(1f);
         }
 
         public class Token
@@ -124,15 +146,15 @@ namespace Negi0109.ColorGradientToTexture.Filters
         {
             public OperatorToken(int begin, int end) : base(begin, end) { }
 
-            public Operator value;
-            public enum Operator { Add, Subtract, Multiply, Divide, LeftBracket, RightBracket }
+            public char value;
+            public enum Operator { Add, Subtract, Multiply, Divide }
             public int Priority =>
                 value switch
                 {
-                    Operator.Add => 1,
-                    Operator.Subtract => 1,
-                    Operator.Multiply => 2,
-                    Operator.Divide => 2,
+                    '+' => 1,
+                    '-' => 1,
+                    '*' => 2,
+                    '/' => 2,
                     _ => 0
                 };
 
@@ -144,20 +166,20 @@ namespace Negi0109.ColorGradientToTexture.Filters
                     var v1f = (float)v1c.Value;
                     return value switch
                     {
-                        Operator.Add => Expression.Constant(v0f + v1f),
-                        Operator.Subtract => Expression.Constant(v0f - v1f),
-                        Operator.Multiply => Expression.Constant(v0f * v1f),
-                        Operator.Divide => Expression.Constant(v0f / v1f),
+                        '+' => Expression.Constant(v0f + v1f),
+                        '-' => Expression.Constant(v0f - v1f),
+                        '*' => Expression.Constant(v0f * v1f),
+                        '/' => Expression.Constant(v0f / v1f),
                         _ => Expression.Constant(1f)
                     };
                 }
 
                 return value switch
                 {
-                    Operator.Add => Expression.Add(v0, v1),
-                    Operator.Subtract => Expression.Subtract(v0, v1),
-                    Operator.Multiply => Expression.Multiply(v0, v1),
-                    Operator.Divide => Expression.Divide(v0, v1),
+                    '+' => Expression.Add(v0, v1),
+                    '-' => Expression.Subtract(v0, v1),
+                    '*' => Expression.Multiply(v0, v1),
+                    '/' => Expression.Divide(v0, v1),
                     _ => Expression.Constant(1f)
                 };
             }
@@ -181,7 +203,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
             }
         }
 
-        public static Token[] Tokenize(string text)
+        public static Token[] Tokenize(string text, int offset = 0)
         {
             List<Token> tokens = new List<Token>();
 
@@ -200,7 +222,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
                                 if (chr == ')') nest--;
                                 if (nest == 0)
                                 {
-                                    tokens.Add(new FormulaToken(i, j) { tokens = Tokenize(text.Substring(i + 1, j - i - 1)) });
+                                    tokens.Add(new FormulaToken(i, j) { tokens = Tokenize(text.Substring(i + 1, j - i - 1), i + 1 + offset) });
                                     i = j;
                                     break;
                                 }
@@ -212,24 +234,24 @@ namespace Negi0109.ColorGradientToTexture.Filters
                         }
                     case ')': throw new ParseException($"No matching '(' for ')'", i);
                     case '+':
-                        tokens.Add(new OperatorToken(i, i) { value = OperatorToken.Operator.Add });
+                        tokens.Add(new OperatorToken(i + offset, i + offset) { value = '+' });
                         break;
                     case '-':
-                        tokens.Add(new OperatorToken(i, i) { value = OperatorToken.Operator.Subtract });
+                        tokens.Add(new OperatorToken(i + offset, i + offset) { value = '-' });
                         break;
                     case '*':
-                        tokens.Add(new OperatorToken(i, i) { value = OperatorToken.Operator.Multiply });
+                        tokens.Add(new OperatorToken(i + offset, i + offset) { value = '*' });
                         break;
                     case '/':
-                        tokens.Add(new OperatorToken(i, i) { value = OperatorToken.Operator.Divide });
+                        tokens.Add(new OperatorToken(i + offset, i + offset) { value = '/' });
                         break;
                     case ' ': break;
                     default:
                         if (char.IsDigit(text[i]))
                         {
                             GetFloat(text, i, out int length, out float value);
+                            tokens.Add(new ConstantToken(offset + i, offset + i + length - 1) { value = value });
                             i += length - 1;
-                            tokens.Add(new ConstantToken(i, i + length - 1) { value = value });
                         }
                         else
                         {
@@ -244,11 +266,11 @@ namespace Negi0109.ColorGradientToTexture.Filters
                             var token = text.Substring(i, tokenLength);
                             if (allParams.Contains(token))
                             {
-                                tokens.Add(new VariableToken(i, i + tokenLength - 1) { value = token });
+                                tokens.Add(new VariableToken(i + offset, i + tokenLength - 1 + offset) { value = token });
                             }
                             else
                             {
-                                throw new ParseException($"{token} is undefined identifier", i, i + tokenLength - 1);
+                                throw new ParseException($"{token} is undefined identifier", i + offset, i + offset + tokenLength - 1);
                             }
                             i += tokenLength - 1;
                         }

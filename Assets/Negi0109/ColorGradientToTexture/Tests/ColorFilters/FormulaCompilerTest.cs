@@ -30,6 +30,10 @@ namespace Negi0109.ColorGradientToTexture.Tests.ColorFilterTests
         [TestCase("2*2+hoge", "hoge is undefined identifier", 4, 7)]
         [TestCase("2*)+3", "No matching '(' for ')'", 2, 2)]
         [TestCase("2*(v+1", "No matching ')' for '('", 2, 2)]
+        [TestCase("2*3+", "right operand of '+' is nothing", 3, 3)]
+        [TestCase("+2*3", "left operand of '+' is nothing", 0, 0)]
+        [TestCase("10*(+2*3)", "left operand of '+' is nothing", 4, 4)]
+        [TestCase("3*10 3", "operator is nothing", 2, 5)]
         public void ThrowParseError(string formula, string message, int begin, int end)
         {
             var exception = Assert.Throws<Filters.FormulaCompiler.ParseException>(
