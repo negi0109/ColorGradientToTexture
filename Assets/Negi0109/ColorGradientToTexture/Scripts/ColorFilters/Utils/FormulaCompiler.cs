@@ -144,7 +144,11 @@ namespace Negi0109.ColorGradientToTexture.Filters
 
         public class OperatorToken : Token
         {
-            public OperatorToken(int begin, int end) : base(begin, end) { }
+            public OperatorToken(int begin, int end, char value) : base(begin, end)
+            {
+                this.value = value;
+                _ = Priority;
+            }
 
             public char value;
             public enum Operator { Add, Subtract, Multiply, Divide }
@@ -155,7 +159,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
                     '-' => 1,
                     '*' => 2,
                     '/' => 2,
-                    _ => 0
+                    _ => throw new ParseException($"{value} is undefined identifier", begin, begin)
                 };
 
             public Expression GetExpression(Expression v0, Expression v1)
@@ -233,18 +237,6 @@ namespace Negi0109.ColorGradientToTexture.Filters
                             break;
                         }
                     case ')': throw new ParseException($"No matching '(' for ')'", i);
-                    case '+':
-                        tokens.Add(new OperatorToken(i + offset, i + offset) { value = '+' });
-                        break;
-                    case '-':
-                        tokens.Add(new OperatorToken(i + offset, i + offset) { value = '-' });
-                        break;
-                    case '*':
-                        tokens.Add(new OperatorToken(i + offset, i + offset) { value = '*' });
-                        break;
-                    case '/':
-                        tokens.Add(new OperatorToken(i + offset, i + offset) { value = '/' });
-                        break;
                     case ' ': break;
                     default:
                         if (char.IsDigit(text[i]))
@@ -253,10 +245,14 @@ namespace Negi0109.ColorGradientToTexture.Filters
                             tokens.Add(new ConstantToken(offset + i, offset + i + length - 1) { value = value });
                             i += length - 1;
                         }
+                        else if ("!\"#$%&'()=-^¥[@:]_/.;,<>+*?_}{`~|}".Contains(text[i]))
+                        {
+                            tokens.Add(new OperatorToken(i + offset, i + offset, text[i]));
+                        }
                         else
                         {
                             var index = text.IndexOfAny(new char[] {
-                                    '(', ')', '+', '-', '*', '/', '%'
+                                    '(', ')', '+', '-', '*', '/', '%', ' '
                                 }, i);
                             int tokenLength;
                             if (index == -1) tokenLength = text.Length - i;
