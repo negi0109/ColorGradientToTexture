@@ -4,12 +4,13 @@ using System;
 
 namespace Negi0109.ColorGradientToTexture.Filters
 {
-    [System.Serializable]
+    [Serializable]
     public class Formula : ColorFilter
     {
         public string formula = "";
         private string compiledFormula;
-        private Func<float, float, float, float> compiled;
+        private Func<float, float, float, float> compiled = (v, x, y) => v;
+        private Exception _exception = null;
 
         public override void EvaluateAll(ref float[,] array)
         {
@@ -26,18 +27,72 @@ namespace Negi0109.ColorGradientToTexture.Filters
 
         public override bool Editor()
         {
-            return Watch(
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.BeginVertical();
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("=", new GUILayoutOption[] { GUILayout.Width(12) });
+
+            var updated = Watch(
                 () => formula,
-                () => { formula = EditorGUILayout.TextField("formula", formula); }
+                () => { formula = EditorGUILayout.TextField(formula); }
             );
+            EditorGUILayout.EndHorizontal();
+
+            Compile();
+
+            if (_exception != null)
+            {
+                var style = new GUIStyle(EditorStyles.label);
+
+                var labelStyle = new GUIStyle(EditorStyles.label)
+                {
+                    richText = true,
+                    wordWrap = true
+                };
+                if (_exception is FormulaCompiler.ParseException parseException)
+                {
+                    EditorGUILayout.LabelField(DisplayParseException(formula, parseException), labelStyle);
+                }
+                else
+                {
+                    EditorGUILayout.LabelField($"<color=red>*** Unconfirmed error ***</color>\n{_exception.Message}", labelStyle);
+                }
+            }
+            EditorGUILayout.EndVertical();
+
+            return updated;
         }
 
         public void Compile()
         {
             if (formula == compiledFormula) return;
 
-            compiled = FormulaCompiler.Compile(formula);
-            compiledFormula = formula;
+            try
+            {
+                compiled = FormulaCompiler.Compile(formula);
+                _exception = null;
+            }
+            catch (Exception e)
+            {
+                _exception = e;
+            }
+            finally
+            {
+                compiledFormula = formula;
+            }
+        }
+
+        public string DisplayParseException(string errorFormula, FormulaCompiler.ParseException exception)
+        {
+            if (exception.begin < 0) return exception.Message;
+
+            var begin = exception.begin;
+            var end = exception.end + 1;
+            var length = end - begin;
+
+            return $"{errorFormula.Substring(0, begin)} <b><i><color=red>{errorFormula.Substring(begin, length)}</color></i></b> {errorFormula.Substring(end)}\n{exception.Message}";
         }
     }
 }
