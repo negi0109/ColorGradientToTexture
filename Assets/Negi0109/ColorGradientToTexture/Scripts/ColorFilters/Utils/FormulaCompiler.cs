@@ -263,6 +263,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
         {
             for (var i = text.Length - begin; i >= 1; i--)
             {
+                if (text[begin + i - 1] == ' ') continue;
                 if (float.TryParse(text.Substring(begin, i), out float parsed))
                 {
                     length = i;
