@@ -54,7 +54,10 @@ namespace Negi0109.ColorGradientToTexture.Tests.ColorFilterTests
         [TestCase("3+v+2", "(5 + v)")]
         [TestCase("3+v-2", "(1 + v)")]
         [TestCase("v-(3+2)", "(v + -5)")]
-        public void OptimizeParse(string formula, string expected)
+        [TestCase("3*4*v", "(12 * v)")]
+        [TestCase("3*v*4", "(12 * v)")]
+        [TestCase("4*v/2", "(2 * v)")]
+        public void Optimize(string formula, string expected)
         {
             var expression = Filters.FormulaCompiler.GetExpression(formula);
 

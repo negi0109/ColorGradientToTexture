@@ -155,9 +155,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
                 public override Expression GetExpression(Expression left, Expression right)
                 {
                     if (left is ConstantExpression lc && right is ConstantExpression rc) return ReduceConstantExpression(ExpressionType.Add, lc, rc);
-
-                    if (left is BinaryExpression lbe && lbe.NodeType == ExpressionType.Add)
-                        return ReduceCommutativeExpression(lbe, right);
+                    if (left is BinaryExpression lbe && lbe.NodeType == ExpressionType.Add) return ReduceCommutativeExpression(lbe, right);
                     return Expression.Add(left, right);
                 }
             }
@@ -179,6 +177,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
                 public override Expression GetExpression(Expression left, Expression right)
                 {
                     if (left is ConstantExpression lc && right is ConstantExpression rc) return ReduceConstantExpression(ExpressionType.Multiply, lc, rc);
+                    if (left is BinaryExpression lbe && lbe.NodeType == ExpressionType.Multiply) return ReduceCommutativeExpression(lbe, right);
                     return Expression.Multiply(left, right);
                 }
             }
@@ -188,8 +187,14 @@ namespace Negi0109.ColorGradientToTexture.Filters
                 public override int Priority => 2;
                 public override Expression GetExpression(Expression left, Expression right)
                 {
-                    if (left is ConstantExpression lc && right is ConstantExpression rc) return ReduceConstantExpression(ExpressionType.Divide, lc, rc);
-                    return Expression.Divide(left, right);
+                    if (right is ConstantExpression rc)
+                    {
+                        if (left is ConstantExpression lc) return ReduceConstantExpression(ExpressionType.Divide, lc, rc);
+
+                        return new MultiplyOperator().GetExpression(left, Expression.Constant(1f / (float)rc.Value));
+                    }
+
+                    return new MultiplyOperator().GetExpression(left, Expression.Divide(Expression.Constant(1f), right));
                 }
             }
 
