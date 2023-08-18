@@ -44,5 +44,21 @@ namespace Negi0109.ColorGradientToTexture.Tests.ColorFilterTests
             Assert.That(exception.begin, Is.EqualTo(begin));
             Assert.That(exception.end, Is.EqualTo(end));
         }
+
+        [TestCase("3-v", "(3 + (v * -1))")]
+        [TestCase("v-3", "(v + -3)")]
+        [TestCase("3+2", "5")]
+        [TestCase("3+2+v", "(5 + v)")]
+        [TestCase("v+(3+2)", "(v + 5)")]
+        [TestCase("v+3+2", "(v + 5)")]
+        [TestCase("3+v+2", "(5 + v)")]
+        [TestCase("3+v-2", "(1 + v)")]
+        [TestCase("v-(3+2)", "(v + -5)")]
+        public void OptimizeParse(string formula, string expected)
+        {
+            var expression = Filters.FormulaCompiler.GetExpression(formula);
+
+            Assert.That(expression.ToString(), Is.EqualTo(expected));
+        }
     }
 }

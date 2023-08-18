@@ -1,4 +1,3 @@
-using UnityEditor;
 using UnityEngine;
 using System;
 using System.Linq.Expressions;
@@ -155,8 +154,10 @@ namespace Negi0109.ColorGradientToTexture.Filters
                 public override int Priority => 1;
                 public override Expression GetExpression(Expression left, Expression right)
                 {
-                    if (left is ConstantExpression lc && right is ConstantExpression rc)
-                        return Expression.Constant((float)lc.Value + (float)rc.Value);
+                    if (left is ConstantExpression lc && right is ConstantExpression rc) return ReduceConstantExpression(ExpressionType.Add, lc, rc);
+
+                    if (left is BinaryExpression lbe && lbe.NodeType == ExpressionType.Add)
+                        return ReduceCommutativeExpression(lbe, right);
                     return Expression.Add(left, right);
                 }
             }
@@ -166,9 +167,9 @@ namespace Negi0109.ColorGradientToTexture.Filters
                 public override int Priority => 1;
                 public override Expression GetExpression(Expression left, Expression right)
                 {
-                    if (left is ConstantExpression lc && right is ConstantExpression rc)
-                        return Expression.Constant((float)lc.Value - (float)rc.Value);
-                    return Expression.Subtract(left, right);
+                    if (left is ConstantExpression lc && right is ConstantExpression rc) return ReduceConstantExpression(ExpressionType.Subtract, lc, rc);
+
+                    return new AddOperator().GetExpression(left, new MultiplyOperator().GetExpression(right, Expression.Constant(-1f)));
                 }
             }
 
@@ -177,8 +178,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
                 public override int Priority => 2;
                 public override Expression GetExpression(Expression left, Expression right)
                 {
-                    if (left is ConstantExpression lc && right is ConstantExpression rc)
-                        return Expression.Constant((float)lc.Value * (float)rc.Value);
+                    if (left is ConstantExpression lc && right is ConstantExpression rc) return ReduceConstantExpression(ExpressionType.Multiply, lc, rc);
                     return Expression.Multiply(left, right);
                 }
             }
@@ -188,8 +188,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
                 public override int Priority => 2;
                 public override Expression GetExpression(Expression left, Expression right)
                 {
-                    if (left is ConstantExpression lc && right is ConstantExpression rc)
-                        return Expression.Constant((float)lc.Value / (float)rc.Value);
+                    if (left is ConstantExpression lc && right is ConstantExpression rc) return ReduceConstantExpression(ExpressionType.Divide, lc, rc);
                     return Expression.Divide(left, right);
                 }
             }
@@ -215,6 +214,42 @@ namespace Negi0109.ColorGradientToTexture.Filters
 
             public Expression GetExpression(Expression v0, Expression v1)
                 => GetOperator().GetExpression(v0, v1);
+
+            public static Expression ReduceConstantExpression(ExpressionType type, ConstantExpression left, ConstantExpression right)
+            {
+                float l = (float)left.Value;
+                float r = (float)right.Value;
+
+                return type switch
+                {
+                    ExpressionType.Add => Expression.Constant(l + r),
+                    ExpressionType.Subtract => Expression.Constant(l - r),
+                    ExpressionType.Multiply => Expression.Constant(l * r),
+                    ExpressionType.Divide => Expression.Constant(l / r),
+                    _ => throw new Exception()
+                };
+            }
+
+            public static Expression ReduceCommutativeExpression(BinaryExpression left, Expression right)
+            {
+                var type = left.NodeType;
+
+                if (right is ConstantExpression rc)
+                {
+                    if (left.Right is ConstantExpression lrc)
+                        return Expression.MakeBinary(left.NodeType, left.Left, ReduceConstantExpression(type, lrc, rc));
+                    if (left.Left is ConstantExpression llc)
+                        return Expression.MakeBinary(left.NodeType, ReduceConstantExpression(type, llc, rc), left.Right);
+                }
+                else
+                {
+                    if (left.Left is ConstantExpression)
+                        return Expression.MakeBinary(left.NodeType, left.Left, Expression.MakeBinary(type, left.Right, right));
+                    if (left.Right is ConstantExpression)
+                        return Expression.MakeBinary(left.NodeType, Expression.MakeBinary(type, left.Left, right), left.Right);
+                }
+                return Expression.MakeBinary(left.NodeType, left, right);
+            }
         }
 
         [Serializable]
