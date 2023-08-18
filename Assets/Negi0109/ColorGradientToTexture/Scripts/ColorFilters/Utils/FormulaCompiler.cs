@@ -144,6 +144,66 @@ namespace Negi0109.ColorGradientToTexture.Filters
 
         public class OperatorToken : Token
         {
+            private abstract class Operator
+            {
+                public abstract Expression GetExpression(Expression left, Expression right);
+                public abstract int Priority { get; }
+            }
+
+            private class AddOperator : Operator
+            {
+                public override int Priority => 1;
+                public override Expression GetExpression(Expression left, Expression right)
+                {
+                    if (left is ConstantExpression lc && right is ConstantExpression rc)
+                        return Expression.Constant((float)lc.Value + (float)rc.Value);
+                    return Expression.Add(left, right);
+                }
+            }
+
+            private class SubtractOperator : Operator
+            {
+                public override int Priority => 1;
+                public override Expression GetExpression(Expression left, Expression right)
+                {
+                    if (left is ConstantExpression lc && right is ConstantExpression rc)
+                        return Expression.Constant((float)lc.Value - (float)rc.Value);
+                    return Expression.Subtract(left, right);
+                }
+            }
+
+            private class MultiplyOperator : Operator
+            {
+                public override int Priority => 2;
+                public override Expression GetExpression(Expression left, Expression right)
+                {
+                    if (left is ConstantExpression lc && right is ConstantExpression rc)
+                        return Expression.Constant((float)lc.Value * (float)rc.Value);
+                    return Expression.Multiply(left, right);
+                }
+            }
+
+            private class DivideOperator : Operator
+            {
+                public override int Priority => 2;
+                public override Expression GetExpression(Expression left, Expression right)
+                {
+                    if (left is ConstantExpression lc && right is ConstantExpression rc)
+                        return Expression.Constant((float)lc.Value / (float)rc.Value);
+                    return Expression.Divide(left, right);
+                }
+            }
+
+            private Operator GetOperator() =>
+                value switch
+                {
+                    '+' => new AddOperator(),
+                    '-' => new SubtractOperator(),
+                    '*' => new MultiplyOperator(),
+                    '/' => new DivideOperator(),
+                    _ => throw new ParseException($"{value} is undefined identifier", begin, begin)
+                };
+
             public OperatorToken(int begin, int end, char value) : base(begin, end)
             {
                 this.value = value;
@@ -151,42 +211,10 @@ namespace Negi0109.ColorGradientToTexture.Filters
             }
 
             public char value;
-            public enum Operator { Add, Subtract, Multiply, Divide }
-            public int Priority =>
-                value switch
-                {
-                    '+' => 1,
-                    '-' => 1,
-                    '*' => 2,
-                    '/' => 2,
-                    _ => throw new ParseException($"{value} is undefined identifier", begin, begin)
-                };
+            public int Priority => GetOperator().Priority;
 
             public Expression GetExpression(Expression v0, Expression v1)
-            {
-                if (v0 is ConstantExpression v0c && v1 is ConstantExpression v1c)
-                {
-                    var v0f = (float)v0c.Value;
-                    var v1f = (float)v1c.Value;
-                    return value switch
-                    {
-                        '+' => Expression.Constant(v0f + v1f),
-                        '-' => Expression.Constant(v0f - v1f),
-                        '*' => Expression.Constant(v0f * v1f),
-                        '/' => Expression.Constant(v0f / v1f),
-                        _ => Expression.Constant(1f)
-                    };
-                }
-
-                return value switch
-                {
-                    '+' => Expression.Add(v0, v1),
-                    '-' => Expression.Subtract(v0, v1),
-                    '*' => Expression.Multiply(v0, v1),
-                    '/' => Expression.Divide(v0, v1),
-                    _ => Expression.Constant(1f)
-                };
-            }
+                => GetOperator().GetExpression(v0, v1);
         }
 
         [Serializable]
