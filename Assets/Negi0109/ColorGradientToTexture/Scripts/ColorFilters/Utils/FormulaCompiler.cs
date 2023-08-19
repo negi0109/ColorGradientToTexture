@@ -173,6 +173,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
 
             public char value;
             public int Priority => _operator.priority;
+
             public Expression GetExpression(Expression v0, Expression v1)
                 => ReduceExpression(_operator.GetExpression(v0, v1));
 
@@ -259,13 +260,15 @@ namespace Negi0109.ColorGradientToTexture.Filters
             {
                 var nodeType = expression.NodeType;
                 var le = expression.Left as BinaryExpression;
+                var re = expression.Right as BinaryExpression;
 
                 if (le != null && le.NodeType == nodeType) return ReduceCommutativeExpression(le, expression.Right);
+                if (re != null && re.NodeType == nodeType) return ReduceCommutativeExpression(re, expression.Left, false);
 
                 return expression;
             }
 
-            private static BinaryExpression ReduceCommutativeExpression(BinaryExpression left, Expression right)
+            private static BinaryExpression ReduceCommutativeExpression(BinaryExpression left, Expression right, bool ltor = true)
             {
                 var type = left.NodeType;
 
@@ -284,7 +287,9 @@ namespace Negi0109.ColorGradientToTexture.Filters
                         return Expression.MakeBinary(left.NodeType, Expression.MakeBinary(type, left.Left, right), left.Right);
                 }
 
-                return Expression.MakeBinary(left.NodeType, left, right);
+                return ltor ?
+                    Expression.MakeBinary(left.NodeType, left, right)
+                    : Expression.MakeBinary(left.NodeType, right, left);
             }
         }
 
@@ -296,12 +301,12 @@ namespace Negi0109.ColorGradientToTexture.Filters
 
             public ParseException(string message, int location) : base(message)
             {
-                this.begin = location;
-                this.end = location;
+                begin = location;
+                end = location;
             }
             public ParseException(string message, int location, int end) : base(message)
             {
-                this.begin = location;
+                begin = location;
                 this.end = end;
             }
         }
