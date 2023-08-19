@@ -45,18 +45,14 @@ namespace Negi0109.ColorGradientToTexture.Tests.ColorFilterTests
             Assert.That(exception.end, Is.EqualTo(end));
         }
 
-        [TestCase("3-v", "(3 + (v * -1))")]
-        [TestCase("v-3", "(v + -3)")]
-        [TestCase("3+2", "5")]
-        [TestCase("3+2+v", "(5 + v)")]
-        [TestCase("v+(3+2)", "(v + 5)")]
-        [TestCase("v+3+2", "(v + 5)")]
-        [TestCase("3+v+2", "(5 + v)")]
-        [TestCase("3+v-2", "(1 + v)")]
-        [TestCase("v-(3+2)", "(v + -5)")]
-        [TestCase("3*4*v", "(12 * v)")]
-        [TestCase("3*v*4", "(12 * v)")]
-        [TestCase("4*v/2", "(2 * v)")]
+        [TestCase("3-v", "(3 + (v * -1))", TestName = "減算は加算に変更")]
+        [TestCase("v-3", "(v + -3)", TestName = "減算は加算に変更")]
+        [TestCase("v/4", "(v * 0.25)", TestName = "除算は乗算に変更")]
+        [TestCase("4/v", "(4 * (1 / v))", TestName = "除算は乗算に変更")]
+        [TestCase("3+2", "5", TestName = "定数のみの式は事前に計算")]
+        [TestCase("(3+2)+v", "(5 + v)", TestName = "定数のみの項は事前に計算")]
+        [TestCase("v+(3+2)", "(v + 5)", TestName = "定数のみの項は事前に計算")]
+        [TestCase("(v+3)+2", "(v + 5)", TestName = "可換で左項が未確定な式の場合定数な項でまとめる")]
         public void Optimize(string formula, string expected)
         {
             var expression = Filters.FormulaCompiler.GetExpression(formula);
