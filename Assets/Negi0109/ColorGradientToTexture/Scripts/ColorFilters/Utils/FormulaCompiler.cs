@@ -143,84 +143,61 @@ namespace Negi0109.ColorGradientToTexture.Filters
 
         public class OperatorToken : Token
         {
-            private abstract class Operator
+            private class Operator
             {
-                public abstract Expression GetExpression(Expression left, Expression right);
-                public abstract int Priority { get; }
-            }
+                private readonly Func<Expression, Expression, Expression> func;
+                public Expression GetExpression(Expression left, Expression right) => func(left, right);
+                public readonly int priority;
 
-            private class AddOperator : Operator
-            {
-                public override int Priority => 1;
-                public override Expression GetExpression(Expression left, Expression right)
+                public Operator(int priority, Func<Expression, Expression, Expression> func)
                 {
-                    if (left is ConstantExpression lc && right is ConstantExpression rc) return ReduceConstantExpression(ExpressionType.Add, lc, rc);
-                    if (left is BinaryExpression lbe && lbe.NodeType == ExpressionType.Add) return ReduceCommutativeExpression(lbe, right);
-                    return Expression.Add(left, right);
+                    this.func = func;
+                    this.priority = priority;
                 }
             }
 
-            private class SubtractOperator : Operator
-            {
-                public override int Priority => 1;
-                public override Expression GetExpression(Expression left, Expression right)
-                {
-                    if (left is ConstantExpression lc && right is ConstantExpression rc) return ReduceConstantExpression(ExpressionType.Subtract, lc, rc);
-
-                    return new AddOperator().GetExpression(left, new MultiplyOperator().GetExpression(right, Expression.Constant(-1f)));
-                }
-            }
-
-            private class MultiplyOperator : Operator
-            {
-                public override int Priority => 2;
-                public override Expression GetExpression(Expression left, Expression right)
-                {
-                    if (left is ConstantExpression lc && right is ConstantExpression rc) return ReduceConstantExpression(ExpressionType.Multiply, lc, rc);
-                    if (left is BinaryExpression lbe && lbe.NodeType == ExpressionType.Multiply) return ReduceCommutativeExpression(lbe, right);
-                    return Expression.Multiply(left, right);
-                }
-            }
-
-            private class DivideOperator : Operator
-            {
-                public override int Priority => 2;
-                public override Expression GetExpression(Expression left, Expression right)
-                {
-                    if (right is ConstantExpression rc)
-                    {
-                        if (left is ConstantExpression lc) return ReduceConstantExpression(ExpressionType.Divide, lc, rc);
-
-                        return new MultiplyOperator().GetExpression(left, Expression.Constant(1f / (float)rc.Value));
-                    }
-
-                    return new MultiplyOperator().GetExpression(left, Expression.Divide(Expression.Constant(1f), right));
-                }
-            }
-
-            private Operator GetOperator() =>
-                value switch
-                {
-                    '+' => new AddOperator(),
-                    '-' => new SubtractOperator(),
-                    '*' => new MultiplyOperator(),
-                    '/' => new DivideOperator(),
-                    _ => throw new ParseException($"{value} is undefined identifier", begin, begin)
-                };
+            private readonly Operator _operator;
 
             public OperatorToken(int begin, int end, char value) : base(begin, end)
             {
                 this.value = value;
-                _ = Priority;
+                _operator = value switch
+                {
+                    '+' => new Operator(1, (l, r) => Expression.Add(l, r)),
+                    '-' => new Operator(1, (l, r) => Expression.Subtract(l, r)),
+                    '*' => new Operator(2, (l, r) => Expression.Multiply(l, r)),
+                    '/' => new Operator(2, (l, r) => Expression.Divide(l, r)),
+                    _ => throw new ParseException($"{value} is undefined identifier", begin, begin)
+                };
             }
 
             public char value;
-            public int Priority => GetOperator().Priority;
-
+            public int Priority => _operator.priority;
             public Expression GetExpression(Expression v0, Expression v1)
-                => GetOperator().GetExpression(v0, v1);
+                => ReduceExpression(_operator.GetExpression(v0, v1));
 
-            public static Expression ReduceConstantExpression(ExpressionType type, ConstantExpression left, ConstantExpression right)
+            private static Expression ReduceExpression(Expression expression)
+            {
+                if (expression is BinaryExpression be)
+                {
+                    if (be.Left is ConstantExpression lc && be.Right is ConstantExpression rc)
+                    {
+                        return ReduceConstantExpression(be.NodeType, lc, rc);
+                    }
+                    else if (TryConvertSimpleExpression(ref be))
+                    {
+                        return ReduceExpression(be);
+                    }
+                    else if (TryReduceCommutativeExpression(ref be))
+                    {
+                        return be;
+                    }
+                }
+
+                return expression;
+            }
+
+            private static Expression ReduceConstantExpression(ExpressionType type, ConstantExpression left, ConstantExpression right)
             {
                 float l = (float)left.Value;
                 float r = (float)right.Value;
@@ -235,7 +212,60 @@ namespace Negi0109.ColorGradientToTexture.Filters
                 };
             }
 
-            public static Expression ReduceCommutativeExpression(BinaryExpression left, Expression right)
+            private static bool TryConvertSimpleExpression(ref BinaryExpression expression)
+            {
+                switch (expression.NodeType)
+                {
+                    case ExpressionType.Subtract:
+                        expression = Expression.Add(
+                            expression.Left,
+                            ReduceExpression(Expression.Multiply(expression.Right, Expression.Constant(-1f)))
+                        );
+                        break;
+                    case ExpressionType.Divide:
+                        {
+                            var right = Expression.Divide(Expression.Constant(1f), expression.Right);
+                            Expression tmp = right;
+
+                            if (right.Left is ConstantExpression lc && right.Right is ConstantExpression rc)
+                                tmp = ReduceConstantExpression(right.NodeType, lc, rc);
+
+                            expression = Expression.Multiply(
+                                expression.Left,
+                                tmp
+                            );
+                        }
+                        break;
+                    default: return false;
+                }
+                return true;
+            }
+
+            private static bool TryReduceCommutativeExpression(ref BinaryExpression expression)
+            {
+                switch (expression.NodeType)
+                {
+                    case ExpressionType.Add:
+                    case ExpressionType.Multiply:
+                        break;
+                    default: return false;
+                }
+                expression = ReduceCommutativeExpression(expression);
+
+                return true;
+            }
+
+            private static BinaryExpression ReduceCommutativeExpression(BinaryExpression expression)
+            {
+                var nodeType = expression.NodeType;
+                var le = expression.Left as BinaryExpression;
+
+                if (le != null && le.NodeType == nodeType) return ReduceCommutativeExpression(le, expression.Right);
+
+                return expression;
+            }
+
+            private static BinaryExpression ReduceCommutativeExpression(BinaryExpression left, Expression right)
             {
                 var type = left.NodeType;
 
@@ -253,6 +283,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
                     if (left.Right is ConstantExpression)
                         return Expression.MakeBinary(left.NodeType, Expression.MakeBinary(type, left.Left, right), left.Right);
                 }
+
                 return Expression.MakeBinary(left.NodeType, left, right);
             }
         }
