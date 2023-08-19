@@ -262,34 +262,81 @@ namespace Negi0109.ColorGradientToTexture.Filters
                 var le = expression.Left as BinaryExpression;
                 var re = expression.Right as BinaryExpression;
 
-                if (le != null && le.NodeType == nodeType) return ReduceCommutativeExpression(le, expression.Right);
-                if (re != null && re.NodeType == nodeType) return ReduceCommutativeExpression(re, expression.Left, false);
+                if (le != null && re != null && le.NodeType == nodeType && re.NodeType == nodeType)
+                    return ReduceCommutativeExpression(expression.NodeType, le, re);
+                if (le != null && le.NodeType == nodeType) return ReduceCommutativeExpression(expression.NodeType, le, expression.Right);
+                if (re != null && re.NodeType == nodeType) return ReduceCommutativeExpression(expression.NodeType, re, expression.Left, false);
 
                 return expression;
             }
 
-            private static BinaryExpression ReduceCommutativeExpression(BinaryExpression left, Expression right, bool ltor = true)
+            private static BinaryExpression ReduceCommutativeExpression(ExpressionType type, BinaryExpression left, BinaryExpression right)
             {
-                var type = left.NodeType;
+                if (left.Left is ConstantExpression llc)
+                {
+                    if (right.Left is ConstantExpression rlc)
+                        return Expression.MakeBinary(
+                            type,
+                            ReduceConstantExpression(type, llc, rlc),
+                            ReduceExpression(Expression.MakeBinary(type, left.Right, right.Right))
+                        );
+                    else if (right.Right is ConstantExpression rrc)
+                        return Expression.MakeBinary(
+                            type,
+                            ReduceConstantExpression(type, llc, rrc),
+                            ReduceExpression(Expression.MakeBinary(type, left.Right, right.Left))
+                        );
+                }
+                else if (left.Right is ConstantExpression lrc)
+                {
+                    if (right.Left is ConstantExpression rlc)
+                        return Expression.MakeBinary(
+                            type,
+                            ReduceExpression(Expression.MakeBinary(type, left.Left, right.Right)),
+                            ReduceConstantExpression(type, lrc, rlc)
+                        );
 
-                if (right is ConstantExpression rc)
-                {
-                    if (left.Right is ConstantExpression lrc)
-                        return Expression.MakeBinary(left.NodeType, left.Left, ReduceConstantExpression(type, lrc, rc));
-                    if (left.Left is ConstantExpression llc)
-                        return Expression.MakeBinary(left.NodeType, ReduceConstantExpression(type, llc, rc), left.Right);
+                    else if (right.Right is ConstantExpression rrc)
+                        return Expression.MakeBinary(
+                            type,
+                            ReduceExpression(Expression.MakeBinary(type, left.Left, right.Left)),
+                            ReduceConstantExpression(type, lrc, rrc)
+                        );
                 }
-                else
+                else if (right.Left is ConstantExpression rlc)
                 {
-                    if (left.Left is ConstantExpression)
-                        return Expression.MakeBinary(left.NodeType, left.Left, Expression.MakeBinary(type, left.Right, right));
-                    if (left.Right is ConstantExpression)
-                        return Expression.MakeBinary(left.NodeType, Expression.MakeBinary(type, left.Left, right), left.Right);
+                    return Expression.MakeBinary(
+                        type,
+                        rlc,
+                        Expression.MakeBinary(type, left, right.Right)
+                    );
                 }
+                else if (right.Right is ConstantExpression rrc)
+                {
+                    return Expression.MakeBinary(
+                        type,
+                        Expression.MakeBinary(type, left, right.Left),
+                        rrc
+                    );
+                }
+
+                return Expression.MakeBinary(type, left, right);
+            }
+
+            private static BinaryExpression ReduceCommutativeExpression(ExpressionType type, BinaryExpression left, Expression right, bool ltor = true)
+            {
+
+                if (left.Left is ConstantExpression llc)
+                    if (right is ConstantExpression rc) return Expression.MakeBinary(type, ReduceConstantExpression(type, llc, rc), left.Right);
+                    else return Expression.MakeBinary(type, left.Left, Expression.MakeBinary(type, left.Right, right));
+                if (left.Right is ConstantExpression lrc)
+                    if (right is ConstantExpression rc) return Expression.MakeBinary(type, left.Left, ReduceConstantExpression(type, lrc, rc));
+                    else return Expression.MakeBinary(type, Expression.MakeBinary(type, left.Left, right), left.Right);
+
 
                 return ltor ?
-                    Expression.MakeBinary(left.NodeType, left, right)
-                    : Expression.MakeBinary(left.NodeType, right, left);
+                    Expression.MakeBinary(type, left, right)
+                    : Expression.MakeBinary(type, right, left);
             }
         }
 
