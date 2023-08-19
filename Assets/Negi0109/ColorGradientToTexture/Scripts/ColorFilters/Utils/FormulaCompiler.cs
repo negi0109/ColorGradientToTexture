@@ -27,7 +27,63 @@ namespace Negi0109.ColorGradientToTexture.Filters
             var tokens = Tokenize(formula);
             if (tokens.Length == 0) throw new ParseException("code is empty", -1);
 
-            return ParseExpression(new ArraySegment<Token>(tokens));
+            return PostProcessingExpression(ParseExpression(new ArraySegment<Token>(tokens)));
+        }
+
+        public static Expression PostProcessingExpression(Expression expression)
+        {
+            if (expression is BinaryExpression be)
+            {
+                if (be.NodeType == ExpressionType.Add)
+                {
+                    if (be.Right is BinaryExpression bre)
+                    {
+                        if (bre.NodeType == ExpressionType.Multiply)
+                        {
+                            if (bre.Left is ConstantExpression brlc && (float)brlc.Value == -1f)
+                            {
+                                return Expression.MakeBinary(
+                                    ExpressionType.Subtract,
+                                    PostProcessingExpression(be.Left),
+                                    PostProcessingExpression(bre.Right)
+                                );
+                            }
+                            else if (bre.Right is ConstantExpression brrc && (float)brrc.Value == -1f)
+                            {
+                                return Expression.MakeBinary(
+                                    ExpressionType.Subtract,
+                                    PostProcessingExpression(be.Left),
+                                    PostProcessingExpression(bre.Left)
+                                );
+                            }
+                        }
+                    }
+                }
+                if (be.NodeType == ExpressionType.Multiply)
+                {
+                    if (be.Right is BinaryExpression bre)
+                    {
+                        if (bre.NodeType == ExpressionType.Divide)
+                        {
+                            if (bre.Left is ConstantExpression brlc && (float)brlc.Value == 1f)
+                            {
+                                return Expression.MakeBinary(
+                                    ExpressionType.Divide,
+                                    PostProcessingExpression(be.Left),
+                                    PostProcessingExpression(bre.Right)
+                                );
+                            }
+                        }
+                    }
+                }
+
+                return Expression.MakeBinary(
+                    be.NodeType,
+                    PostProcessingExpression(be.Left),
+                    PostProcessingExpression(be.Right)
+                );
+            }
+            return expression;
         }
 
         public static Expression ParseExpression(ArraySegment<Token> tokens)
@@ -185,7 +241,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
                     {
                         return ReduceConstantExpression(be.NodeType, lc, rc);
                     }
-                    else if (TryConvertSimpleExpression(ref be))
+                    else if (TryConvertCommutativeExpression(ref be))
                     {
                         return ReduceExpression(be);
                     }
@@ -213,7 +269,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
                 };
             }
 
-            private static bool TryConvertSimpleExpression(ref BinaryExpression expression)
+            private static bool TryConvertCommutativeExpression(ref BinaryExpression expression)
             {
                 switch (expression.NodeType)
                 {

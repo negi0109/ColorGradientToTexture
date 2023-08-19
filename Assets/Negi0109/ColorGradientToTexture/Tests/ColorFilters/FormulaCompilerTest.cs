@@ -45,10 +45,10 @@ namespace Negi0109.ColorGradientToTexture.Tests.ColorFilterTests
             Assert.That(exception.end, Is.EqualTo(end));
         }
 
-        [TestCase("3-v", "(3 + (v * -1))", TestName = "減算は加算に変更")]
+        [TestCase("3-v", "(3 - v)", TestName = "減算は加算に変更するが未確定な式の場合最後に減算に戻す")]
         [TestCase("v-3", "(v + -3)", TestName = "減算は加算に変更")]
         [TestCase("v/4", "(v * 0.25)", TestName = "除算は乗算に変更")]
-        [TestCase("4/v", "(4 * (1 / v))", TestName = "除算は乗算に変更")]
+        [TestCase("4/v", "(4 / v)", TestName = "除算は乗算に変更するが未確定な式の場合最後に除算に戻す")]
         [TestCase("3+2", "5", TestName = "定数のみの式は事前に計算")]
         [TestCase("(3+2)+v", "(5 + v)", TestName = "定数のみの項は事前に計算")]
         [TestCase("v+(3+2)", "(v + 5)", TestName = "定数のみの項は事前に計算")]
