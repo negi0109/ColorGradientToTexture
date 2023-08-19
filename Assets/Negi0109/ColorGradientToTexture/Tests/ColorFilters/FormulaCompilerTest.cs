@@ -53,6 +53,7 @@ namespace Negi0109.ColorGradientToTexture.Tests.ColorFilterTests
         [TestCase("(3+2)+v", "(5 + v)", TestName = "定数のみの項は事前に計算")]
         [TestCase("v+(3+2)", "(v + 5)", TestName = "定数のみの項は事前に計算")]
         [TestCase("(v+3)+2", "(v + 5)", TestName = "可換で左項が未確定な式の場合定数な項でまとめる")]
+        [TestCase("(v+2)+v", "((v + v) + 2)", TestName = "可換で左項が未確定な式の場合未確定な項でまとめる")]
         public void Optimize(string formula, string expected)
         {
             var expression = Filters.FormulaCompiler.GetExpression(formula);
