@@ -1,57 +1,25 @@
 using System.Linq.Expressions;
 using System.Linq;
 using System.Collections.Generic;
+using NUnit.Framework.Constraints;
 
 namespace Negi0109.ColorGradientToTexture.Filters.Formulas
 {
     public static class ExpressionOptimizer
     {
+        public static class Utils
+        {
+            public static bool EqualConstraint(Expression expression, object value)
+            {
+                return expression is ConstantExpression ce && ce.Value == value;
+            }
+        }
+
         public static Expression PostProcessingExpression(Expression expression)
         {
             if (expression is BinaryExpression be)
             {
-                if (be.NodeType == ExpressionType.Add)
-                {
-                    if (be.Right is BinaryExpression bre)
-                    {
-                        if (bre.NodeType == ExpressionType.Multiply)
-                        {
-                            if (bre.Left is ConstantExpression brlc && (float)brlc.Value == -1f)
-                            {
-                                return Expression.MakeBinary(
-                                    ExpressionType.Subtract,
-                                    PostProcessingExpression(be.Left),
-                                    PostProcessingExpression(bre.Right)
-                                );
-                            }
-                            else if (bre.Right is ConstantExpression brrc && (float)brrc.Value == -1f)
-                            {
-                                return Expression.MakeBinary(
-                                    ExpressionType.Subtract,
-                                    PostProcessingExpression(be.Left),
-                                    PostProcessingExpression(bre.Left)
-                                );
-                            }
-                        }
-                    }
-                }
-                if (be.NodeType == ExpressionType.Multiply)
-                {
-                    if (be.Right is BinaryExpression bre)
-                    {
-                        if (bre.NodeType == ExpressionType.Divide)
-                        {
-                            if (bre.Left is ConstantExpression brlc && (float)brlc.Value == 1f)
-                            {
-                                return Expression.MakeBinary(
-                                    ExpressionType.Divide,
-                                    PostProcessingExpression(be.Left),
-                                    PostProcessingExpression(bre.Right)
-                                );
-                            }
-                        }
-                    }
-                }
+                if (TryConvertSimpleBinaryExpression(ref be)) return be;
 
                 return Expression.MakeBinary(
                     be.NodeType,
@@ -60,6 +28,51 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
                 );
             }
             return expression;
+        }
+
+        private static bool TryConvertSimpleBinaryExpression(ref BinaryExpression expression)
+        {
+            if (expression.NodeType == ExpressionType.Add)
+            {
+                if (expression.Right is BinaryExpression bre && bre.NodeType == ExpressionType.Multiply)
+                {
+                    if (Utils.EqualConstraint(bre.Left, -1f))
+                    {
+                        expression = Expression.MakeBinary(
+                            ExpressionType.Subtract,
+                            PostProcessingExpression(expression.Left),
+                            PostProcessingExpression(bre.Right)
+                        );
+                        return true;
+                    }
+                    else if (Utils.EqualConstraint(bre.Right, -1f))
+                    {
+                        expression = Expression.MakeBinary(
+                            ExpressionType.Subtract,
+                            PostProcessingExpression(expression.Left),
+                            PostProcessingExpression(bre.Left)
+                        );
+                        return true;
+                    }
+                }
+            }
+            if (expression.NodeType == ExpressionType.Multiply)
+            {
+                if (expression.Right is BinaryExpression bre && bre.NodeType == ExpressionType.Divide)
+                {
+                    if (Utils.EqualConstraint(bre.Left, 1f))
+                    {
+                        expression = Expression.MakeBinary(
+                            ExpressionType.Divide,
+                            PostProcessingExpression(expression.Left),
+                            PostProcessingExpression(bre.Right)
+                        );
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         public static Expression ReduceExpression(Expression expression)
