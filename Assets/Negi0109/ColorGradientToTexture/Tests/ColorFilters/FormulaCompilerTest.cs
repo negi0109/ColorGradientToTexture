@@ -38,7 +38,7 @@ namespace Negi0109.ColorGradientToTexture.Tests.ColorFilterTests
         [TestCase("3?10", "? is undefined identifier", 1, 1)]
         public void ThrowParseError(string formula, string message, int begin, int end)
         {
-            var exception = Assert.Throws<FormulaCompiler.ParseException>(
+            var exception = Assert.Throws<ParseException>(
                 () => FormulaCompiler.GetExpression(formula)
             );
             Assert.That(exception.Message, Is.EqualTo(message));

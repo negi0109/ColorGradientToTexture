@@ -1,8 +1,5 @@
 using System;
 using System.Linq.Expressions;
-using System.Linq;
-using System.Collections.Generic;
-using NUnit.Framework.Constraints;
 
 namespace Negi0109.ColorGradientToTexture.Filters.Formulas
 {
