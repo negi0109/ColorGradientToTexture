@@ -52,13 +52,10 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
 
                 for (int i = tokens.Count - 1; i >= 0; i--)
                 {
-                    if (tokens.Array[tokens.Offset + i] is OperatorToken token)
+                    if (tokens.Array[tokens.Offset + i] is OperatorToken token && token.Priority < lowPriority)
                     {
-                        if (token.Priority < lowPriority)
-                        {
-                            lowPriorityOperatorIndex = i;
-                            lowPriority = token.Priority;
-                        }
+                        lowPriorityOperatorIndex = i;
+                        lowPriority = token.Priority;
                     }
                 }
 
@@ -135,9 +132,12 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
 
         public class FormulaToken : MonomialToken
         {
-            public FormulaToken(int begin, int end) : base(begin, end) { }
+            public FormulaToken(string text, int begin, int end, int offset) : base(begin, end)
+            {
+                tokens = Tokenize(text.Substring(begin + 1, end - begin - 1), begin + 1 + offset);
+            }
 
-            public Token[] tokens;
+            private Token[] tokens;
             public override Expression GetExpression() => ParseExpression(new ArraySegment<Token>(tokens));
         }
 
@@ -205,26 +205,13 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
                 switch (text[i])
                 {
                     case '(':
+                        if (TryGetPairBracket(text, i, out int index))
                         {
-                            int nest = 1;
-
-                            for (var j = i + 1; j < text.Length; j++)
-                            {
-                                var chr = text[j];
-                                if (chr == '(') nest++;
-                                if (chr == ')') nest--;
-                                if (nest == 0)
-                                {
-                                    tokens.Add(new FormulaToken(i, j) { tokens = Tokenize(text.Substring(i + 1, j - i - 1), i + 1 + offset) });
-                                    i = j;
-                                    break;
-                                }
-
-                                if (j == text.Length - 1)
-                                    throw new ParseException($"No matching ')' for '('", i);
-                            }
-                            break;
+                            tokens.Add(new FormulaToken(text, i, index, offset));
+                            i = index;
                         }
+                        else throw new ParseException($"No matching ')' for '('", i);
+                        break;
                     case ')': throw new ParseException($"No matching '(' for ')'", i);
                     case ' ': break;
                     default:
@@ -238,25 +225,17 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
                         {
                             tokens.Add(new OperatorToken(i + offset, i + offset, text[i]));
                         }
-                        else
+                        else if (TryGetIdentifier(text, i, out string identifier, out int tokenLength))
                         {
-                            var index = text.IndexOfAny(new char[] {
-                                    '(', ')', '+', '-', '*', '/', '%', ' '
-                                }, i);
-                            int tokenLength;
-                            if (index == -1) tokenLength = text.Length - i;
-                            else tokenLength = index - i;
-
-                            tokenLength = Mathf.Max(tokenLength, 0);
-                            var token = text.Substring(i, tokenLength);
-                            if (allParams.Contains(token))
+                            if (allParams.Contains(identifier))
                             {
-                                tokens.Add(new VariableToken(i + offset, i + tokenLength - 1 + offset) { value = token });
+                                tokens.Add(new VariableToken(i + offset, i + tokenLength - 1 + offset) { value = identifier });
                             }
                             else
                             {
-                                throw new ParseException($"{token} is undefined identifier", i + offset, i + offset + tokenLength - 1);
+                                throw new ParseException($"{identifier} is undefined identifier", i + offset, i + offset + tokenLength - 1);
                             }
+
                             i += tokenLength - 1;
                         }
                         break;
@@ -264,6 +243,44 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
             }
 
             return tokens.ToArray();
+        }
+
+        public static bool TryGetIdentifier(string text, int begin, out string identifier, out int tokenLength)
+        {
+            identifier = "";
+
+            var index = text.IndexOfAny(new char[] {
+                '(', ')', '+', '-', '*', '/', '%', ' '
+            }, begin);
+
+            if (index == -1) tokenLength = text.Length - begin;
+            else tokenLength = index - begin;
+
+            if (tokenLength <= 0) return false;
+
+            identifier = text.Substring(begin, tokenLength);
+
+            return true;
+        }
+
+        public static bool TryGetPairBracket(string text, int begin, out int index)
+        {
+            int nest = 1;
+            index = -1;
+
+            for (var i = begin + 1; i < text.Length; i++)
+            {
+                var chr = text[i];
+                if (chr == '(') nest++;
+                if (chr == ')') nest--;
+                if (nest == 0)
+                {
+                    index = i;
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public static void GetFloat(string text, int begin, out int length, out float value)

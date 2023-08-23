@@ -1,3 +1,4 @@
+using System;
 using System.Linq.Expressions;
 using System.Linq;
 using System.Collections.Generic;
@@ -9,9 +10,9 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
     {
         public static class Utils
         {
-            public static bool EqualConstraint(Expression expression, object value)
+            public static bool EqualConstraint<T>(Expression expression, T value) where T : IEquatable<T>
             {
-                return expression is ConstantExpression ce && ce.Value == value;
+                return expression is ConstantExpression ce && value.Equals((T)ce.Value);
             }
         }
 
