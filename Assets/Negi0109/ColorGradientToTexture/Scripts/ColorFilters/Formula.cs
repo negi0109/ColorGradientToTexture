@@ -51,7 +51,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
                     richText = true,
                     wordWrap = true
                 };
-                if (_exception is FormulaCompiler.ParseException parseException)
+                if (_exception is Formulas.FormulaCompiler.ParseException parseException)
                 {
                     EditorGUILayout.LabelField(DisplayParseException(formula, parseException), labelStyle);
                 }
@@ -71,7 +71,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
 
             try
             {
-                compiled = FormulaCompiler.Compile(formula);
+                compiled = Formulas.FormulaCompiler.Compile(formula);
                 _exception = null;
             }
             catch (Exception e)
@@ -84,7 +84,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
             }
         }
 
-        public string DisplayParseException(string errorFormula, FormulaCompiler.ParseException exception)
+        public string DisplayParseException(string errorFormula, Formulas.FormulaCompiler.ParseException exception)
         {
             if (exception.begin < 0) return exception.Message;
 

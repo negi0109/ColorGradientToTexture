@@ -1,6 +1,7 @@
 using System;
 using NUnit.Framework;
 using System.Linq.Expressions;
+using Negi0109.ColorGradientToTexture.Filters.Formulas;
 
 namespace Negi0109.ColorGradientToTexture.Tests.ColorFilterTests
 {
@@ -19,7 +20,7 @@ namespace Negi0109.ColorGradientToTexture.Tests.ColorFilterTests
         [TestCase("2*3+1", 7f)]
         public void EvaluateNoArgs(string formula, float e)
         {
-            var body = Filters.FormulaCompiler.GetExpression(formula);
+            var body = FormulaCompiler.GetExpression(formula);
             var lambda = Expression.Lambda<Func<float>>(body);
             var func = lambda.Compile();
 
@@ -37,8 +38,8 @@ namespace Negi0109.ColorGradientToTexture.Tests.ColorFilterTests
         [TestCase("3?10", "? is undefined identifier", 1, 1)]
         public void ThrowParseError(string formula, string message, int begin, int end)
         {
-            var exception = Assert.Throws<Filters.FormulaCompiler.ParseException>(
-                () => Filters.FormulaCompiler.GetExpression(formula)
+            var exception = Assert.Throws<FormulaCompiler.ParseException>(
+                () => FormulaCompiler.GetExpression(formula)
             );
             Assert.That(exception.Message, Is.EqualTo(message));
             Assert.That(exception.begin, Is.EqualTo(begin));
@@ -59,7 +60,7 @@ namespace Negi0109.ColorGradientToTexture.Tests.ColorFilterTests
         [TestCase("(v+3)+(2+v)", "((v + v) + 5)", TestName = "可換で双方の項が未確定な式場合未確定な項でまとめる")]
         public void Optimize(string formula, string expected)
         {
-            var expression = Filters.FormulaCompiler.GetExpression(formula);
+            var expression = FormulaCompiler.GetExpression(formula);
 
             Assert.That(expression.ToString(), Is.EqualTo(expected));
         }
