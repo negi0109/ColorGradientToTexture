@@ -20,10 +20,16 @@ namespace Negi0109.ColorGradientToTexture.Filters
             {
                 for (int y = 0; y < array.GetLength(1); y++)
                 {
-                    array[x, y] = compiled(array[x, y], x, y);
+                    array[x, y] = compiled(
+                        array[x, y],
+                        GetNormalValue(x, array.GetLength(0)),
+                        GetNormalValue(y, array.GetLength(1))
+                    );
                 }
             }
         }
+        private float GetNormalValue(int v, int size)
+            => size == 1 ? 0.5f : (float)v / (size - 1);
 
         public override bool Editor()
         {
