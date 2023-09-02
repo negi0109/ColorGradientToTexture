@@ -18,6 +18,7 @@ namespace Negi0109.ColorGradientToTexture.Tests.ColorFilterTests
         [TestCase("3+1*2", 5f)]
         [TestCase("(2+1)*2", 6f)]
         [TestCase("2*3+1", 7f)]
+        [TestCase("pow(2, 3)", 8f)]
         public void EvaluateNoArgs(string formula, float e)
         {
             var body = FormulaCompiler.GetExpression(formula);
@@ -36,6 +37,7 @@ namespace Negi0109.ColorGradientToTexture.Tests.ColorFilterTests
         [TestCase("10*(+2*3)", "left operand of '+' is nothing", 4, 4)]
         [TestCase("3*10 3", "operator is nothing", 2, 5)]
         [TestCase("3?10", "? is undefined identifier", 1, 1)]
+        [TestCase("hoge(3*2)", "hoge is undefined identifier", 0, 3)]
         public void ThrowParseError(string formula, string message, int begin, int end)
         {
             var exception = Assert.Throws<ParseException>(
