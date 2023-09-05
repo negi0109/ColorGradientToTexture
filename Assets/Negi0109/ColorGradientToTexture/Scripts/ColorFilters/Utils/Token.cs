@@ -68,9 +68,56 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
             {
                 if (args.Length == 2)
                 {
-                    if (allConstants)
-                        return Expression.Constant(Mathf.Pow(args[0].value, args[1].value));
+                    if (allConstants) return Expression.Constant(Mathf.Pow(args[0].value, args[1].value));
                     else return Expression.Call(typeof(Mathf).GetMethod("Pow"), args[0].expression, args[1].expression);
+                }
+                else
+                {
+                    throw new ParseException(
+                        $"different number of arguments",
+                        token.begin,
+                        token.end
+                    );
+                }
+            }
+        }
+
+        private class MaxFunction : Function
+        {
+            public override Expression GetExpression(FunctionToken token, (FormulaToken token, Expression expression, float value)[] args, bool allConstants)
+            {
+                if (args.Length == 2)
+                {
+                    if (allConstants) return Expression.Constant(Mathf.Max(args[0].value, args[1].value));
+                    else return Expression.Call(
+                        typeof(Mathf).GetMethod("Max", new[] { typeof(float), typeof(float) }),
+                        args[0].expression,
+                        args[1].expression
+                    );
+                }
+                else
+                {
+                    throw new ParseException(
+                        $"different number of arguments",
+                        token.begin,
+                        token.end
+                    );
+                }
+            }
+        }
+
+        private class MinFunction : Function
+        {
+            public override Expression GetExpression(FunctionToken token, (FormulaToken token, Expression expression, float value)[] args, bool allConstants)
+            {
+                if (args.Length == 2)
+                {
+                    if (allConstants) return Expression.Constant(Mathf.Min(args[0].value, args[1].value));
+                    else return Expression.Call(
+                        typeof(Mathf).GetMethod("Min", new[] { typeof(float), typeof(float) }),
+                        args[0].expression,
+                        args[1].expression
+                    );
                 }
                 else
                 {
@@ -123,6 +170,8 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
             _function = _functionName switch
             {
                 "pow" => new PowFunction(),
+                "max" => new MaxFunction(),
+                "min" => new MinFunction(),
                 _ => throw new ParseException(
                     $"{functionName} is undefined identifier",
                     begin,
