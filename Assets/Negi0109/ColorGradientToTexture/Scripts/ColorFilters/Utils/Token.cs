@@ -130,6 +130,62 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
             }
         }
 
+        private class LogFunction : Function
+        {
+            public override Expression GetExpression(FunctionToken token, (FormulaToken token, Expression expression, float value)[] args, bool allConstants)
+            {
+                if (args.Length == 2)
+                {
+                    if (allConstants) return Expression.Constant(Mathf.Log(args[0].value, args[1].value));
+                    else return Expression.Call(
+                        typeof(Mathf).GetMethod("Log", new[] { typeof(float), typeof(float) }),
+                        args[0].expression,
+                        args[1].expression
+                    );
+                }
+                else if (args.Length == 1)
+                {
+                    if (allConstants) return Expression.Constant(Mathf.Log(args[0].value));
+                    else return Expression.Call(
+                        typeof(Mathf).GetMethod("Log", new[] { typeof(float) }),
+                        args[0].expression
+                    );
+                }
+                else
+                {
+                    throw new ParseException(
+                        $"different number of arguments",
+                        token.begin,
+                        token.end
+                    );
+                }
+            }
+        }
+
+        private class ExpFunction : Function
+        {
+            public override Expression GetExpression(FunctionToken token, (FormulaToken token, Expression expression, float value)[] args, bool allConstants)
+            {
+                if (args.Length == 1)
+                {
+                    if (allConstants) return Expression.Constant(Mathf.Exp(args[0].value));
+                    else return Expression.Call(
+                        typeof(Mathf).GetMethod("Exp", new[] { typeof(float) }),
+                        args[0].expression
+                    );
+                }
+                else
+                {
+                    throw new ParseException(
+                        $"different number of arguments",
+                        token.begin,
+                        token.end
+                    );
+                }
+            }
+        }
+
+
         private readonly string _functionName;
         private readonly Function _function;
         private readonly FormulaToken[] argTokens;
@@ -172,6 +228,9 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
                 "pow" => new PowFunction(),
                 "max" => new MaxFunction(),
                 "min" => new MinFunction(),
+                "log" => new LogFunction(),
+                "ln" => new LogFunction(),
+                "exp" => new ExpFunction(),
                 _ => throw new ParseException(
                     $"{functionName} is undefined identifier",
                     begin,
