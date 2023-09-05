@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Linq.Expressions;
 using System.Collections.Generic;
+using System;
+using System.Linq;
 
 namespace Negi0109.ColorGradientToTexture.Filters.Formulas
 {
@@ -8,7 +10,21 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
     {
         private abstract class Function
         {
+            protected static Expression GetExpressionUsingMethod(Type type, string name, (FormulaToken token, Expression expression, float value)[] args, bool allConstants)
+            {
+                var method = type.GetMethod(name, Enumerable.Repeat(typeof(float), args.Length).ToArray());
+
+                if (allConstants) return Expression.Constant(method.Invoke(null, args.Select(a => (object)a.value).ToArray()));
+                else return Expression.Call(method, args.Select(a => a.expression));
+            }
+
             public abstract Expression GetExpression(FunctionToken token, (FormulaToken token, Expression expression, float value)[] args, bool allConstants);
+            protected static Exception GetArgumentException(FunctionToken token)
+                => new ParseException(
+                    $"different number of arguments",
+                    token.begin,
+                    token.end
+                );
         }
 
         private class PowFunction : Function
@@ -17,17 +33,9 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
             {
                 if (args.Length == 2)
                 {
-                    if (allConstants) return Expression.Constant(Mathf.Pow(args[0].value, args[1].value));
-                    else return Expression.Call(typeof(Mathf).GetMethod("Pow"), args[0].expression, args[1].expression);
+                    return GetExpressionUsingMethod(typeof(Mathf), "Pow", args, allConstants);
                 }
-                else
-                {
-                    throw new ParseException(
-                        $"different number of arguments",
-                        token.begin,
-                        token.end
-                    );
-                }
+                else throw GetArgumentException(token);
             }
         }
 
@@ -37,21 +45,9 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
             {
                 if (args.Length == 2)
                 {
-                    if (allConstants) return Expression.Constant(Mathf.Max(args[0].value, args[1].value));
-                    else return Expression.Call(
-                        typeof(Mathf).GetMethod("Max", new[] { typeof(float), typeof(float) }),
-                        args[0].expression,
-                        args[1].expression
-                    );
+                    return GetExpressionUsingMethod(typeof(Mathf), "Max", args, allConstants);
                 }
-                else
-                {
-                    throw new ParseException(
-                        $"different number of arguments",
-                        token.begin,
-                        token.end
-                    );
-                }
+                else throw GetArgumentException(token);
             }
         }
 
@@ -61,21 +57,9 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
             {
                 if (args.Length == 2)
                 {
-                    if (allConstants) return Expression.Constant(Mathf.Min(args[0].value, args[1].value));
-                    else return Expression.Call(
-                        typeof(Mathf).GetMethod("Min", new[] { typeof(float), typeof(float) }),
-                        args[0].expression,
-                        args[1].expression
-                    );
+                    return GetExpressionUsingMethod(typeof(Mathf), "Min", args, allConstants);
                 }
-                else
-                {
-                    throw new ParseException(
-                        $"different number of arguments",
-                        token.begin,
-                        token.end
-                    );
-                }
+                else throw GetArgumentException(token);
             }
         }
 
@@ -83,31 +67,11 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
         {
             public override Expression GetExpression(FunctionToken token, (FormulaToken token, Expression expression, float value)[] args, bool allConstants)
             {
-                if (args.Length == 2)
+                if (args.Length == 1 || args.Length == 2)
                 {
-                    if (allConstants) return Expression.Constant(Mathf.Log(args[0].value, args[1].value));
-                    else return Expression.Call(
-                        typeof(Mathf).GetMethod("Log", new[] { typeof(float), typeof(float) }),
-                        args[0].expression,
-                        args[1].expression
-                    );
+                    return GetExpressionUsingMethod(typeof(Mathf), "Log", args, allConstants);
                 }
-                else if (args.Length == 1)
-                {
-                    if (allConstants) return Expression.Constant(Mathf.Log(args[0].value));
-                    else return Expression.Call(
-                        typeof(Mathf).GetMethod("Log", new[] { typeof(float) }),
-                        args[0].expression
-                    );
-                }
-                else
-                {
-                    throw new ParseException(
-                        $"different number of arguments",
-                        token.begin,
-                        token.end
-                    );
-                }
+                else throw GetArgumentException(token);
             }
         }
 
@@ -123,14 +87,7 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
                         args[0].expression
                     );
                 }
-                else
-                {
-                    throw new ParseException(
-                        $"different number of arguments",
-                        token.begin,
-                        token.end
-                    );
-                }
+                else throw GetArgumentException(token);
             }
         }
 
