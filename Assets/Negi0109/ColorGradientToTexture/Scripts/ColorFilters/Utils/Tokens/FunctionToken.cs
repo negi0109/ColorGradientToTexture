@@ -10,15 +10,22 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
     {
         private abstract class Function
         {
-            protected static Expression GetExpressionUsingMethod(Type type, string name, (FormulaToken token, Expression expression, float value)[] args, bool allConstants)
+            protected static Expression GetExpressionUsingMethod(Type type, string name, (FormulaToken token, Expression expression)[] args)
             {
                 var method = type.GetMethod(name, Enumerable.Repeat(typeof(float), args.Length).ToArray());
+                var allConstants = true;
+                var values = new object[args.Length];
 
-                if (allConstants) return Expression.Constant(method.Invoke(null, args.Select(a => (object)a.value).ToArray()));
+                for (int i = 0; i < args.Length; i++)
+                    if (args[i].expression is ConstantExpression constant)
+                        values[i] = constant.Value;
+                    else allConstants = false;
+
+                if (allConstants) return Expression.Constant(method.Invoke(null, values));
                 else return Expression.Call(method, args.Select(a => a.expression));
             }
 
-            public abstract Expression GetExpression(FunctionToken token, (FormulaToken token, Expression expression, float value)[] args, bool allConstants);
+            public abstract Expression GetExpression(FunctionToken token, (FormulaToken token, Expression expression)[] args);
             protected static Exception GetArgumentException(FunctionToken token)
                 => new ParseException(
                     $"different number of arguments",
@@ -27,68 +34,47 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
                 );
         }
 
-        private class PowFunction : Function
-        {
-            public override Expression GetExpression(FunctionToken token, (FormulaToken token, Expression expression, float value)[] args, bool allConstants)
-            {
-                if (args.Length == 2)
-                {
-                    return GetExpressionUsingMethod(typeof(Mathf), "Pow", args, allConstants);
-                }
-                else throw GetArgumentException(token);
-            }
-        }
-
         private class MaxFunction : Function
         {
-            public override Expression GetExpression(FunctionToken token, (FormulaToken token, Expression expression, float value)[] args, bool allConstants)
+            public override Expression GetExpression(FunctionToken token, (FormulaToken token, Expression expression)[] args)
             {
-                if (args.Length == 2) return GetExpressionUsingMethod(typeof(Mathf), "Max", args, allConstants);
+                if (args.Length >= 2) return GetExpressionUsingMethod(typeof(Mathf), "Max", args);
                 else throw GetArgumentException(token);
             }
         }
 
         private class MinFunction : Function
         {
-            public override Expression GetExpression(FunctionToken token, (FormulaToken token, Expression expression, float value)[] args, bool allConstants)
+            public override Expression GetExpression(FunctionToken token, (FormulaToken token, Expression expression)[] args)
             {
-                if (args.Length == 2) return GetExpressionUsingMethod(typeof(Mathf), "Min", args, allConstants);
+                if (args.Length >= 2) return GetExpressionUsingMethod(typeof(Mathf), "Min", args);
                 else throw GetArgumentException(token);
             }
         }
 
-        private class LogFunction : Function
-        {
-            public override Expression GetExpression(FunctionToken token, (FormulaToken token, Expression expression, float value)[] args, bool allConstants)
-            {
-                if (args.Length == 1 || args.Length == 2) return GetExpressionUsingMethod(typeof(Mathf), "Log", args, allConstants);
-                else throw GetArgumentException(token);
-            }
-        }
+        private class PowFunction : MethodCallFunction { public PowFunction() : base(typeof(Mathf), "Pow", args => args.Length == 2) { } }
+        private class LogFunction : MethodCallFunction { public LogFunction() : base(typeof(Mathf), "Log", args => args.Length == 1 || args.Length == 2) { } }
+        private class ExpFunction : MethodCallFunction { public ExpFunction() : base(typeof(Mathf), "Exp", args => args.Length == 1) { } }
+        private class FloorFunction : MethodCallFunction { public FloorFunction() : base(typeof(Mathf), "Floor", args => args.Length == 1) { } }
+        private class CeilFunction : MethodCallFunction { public CeilFunction() : base(typeof(Mathf), "Ceil", args => args.Length == 1) { } }
 
-        private class ExpFunction : Function
-        {
-            public override Expression GetExpression(FunctionToken token, (FormulaToken token, Expression expression, float value)[] args, bool allConstants)
-            {
-                if (args.Length == 1) return GetExpressionUsingMethod(typeof(Mathf), "Exp", args, allConstants);
-                else throw GetArgumentException(token);
-            }
-        }
 
-        private class FloorFunction : Function
+        private class MethodCallFunction : Function
         {
-            public override Expression GetExpression(FunctionToken token, (FormulaToken token, Expression expression, float value)[] args, bool allConstants)
-            {
-                if (args.Length == 1) return GetExpressionUsingMethod(typeof(Mathf), "Floor", args, allConstants);
-                else throw GetArgumentException(token);
-            }
-        }
+            private readonly Type _type;
+            private readonly string _method;
+            private readonly Func<(FormulaToken token, Expression expression)[], bool> _argValidate;
 
-        private class CeilFunction : Function
-        {
-            public override Expression GetExpression(FunctionToken token, (FormulaToken token, Expression expression, float value)[] args, bool allConstants)
+            public MethodCallFunction(Type type, string method, Func<(FormulaToken token, Expression expression)[], bool> argValidate)
             {
-                if (args.Length == 1) return GetExpressionUsingMethod(typeof(Mathf), "Ceil", args, allConstants);
+                _type = type;
+                _method = method;
+                _argValidate = argValidate;
+            }
+
+            public override Expression GetExpression(FunctionToken token, (FormulaToken token, Expression expression)[] args)
+            {
+                if (_argValidate(args)) return GetExpressionUsingMethod(_type, _method, args);
                 else throw GetArgumentException(token);
             }
         }
@@ -100,32 +86,17 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
 
         public override Expression GetExpression()
         {
-            var args = new (FormulaToken token, Expression expression, float value)[argTokens.Length];
+            var args = new (FormulaToken token, Expression expression)[argTokens.Length];
+
             for (int i = 0; i < args.Length; i++)
             {
                 args[i] = (
                     argTokens[i],
-                    ExpressionOptimizer.PostProcessingExpression(
-                        argTokens[i].GetExpression()
-                    ),
-                    0f
+                    ExpressionOptimizer.PostProcessingExpression(argTokens[i].GetExpression())
                 );
             }
 
-            var allConstants = true;
-            for (int i = 0; i < args.Length; i++)
-            {
-                if (args[i].expression is ConstantExpression constantExpression)
-                {
-                    args[i].value = (float)constantExpression.Value;
-                }
-                else
-                {
-                    allConstants = false;
-                }
-            }
-
-            return _function.GetExpression(this, args, allConstants);
+            return _function.GetExpression(this, args);
         }
 
         public FunctionToken(string functionName, string argsBody, int argsOffset, int begin, int end, Dictionary<string, ParameterExpression> allParams) : base(begin, end)
@@ -141,11 +112,7 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
                 "exp" => new ExpFunction(),
                 "floor" => new FloorFunction(),
                 "ceil" => new CeilFunction(),
-                _ => throw new ParseException(
-                    $"{functionName} is undefined identifier",
-                    begin,
-                    begin + functionName.Length - 1
-                )
+                _ => throw new ParseException($"{functionName} is undefined identifier", begin, begin + functionName.Length - 1)
             };
 
             var beginArgumentIndex = 0;
@@ -155,19 +122,11 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
             {
                 if (argsBody[i] == ',')
                 {
-                    argList.Add(
-                        new FormulaToken(
-                            argsBody, beginArgumentIndex, i - 1, argsOffset, allParams
-                        )
-                    );
+                    argList.Add(new FormulaToken(argsBody, beginArgumentIndex, i - 1, argsOffset, allParams));
                     beginArgumentIndex = i + 1;
                 }
             }
-            argList.Add(
-                new FormulaToken(
-                    argsBody, beginArgumentIndex, argsBody.Length - 1, argsOffset, allParams
-                )
-            );
+            argList.Add(new FormulaToken(argsBody, beginArgumentIndex, argsBody.Length - 1, argsOffset, allParams));
             argTokens = argList.ToArray();
         }
     }
