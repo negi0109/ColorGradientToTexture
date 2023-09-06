@@ -57,6 +57,9 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
         private class ExpFunction : MethodCallFunction { public ExpFunction() : base(typeof(Mathf), "Exp", args => args.Length == 1) { } }
         private class FloorFunction : MethodCallFunction { public FloorFunction() : base(typeof(Mathf), "Floor", args => args.Length == 1) { } }
         private class CeilFunction : MethodCallFunction { public CeilFunction() : base(typeof(Mathf), "Ceil", args => args.Length == 1) { } }
+        private class SinFunction : MethodCallFunction { public SinFunction() : base(typeof(Mathf), "Sin", args => args.Length == 1) { } }
+        private class CosFunction : MethodCallFunction { public CosFunction() : base(typeof(Mathf), "Cos", args => args.Length == 1) { } }
+        private class TanFunction : MethodCallFunction { public TanFunction() : base(typeof(Mathf), "Tan", args => args.Length == 1) { } }
 
 
         private class MethodCallFunction : Function
@@ -112,6 +115,9 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
                 "exp" => new ExpFunction(),
                 "floor" => new FloorFunction(),
                 "ceil" => new CeilFunction(),
+                "sin" => new SinFunction(),
+                "cos" => new CosFunction(),
+                "tan" => new TanFunction(),
                 _ => throw new ParseException($"{functionName} is undefined identifier", begin, begin + functionName.Length - 1)
             };
 
