@@ -75,6 +75,24 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
             }
         }
 
+        private class FloorFunction : Function
+        {
+            public override Expression GetExpression(FunctionToken token, (FormulaToken token, Expression expression, float value)[] args, bool allConstants)
+            {
+                if (args.Length == 1) return GetExpressionUsingMethod(typeof(Mathf), "Floor", args, allConstants);
+                else throw GetArgumentException(token);
+            }
+        }
+
+        private class CeilFunction : Function
+        {
+            public override Expression GetExpression(FunctionToken token, (FormulaToken token, Expression expression, float value)[] args, bool allConstants)
+            {
+                if (args.Length == 1) return GetExpressionUsingMethod(typeof(Mathf), "Ceil", args, allConstants);
+                else throw GetArgumentException(token);
+            }
+        }
+
 
         private readonly string _functionName;
         private readonly Function _function;
@@ -121,6 +139,8 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
                 "log" => new LogFunction(),
                 "ln" => new LogFunction(),
                 "exp" => new ExpFunction(),
+                "floor" => new FloorFunction(),
+                "ceil" => new CeilFunction(),
                 _ => throw new ParseException(
                     $"{functionName} is undefined identifier",
                     begin,
