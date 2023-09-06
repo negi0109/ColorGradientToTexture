@@ -29,7 +29,7 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
                         if (char.IsDigit(text[i]))
                         {
                             GetFloat(text, i, out int length, out float value);
-                            tokens.Add(new ConstantToken(offset + i, offset + i + length - 1) { value = value });
+                            tokens.Add(new LiteralToken(offset + i, offset + i + length - 1) { value = value });
                             i += length - 1;
                         }
                         else if ("!\"#$%&'()=-^¥[@:]_/.;,<>+*?_}{`~|}".Contains(text[i]))
