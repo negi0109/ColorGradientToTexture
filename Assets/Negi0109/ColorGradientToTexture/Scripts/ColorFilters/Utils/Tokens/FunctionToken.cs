@@ -43,10 +43,7 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
         {
             public override Expression GetExpression(FunctionToken token, (FormulaToken token, Expression expression, float value)[] args, bool allConstants)
             {
-                if (args.Length == 2)
-                {
-                    return GetExpressionUsingMethod(typeof(Mathf), "Max", args, allConstants);
-                }
+                if (args.Length == 2) return GetExpressionUsingMethod(typeof(Mathf), "Max", args, allConstants);
                 else throw GetArgumentException(token);
             }
         }
@@ -55,10 +52,7 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
         {
             public override Expression GetExpression(FunctionToken token, (FormulaToken token, Expression expression, float value)[] args, bool allConstants)
             {
-                if (args.Length == 2)
-                {
-                    return GetExpressionUsingMethod(typeof(Mathf), "Min", args, allConstants);
-                }
+                if (args.Length == 2) return GetExpressionUsingMethod(typeof(Mathf), "Min", args, allConstants);
                 else throw GetArgumentException(token);
             }
         }
@@ -67,10 +61,7 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
         {
             public override Expression GetExpression(FunctionToken token, (FormulaToken token, Expression expression, float value)[] args, bool allConstants)
             {
-                if (args.Length == 1 || args.Length == 2)
-                {
-                    return GetExpressionUsingMethod(typeof(Mathf), "Log", args, allConstants);
-                }
+                if (args.Length == 1 || args.Length == 2) return GetExpressionUsingMethod(typeof(Mathf), "Log", args, allConstants);
                 else throw GetArgumentException(token);
             }
         }
@@ -79,14 +70,7 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
         {
             public override Expression GetExpression(FunctionToken token, (FormulaToken token, Expression expression, float value)[] args, bool allConstants)
             {
-                if (args.Length == 1)
-                {
-                    if (allConstants) return Expression.Constant(Mathf.Exp(args[0].value));
-                    else return Expression.Call(
-                        typeof(Mathf).GetMethod("Exp", new[] { typeof(float) }),
-                        args[0].expression
-                    );
-                }
+                if (args.Length == 1) return GetExpressionUsingMethod(typeof(Mathf), "Exp", args, allConstants);
                 else throw GetArgumentException(token);
             }
         }
