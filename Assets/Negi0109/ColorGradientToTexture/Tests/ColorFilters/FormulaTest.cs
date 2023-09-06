@@ -17,6 +17,13 @@ namespace Negi0109.ColorGradientToTexture.Tests.ColorFilterTests
         [TestCase("v+1*2", 3f, 4f, 5f, 6f)]
         [TestCase("(v+1)*2", 4f, 6f, 8f, 10f)]
         [TestCase("2*v+1", 3f, 5f, 7f, 9f)]
+        [TestCase("pow(v, 2)", 1f, 4f, 9f, 16f)]
+        [TestCase("max(v, 2)", 2f, 2f, 3f, 4f)]
+        [TestCase("min(v, 2)", 1f, 2f, 2f, 2f)]
+        [TestCase("log(pow(2, v), 2)", 1f, 2f, 3f, 4f)]
+        [TestCase("exp(v)", 2.71828182846f, 7.38905609893f, 20.0855369232f, 54.5981500331f)]
+        [TestCase("floor(v+0.5)", 1f, 2f, 3f, 4f)]
+        [TestCase("ceil(v+0.5)", 2f, 3f, 4f, 5f)]
         public void Evaluate(string formula, float e1, float e2, float e3, float e4)
         {
             var filter = new Filters.Formula() { formula = formula };

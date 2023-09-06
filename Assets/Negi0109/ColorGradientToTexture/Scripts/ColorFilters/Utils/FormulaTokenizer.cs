@@ -18,7 +18,7 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
                     case '(':
                         if (TryGetPairBracket(text, i, out int index))
                         {
-                            tokens.Add(new FormulaToken(text, i, index, offset, allParams));
+                            tokens.Add(new FormulaToken(text, i + 1, index - 1, offset, allParams));
                             i = index;
                         }
                         else throw new ParseException($"No matching ')' for '('", i);
@@ -38,16 +38,36 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
                         }
                         else if (TryGetIdentifier(text, i, out string identifier, out int tokenLength))
                         {
-                            if (allParams.ContainsKey(identifier))
+                            var blank = GetBlankSize(text, i + tokenLength);
+                            var begin = i + tokenLength + blank;
+
+                            if (begin < text.Length && text[begin] == '(')
+                            {
+                                if (TryGetPairBracket(text, begin, out int end))
+                                {
+                                    tokens.Add(
+                                        new FunctionToken(
+                                            identifier,
+                                            text.Substring(begin + 1, end - begin - 1),
+                                            begin,
+                                            i,
+                                            end,
+                                            allParams
+                                        )
+                                    );
+                                    i = end;
+                                }
+                                else throw new ParseException($"No matching ')' for '('", begin);
+                            }
+                            else if (allParams.ContainsKey(identifier))
                             {
                                 tokens.Add(new VariableToken(identifier, i + offset, i + tokenLength - 1 + offset, allParams));
+                                i += tokenLength - 1;
                             }
                             else
                             {
                                 throw new ParseException($"{identifier} is undefined identifier", i + offset, i + offset + tokenLength - 1);
                             }
-
-                            i += tokenLength - 1;
                         }
                         break;
                 }
@@ -94,7 +114,7 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
             return false;
         }
 
-        public static void GetFloat(string text, int begin, out int length, out float value)
+        private static void GetFloat(string text, int begin, out int length, out float value)
         {
             for (var i = text.Length - begin; i >= 1; i--)
             {
@@ -108,6 +128,13 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
                 }
             }
             throw new Exception();
+        }
+
+        private static int GetBlankSize(string text, int begin)
+        {
+            for (int i = begin; i < text.Length; i++) if (text[i] != ' ') return i - begin;
+
+            return text.Length - begin;
         }
     }
 }
