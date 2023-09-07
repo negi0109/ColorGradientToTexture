@@ -24,6 +24,9 @@ namespace Negi0109.ColorGradientToTexture.Tests.ColorFilterTests
         [TestCase("cos(0)", 1f)]
         [TestCase("cos(3.1415926535*0.5)", 0f)]
         [TestCase("tan(0)", 0f)]
+        [TestCase("pi", 3.1415926535f)]
+        [TestCase("tau", 3.1415926535f * 2)]
+        [TestCase("e", 2.718281828459f)]
         public void EvaluateNoArgs(string formula, float e)
         {
             var body = FormulaCompiler.GetExpression(formula);
