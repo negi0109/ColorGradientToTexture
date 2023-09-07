@@ -59,6 +59,11 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
                                 }
                                 else throw new ParseException($"No matching ')' for '('", begin);
                             }
+                            else if (ConstantToken.TryGetConstantToken(i + offset, i + tokenLength + offset, identifier, out ConstantToken token))
+                            {
+                                tokens.Add(token);
+                                i += tokenLength - 1;
+                            }
                             else if (allParams.ContainsKey(identifier))
                             {
                                 tokens.Add(new VariableToken(identifier, i + offset, i + tokenLength - 1 + offset, allParams));
