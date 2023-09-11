@@ -1,14 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using NUnit.Framework;
-using UnityEngine;
-using UnityEngine.TestTools;
-
 namespace Negi0109.ColorGradientToTexture.Utils.Tests
 {
     namespace ArraySegment2DTest
     {
-        public class LineStub : Utils.ArraySegment2DBase<int>.Line
+        public class LineStub : ArraySegment2DBase<int>.Line
         {
             public override int GetLength() => _body.Length;
             public override int this[int i] { get => _body[i]; set => _body[i] = value; }
@@ -20,7 +14,7 @@ namespace Negi0109.ColorGradientToTexture.Utils.Tests
             }
         }
 
-        public class ArraySegment2DStub : Utils.ArraySegment2DBase<(int, int)>
+        public class ArraySegment2DStub : ArraySegment2DBase<(int, int)>
         {
             public readonly (int, int)[,] body;
 
@@ -33,11 +27,11 @@ namespace Negi0109.ColorGradientToTexture.Utils.Tests
 
             public ArraySegment2DStub(int s0, int s1)
             {
-                this.body = new (int, int)[s0, s1];
+                body = new (int, int)[s0, s1];
 
                 for (int i0 = 0; i0 < s0; i0++)
                     for (int i1 = 0; i1 < s1; i1++)
-                        this.body[i0, i1] = (i0, i1);
+                        body[i0, i1] = (i0, i1);
             }
         }
     }

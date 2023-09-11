@@ -12,7 +12,7 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
         {
             protected static Expression GetExpressionUsingMethod(Type type, string name, (FormulaToken token, Expression expression)[] args)
             {
-                var method = type.GetMethod(name, Enumerable.Repeat(typeof(float), args.Length).ToArray());
+                var method = type.GetMethod(name, Enumerable.Repeat(typeof(double), args.Length).ToArray());
                 var allConstants = true;
                 var values = new object[args.Length];
 
@@ -38,7 +38,7 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
         {
             public override Expression GetExpression(FunctionToken token, (FormulaToken token, Expression expression)[] args)
             {
-                if (args.Length >= 2) return GetExpressionUsingMethod(typeof(Mathf), "Max", args);
+                if (args.Length >= 2) return GetExpressionUsingMethod(typeof(Math), "Max", args);
                 else throw GetArgumentException(token);
             }
         }
@@ -47,19 +47,19 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
         {
             public override Expression GetExpression(FunctionToken token, (FormulaToken token, Expression expression)[] args)
             {
-                if (args.Length >= 2) return GetExpressionUsingMethod(typeof(Mathf), "Min", args);
+                if (args.Length >= 2) return GetExpressionUsingMethod(typeof(Math), "Min", args);
                 else throw GetArgumentException(token);
             }
         }
 
-        private class PowFunction : MethodCallFunction { public PowFunction() : base(typeof(Mathf), "Pow", args => args.Length == 2) { } }
-        private class LogFunction : MethodCallFunction { public LogFunction() : base(typeof(Mathf), "Log", args => args.Length == 1 || args.Length == 2) { } }
-        private class ExpFunction : MethodCallFunction { public ExpFunction() : base(typeof(Mathf), "Exp", args => args.Length == 1) { } }
-        private class FloorFunction : MethodCallFunction { public FloorFunction() : base(typeof(Mathf), "Floor", args => args.Length == 1) { } }
-        private class CeilFunction : MethodCallFunction { public CeilFunction() : base(typeof(Mathf), "Ceil", args => args.Length == 1) { } }
-        private class SinFunction : MethodCallFunction { public SinFunction() : base(typeof(Mathf), "Sin", args => args.Length == 1) { } }
-        private class CosFunction : MethodCallFunction { public CosFunction() : base(typeof(Mathf), "Cos", args => args.Length == 1) { } }
-        private class TanFunction : MethodCallFunction { public TanFunction() : base(typeof(Mathf), "Tan", args => args.Length == 1) { } }
+        private class PowFunction : MethodCallFunction { public PowFunction() : base(typeof(Math), "Pow", args => args.Length == 2) { } }
+        private class LogFunction : MethodCallFunction { public LogFunction() : base(typeof(Math), "Log", args => args.Length == 1 || args.Length == 2) { } }
+        private class ExpFunction : MethodCallFunction { public ExpFunction() : base(typeof(Math), "Exp", args => args.Length == 1) { } }
+        private class FloorFunction : MethodCallFunction { public FloorFunction() : base(typeof(Math), "Floor", args => args.Length == 1) { } }
+        private class CeilFunction : MethodCallFunction { public CeilFunction() : base(typeof(Math), "Ceiling", args => args.Length == 1) { } }
+        private class SinFunction : MethodCallFunction { public SinFunction() : base(typeof(Math), "Sin", args => args.Length == 1) { } }
+        private class CosFunction : MethodCallFunction { public CosFunction() : base(typeof(Math), "Cos", args => args.Length == 1) { } }
+        private class TanFunction : MethodCallFunction { public TanFunction() : base(typeof(Math), "Tan", args => args.Length == 1) { } }
 
 
         private class MethodCallFunction : Function

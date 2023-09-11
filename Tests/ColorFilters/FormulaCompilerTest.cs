@@ -8,29 +8,29 @@ namespace Negi0109.ColorGradientToTexture.Tests.ColorFilterTests
     public class FormulaCompilerTest
     {
 
-        [TestCase("0.1", 0.1f)]
-        [TestCase("0.25", 0.25f)]
-        [TestCase("3", 3f)]
-        [TestCase("1+2", 3f)]
-        [TestCase("2-2", 0f)]
-        [TestCase("3*2", 6f)]
-        [TestCase("3/2", 1.5f)]
-        [TestCase("3+1*2", 5f)]
-        [TestCase("(2+1)*2", 6f)]
-        [TestCase("2*3+1", 7f)]
-        [TestCase("pow(2, 3)", 8f)]
-        [TestCase("sin(0)", 0f)]
-        [TestCase("sin(3.1415926535*0.5)", 1f)]
-        [TestCase("cos(0)", 1f)]
-        [TestCase("cos(3.1415926535*0.5)", 0f)]
-        [TestCase("tan(0)", 0f)]
-        [TestCase("pi", 3.1415926535f)]
-        [TestCase("tau", 3.1415926535f * 2)]
-        [TestCase("e", 2.718281828459f)]
-        public void EvaluateNoArgs(string formula, float e)
+        [TestCase("0.1", 0.1)]
+        [TestCase("0.25", 0.25)]
+        [TestCase("3", 3)]
+        [TestCase("1+2", 3)]
+        [TestCase("2-2", 0)]
+        [TestCase("3*2", 6)]
+        [TestCase("3/2", 1.5)]
+        [TestCase("3+1*2", 5)]
+        [TestCase("(2+1)*2", 6)]
+        [TestCase("2*3+1", 7)]
+        [TestCase("pow(2, 3)", 8)]
+        [TestCase("sin(0)", 0)]
+        [TestCase("sin(3.1415926535*0.5)", 1)]
+        [TestCase("cos(0)", 1)]
+        [TestCase("cos(3.1415926535*0.5)", 0)]
+        [TestCase("tan(0)", 0)]
+        [TestCase("pi", 3.1415926535)]
+        [TestCase("tau", 3.1415926535 * 2)]
+        [TestCase("e", 2.718281828459)]
+        public void EvaluateNoArgs(string formula, double e)
         {
             var body = FormulaCompiler.GetExpression(formula);
-            var lambda = Expression.Lambda<Func<float>>(body);
+            var lambda = Expression.Lambda<Func<double>>(body);
             var func = lambda.Compile();
 
             Assert.That(func(), Is.EqualTo(e).Within(0.000001f));

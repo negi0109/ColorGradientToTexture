@@ -24,9 +24,9 @@ namespace Negi0109.ColorGradientToTexture.Filters
         public Direction direction;
         public Division division;
 
-        public override void EvaluateAll(ref float[,] array)
+        public override void EvaluateAll(ref double[,] array)
         {
-            Utils.ArraySegment2DBase<float> _segment = new Utils.ArraySegment2D<float>(array);
+            Utils.ArraySegment2DBase<double> _segment = new Utils.ArraySegment2D<double>(array);
 
             if (direction == Direction.Y01 || direction == Direction.Y10) _segment = _segment.Dimension(1);
             if (direction == Direction.X10 || direction == Direction.Y10) _segment = _segment.Backward(true);

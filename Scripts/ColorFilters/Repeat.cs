@@ -7,7 +7,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
     {
         public int count = 1;
 
-        public override float Evaluate(float v) => v * count % 1f;
+        public override double Evaluate(double v) => v * count % 1;
 
         public override bool Editor() => ColorFilterEditorUtils.IntField("count", ref count, v => Mathf.Max(v, 1));
     }

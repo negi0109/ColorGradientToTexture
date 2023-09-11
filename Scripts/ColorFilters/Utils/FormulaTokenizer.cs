@@ -28,7 +28,7 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
                     default:
                         if (char.IsDigit(text[i]))
                         {
-                            GetFloat(text, i, out int length, out float value);
+                            GetDouble(text, i, out int length, out double value);
                             tokens.Add(new LiteralToken(offset + i, offset + i + length - 1) { value = value });
                             i += length - 1;
                         }
@@ -119,12 +119,12 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
             return false;
         }
 
-        private static void GetFloat(string text, int begin, out int length, out float value)
+        private static void GetDouble(string text, int begin, out int length, out double value)
         {
             for (var i = text.Length - begin; i >= 1; i--)
             {
                 if (text[begin + i - 1] == ' ') continue;
-                if (float.TryParse(text.Substring(begin, i), out float parsed))
+                if (double.TryParse(text.Substring(begin, i), out double parsed))
                 {
                     length = i;
                     value = parsed;

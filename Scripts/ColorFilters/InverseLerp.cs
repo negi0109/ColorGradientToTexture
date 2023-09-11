@@ -1,3 +1,4 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,15 +12,17 @@ namespace Negi0109.ColorGradientToTexture.Filters
         public Number max = new Number() { type = Number.Type.Max };
         public bool clamped = true;
 
-        public override void EvaluateAll(ref float[,] array)
+        public override void EvaluateAll(ref double[,] array)
         {
-            Utils.ArraySegment2DBase<float> segment = new Utils.ArraySegment2D<float>(array);
+            Utils.ArraySegment2DBase<double> segment = new Utils.ArraySegment2D<double>(array);
 
             var minValue = min.GetValue(segment);
             var maxValue = max.GetValue(segment);
 
             segment.GetAll().SetValues(
-                v => clamped ? Mathf.InverseLerp(minValue, maxValue, v) : (v - minValue) / (maxValue - minValue)
+                v => clamped ?
+                    Math.Max(Math.Min((v - minValue) / (maxValue - minValue), 1.0), 0.0) :
+                    (v - minValue) / (maxValue - minValue)
             );
         }
 

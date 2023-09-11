@@ -39,19 +39,9 @@ namespace Negi0109.ColorGradientToTexture
                 this.axes[i] = new ColorAxis(axesCount);
         }
 
-        public Color GetColor(float x, float y)
-        {
-            float[] values = new float[Mode.size];
-
-            for (int i = 0; i < values.Length; i++)
-                values[i] = axes[i].Evaluate(x, y);
-
-            return Mode.func(values);
-        }
-
         public void SetTexturePixel(Texture2D tex)
         {
-            var axeValues = new float[Mode.size][,];
+            var axeValues = new double[Mode.size][,];
 
             for (int i = 0; i < Mode.size; i++)
                 axeValues[i] = axes[i].Evaluate(tex.width, tex.height);
