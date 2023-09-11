@@ -1,20 +1,21 @@
 using UnityEditor;
 using UnityEngine;
+using System;
 
 namespace Negi0109.ColorGradientToTexture.Filters
 {
     [System.Serializable]
     public class Scale : ColorFilter
     {
-        public float value = 1f;
+        public double value = 1;
 
-        public override float Evaluate(float v) => v * value;
+        public override double Evaluate(double v) => v * value;
 
         public override bool Editor()
         {
             return Watch(
                 () => value,
-                () => { value = Mathf.Max(EditorGUILayout.FloatField("weight", value), 0); }
+                () => { value = Math.Max(EditorGUILayout.DoubleField("weight", value), 0); }
             );
         }
     }

@@ -10,9 +10,9 @@ namespace Negi0109.ColorGradientToTexture.Filters
         public enum Type { Free, Avg, Min, Max }
 
         public Type type;
-        public float value;
+        public double value;
 
-        public float GetValue(Utils.ArraySegment2DBase<float> segment)
+        public double GetValue(Utils.ArraySegment2DBase<double> segment)
         => type switch
         {
             Type.Free => value,
@@ -32,7 +32,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
             {
                 updated |= Watch(
                     () => value,
-                    () => { value = EditorGUILayout.FloatField("value", value); }
+                    () => { value = EditorGUILayout.DoubleField("value", value); }
                 );
             }
             return updated;

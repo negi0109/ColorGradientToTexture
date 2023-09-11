@@ -9,7 +9,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
         public float weight = 0.5f;
         public int seed = new System.Random().Next();
 
-        public override void EvaluateAll(ref float[,] array)
+        public override void EvaluateAll(ref double[,] array)
         {
             var r = new System.Random(seed);
 

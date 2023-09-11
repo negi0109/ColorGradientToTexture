@@ -27,13 +27,13 @@ namespace Negi0109.ColorGradientToTexture
             coordinateFilters = new List<CoordinateFilter>(0);
         }
 
-        public float Evaluate(float x, float y)
+        public double Evaluate(float x, float y)
         {
             var pos = new Vector2(x, y);
             foreach (var filter in coordinateFilters)
                 pos = filter.Evaluate(pos);
 
-            float v = axesCount == 1 ? xCurve.Evaluate(pos.x) : (1 - yWeight) * xCurve.Evaluate(pos.x) + yWeight * yCurve.Evaluate(pos.y);
+            double v = axesCount == 1 ? xCurve.Evaluate(pos.x) : (1 - yWeight) * xCurve.Evaluate(pos.x) + yWeight * yCurve.Evaluate(pos.y);
 
             foreach (var filter in colorFilters)
                 v = filter.Evaluate(v);
@@ -41,9 +41,9 @@ namespace Negi0109.ColorGradientToTexture
             return v;
         }
 
-        public float[,] Evaluate(int width, int height)
+        public double[,] Evaluate(int width, int height)
         {
-            var v = new float[width, height];
+            var v = new double[width, height];
 
             for (int x = 0; x < width; x++)
             {

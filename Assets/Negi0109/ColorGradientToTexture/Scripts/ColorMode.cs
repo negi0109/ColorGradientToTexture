@@ -9,13 +9,13 @@ namespace Negi0109.ColorGradientToTexture
     {
         public static readonly ColorMode[] modes = new ColorMode[] {
             new ColorMode(
-                "RGB", 3, (float[] values) => new Color(values[0], values[1], values[2])
+                "RGB", 3, (double[] values) => new Color((float)values[0], (float)values[1], (float)values[2])
             ),
             new ColorMode(
-                "HSV", 3, (float[] values) => Color.HSVToRGB(values[0], values[1], values[2])
+                "HSV", 3, (double[] values) => Color.HSVToRGB((float)values[0], (float)values[1], (float)values[2])
             ),
             new ColorMode(
-                "Grayscale", 1, (float[] values) => new Color(values[0], values[0], values[0]), "V"
+                "Grayscale", 1, (double[] values) => new Color((float)values[0], (float)values[0], (float)values[0]), "V"
             ),
         };
         public static string[] names = modes.Select(v => v.name).ToArray();
@@ -23,9 +23,9 @@ namespace Negi0109.ColorGradientToTexture
         public string name;
         public string axisNames;
         public int size;
-        public Func<float[], Color> func;
+        public Func<double[], Color> func;
 
-        public ColorMode(string name, int size, Func<float[], Color> func, string axisNames = null)
+        public ColorMode(string name, int size, Func<double[], Color> func, string axisNames = null)
         {
             this.name = name;
             this.size = size;

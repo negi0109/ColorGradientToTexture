@@ -9,10 +9,10 @@ namespace Negi0109.ColorGradientToTexture.Filters
     {
         public string formula = "";
         private string compiledFormula;
-        private Func<float, float, float, float> compiled = (v, x, y) => v;
+        private Func<double, double, double, double> compiled = (v, x, y) => v;
         private Exception _exception = null;
 
-        public override void EvaluateAll(ref float[,] array)
+        public override void EvaluateAll(ref double[,] array)
         {
             Compile();
 
@@ -28,8 +28,8 @@ namespace Negi0109.ColorGradientToTexture.Filters
                 }
             }
         }
-        private float GetNormalValue(int v, int size)
-            => size == 1 ? 0.5f : (float)v / (size - 1);
+        private double GetNormalValue(int v, int size)
+            => size == 1 ? 0.5f : (double)v / (size - 1);
 
         public override bool Editor()
         {

@@ -4,9 +4,9 @@ namespace Negi0109.ColorGradientToTexture.Tests.ColorFilterTests
 {
     public class ThresholdTest
     {
-        [TestCase(1f, 0.5f, 0)]
-        [TestCase(1f, 1f, 1)]
-        public void Evaluate(float value, float v, float expected)
+        [TestCase(1, 0.5, 0)]
+        [TestCase(1, 1, 1)]
+        public void Evaluate(double value, double v, double expected)
         {
             var filter = new Filters.Threshold() { value = value };
 

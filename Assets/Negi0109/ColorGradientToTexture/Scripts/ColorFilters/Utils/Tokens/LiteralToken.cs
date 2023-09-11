@@ -6,7 +6,7 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
     {
         public LiteralToken(int begin, int end) : base(begin, end) { }
 
-        public float value;
+        public double value;
         public override Expression GetExpression() => Expression.Constant(value);
     }
 }

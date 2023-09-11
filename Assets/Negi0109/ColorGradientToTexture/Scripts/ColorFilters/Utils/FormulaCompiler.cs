@@ -8,16 +8,16 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
     {
         static Dictionary<string, ParameterExpression> allParams = new Dictionary<string, ParameterExpression>()
         {
-            { "x", Expression.Parameter(typeof(float), "x") },
-            { "y", Expression.Parameter(typeof(float), "y") },
-            { "v", Expression.Parameter(typeof(float), "v") }
+            { "x", Expression.Parameter(typeof(double), "x") },
+            { "y", Expression.Parameter(typeof(double), "y") },
+            { "v", Expression.Parameter(typeof(double), "v") }
         };
 
-        public static Func<float, float, float, float> Compile(string formula)
+        public static Func<double, double, double, double> Compile(string formula)
         {
 
             var body = GetExpression(formula);
-            var lambda = Expression.Lambda<Func<float, float, float, float>>(
+            var lambda = Expression.Lambda<Func<double, double, double, double>>(
                 body, allParams["v"], allParams["x"], allParams["y"]
             );
 

@@ -34,7 +34,7 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
             {
                 if (expression.Right is BinaryExpression bre && bre.NodeType == ExpressionType.Multiply)
                 {
-                    if (Utils.EqualConstraint(bre.Left, -1f))
+                    if (Utils.EqualConstraint(bre.Left, -1.0))
                     {
                         expression = Expression.MakeBinary(
                             ExpressionType.Subtract,
@@ -43,7 +43,7 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
                         );
                         return true;
                     }
-                    else if (Utils.EqualConstraint(bre.Right, -1f))
+                    else if (Utils.EqualConstraint(bre.Right, -1.0))
                     {
                         expression = Expression.MakeBinary(
                             ExpressionType.Subtract,
@@ -58,7 +58,7 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
             {
                 if (expression.Right is BinaryExpression bre && bre.NodeType == ExpressionType.Divide)
                 {
-                    if (Utils.EqualConstraint(bre.Left, 1f))
+                    if (Utils.EqualConstraint(bre.Left, 1.0))
                     {
                         expression = Expression.MakeBinary(
                             ExpressionType.Divide,
@@ -96,8 +96,8 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
 
         private static Expression ReduceConstantExpression(ExpressionType type, ConstantExpression left, ConstantExpression right)
         {
-            float l = (float)left.Value;
-            float r = (float)right.Value;
+            double l = (double)left.Value;
+            double r = (double)right.Value;
 
             return type switch
             {
@@ -116,12 +116,12 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
                 case ExpressionType.Subtract:
                     expression = Expression.Add(
                         expression.Left,
-                        ReduceExpression(Expression.Multiply(expression.Right, Expression.Constant(-1f)))
+                        ReduceExpression(Expression.Multiply(expression.Right, Expression.Constant(-1.0)))
                     );
                     break;
                 case ExpressionType.Divide:
                     {
-                        var right = Expression.Divide(Expression.Constant(1f), expression.Right);
+                        var right = Expression.Divide(Expression.Constant(1.0), expression.Right);
                         Expression tmp = right;
 
                         if (right.Left is ConstantExpression lc && right.Right is ConstantExpression rc)

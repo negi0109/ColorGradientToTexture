@@ -14,11 +14,11 @@ namespace Negi0109.ColorGradientToTexture.Filters
         }
 
         public ConvertType type;
-        public override float Evaluate(float v)
+        public override double Evaluate(double v)
          => type switch
          {
-             ConvertType.GammaToLinear => Mathf.GammaToLinearSpace(v),
-             ConvertType.LinearToGamma => Mathf.LinearToGammaSpace(v),
+             ConvertType.GammaToLinear => (double)Mathf.GammaToLinearSpace((float)v),
+             ConvertType.LinearToGamma => (double)Mathf.LinearToGammaSpace((float)v),
              _ => v
          };
 
