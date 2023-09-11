@@ -19,14 +19,23 @@ namespace Negi0109.ColorGradientToTexture.Tests.ColorFilterTests
         [TestCase("(2+1)*2", 6)]
         [TestCase("2*3+1", 7)]
         [TestCase("pow(2, 3)", 8)]
+        [TestCase("2^3", 8)]
+        [TestCase("abs(1-3)", 2)]
         [TestCase("sin(0)", 0)]
         [TestCase("sin(3.1415926535*0.5)", 1)]
+        [TestCase("asin(1)", 3.1415926535 * 0.5)]
         [TestCase("cos(0)", 1)]
         [TestCase("cos(3.1415926535*0.5)", 0)]
+        [TestCase("acos(1)", 0)]
         [TestCase("tan(0)", 0)]
+        [TestCase("atan(0)", 0)]
+        [TestCase("atan(0, 1)", 0)]
         [TestCase("pi", 3.1415926535)]
         [TestCase("tau", 3.1415926535 * 2)]
         [TestCase("e", 2.718281828459)]
+        [TestCase("7%3", 1)]
+        [TestCase("clamp(3, 0, 1.5)", 1.5)]
+        [TestCase("clamp(3)", 1)]
         public void EvaluateNoArgs(string formula, double e)
         {
             var body = FormulaCompiler.GetExpression(formula);
