@@ -105,7 +105,9 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
                 ExpressionType.Subtract => Expression.Constant(l - r),
                 ExpressionType.Multiply => Expression.Constant(l * r),
                 ExpressionType.Divide => Expression.Constant(l / r),
-                _ => throw new System.NotImplementedException()
+                ExpressionType.Modulo => Expression.Constant(l % r),
+                ExpressionType.Power => Expression.Constant(Math.Pow(l, r)),
+                _ => throw new NotImplementedException()
             };
         }
 

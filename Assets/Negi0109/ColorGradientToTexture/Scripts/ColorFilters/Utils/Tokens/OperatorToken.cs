@@ -29,6 +29,8 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
                 '-' => new Operator(1, (l, r) => Expression.Subtract(l, r)),
                 '*' => new Operator(2, (l, r) => Expression.Multiply(l, r)),
                 '/' => new Operator(2, (l, r) => Expression.Divide(l, r)),
+                '%' => new Operator(2, (l, r) => Expression.Modulo(l, r)),
+                '^' => new Operator(2, (l, r) => Expression.Power(l, r)),
                 _ => throw new ParseException($"{value} is undefined identifier", begin, begin)
             };
         }
