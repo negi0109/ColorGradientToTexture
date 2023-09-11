@@ -58,9 +58,19 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
         private class FloorFunction : MethodCallFunction { public FloorFunction() : base(typeof(Math), "Floor", args => args.Length == 1) { } }
         private class CeilFunction : MethodCallFunction { public CeilFunction() : base(typeof(Math), "Ceiling", args => args.Length == 1) { } }
         private class SinFunction : MethodCallFunction { public SinFunction() : base(typeof(Math), "Sin", args => args.Length == 1) { } }
+        private class AsinFunction : MethodCallFunction { public AsinFunction() : base(typeof(Math), "Asin", args => args.Length == 1) { } }
         private class CosFunction : MethodCallFunction { public CosFunction() : base(typeof(Math), "Cos", args => args.Length == 1) { } }
+        private class AcosFunction : MethodCallFunction { public AcosFunction() : base(typeof(Math), "Acos", args => args.Length == 1) { } }
         private class TanFunction : MethodCallFunction { public TanFunction() : base(typeof(Math), "Tan", args => args.Length == 1) { } }
-
+        private class AtanFunction : Function
+        {
+            public override Expression GetExpression(FunctionToken token, (FormulaToken token, Expression expression)[] args)
+            {
+                if (args.Length == 2) return GetExpressionUsingMethod(typeof(Math), "Atan2", args);
+                else if (args.Length == 1) return GetExpressionUsingMethod(typeof(Math), "Atan", args);
+                else throw GetArgumentException(token);
+            }
+        }
 
         private class MethodCallFunction : Function
         {
@@ -116,8 +126,11 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
                 "floor" => new FloorFunction(),
                 "ceil" => new CeilFunction(),
                 "sin" => new SinFunction(),
+                "asin" => new AsinFunction(),
                 "cos" => new CosFunction(),
+                "acos" => new AcosFunction(),
                 "tan" => new TanFunction(),
+                "atan" => new AtanFunction(),
                 _ => throw new ParseException($"{functionName} is undefined identifier", begin, begin + functionName.Length - 1)
             };
 
