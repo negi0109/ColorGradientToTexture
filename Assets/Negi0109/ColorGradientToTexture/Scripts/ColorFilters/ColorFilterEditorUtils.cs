@@ -12,7 +12,7 @@ namespace Negi0109.ColorGradientToTexture
                 () => v,
                 () =>
                 {
-                    v = EditorGUILayout.IntField("count", v);
+                    v = EditorGUILayout.IntField(name, v);
                     if (func != null) v = func(v);
                 }
             );
