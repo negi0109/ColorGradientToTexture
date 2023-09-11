@@ -34,6 +34,8 @@ namespace Negi0109.ColorGradientToTexture.Tests.ColorFilterTests
         [TestCase("tau", 3.1415926535 * 2)]
         [TestCase("e", 2.718281828459)]
         [TestCase("7%3", 1)]
+        [TestCase("clamp(3, 0, 1.5)", 1.5)]
+        [TestCase("clamp(3)", 1)]
         public void EvaluateNoArgs(string formula, double e)
         {
             var body = FormulaCompiler.GetExpression(formula);
