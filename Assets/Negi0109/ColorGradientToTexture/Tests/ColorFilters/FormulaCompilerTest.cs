@@ -20,6 +20,7 @@ namespace Negi0109.ColorGradientToTexture.Tests.ColorFilterTests
         [TestCase("2*3+1", 7)]
         [TestCase("pow(2, 3)", 8)]
         [TestCase("2^3", 8)]
+        [TestCase("abs(1-3)", 2)]
         [TestCase("sin(0)", 0)]
         [TestCase("sin(3.1415926535*0.5)", 1)]
         [TestCase("asin(1)", 3.1415926535 * 0.5)]

@@ -52,6 +52,7 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
             }
         }
 
+        private class AbsFunction : MethodCallFunction { public AbsFunction() : base(typeof(Math), "Abs", args => args.Length == 1) { } }
         private class PowFunction : MethodCallFunction { public PowFunction() : base(typeof(Math), "Pow", args => args.Length == 2) { } }
         private class LogFunction : MethodCallFunction { public LogFunction() : base(typeof(Math), "Log", args => args.Length == 1 || args.Length == 2) { } }
         private class ExpFunction : MethodCallFunction { public ExpFunction() : base(typeof(Math), "Exp", args => args.Length == 1) { } }
@@ -131,6 +132,7 @@ namespace Negi0109.ColorGradientToTexture.Filters.Formulas
                 "acos" => new AcosFunction(),
                 "tan" => new TanFunction(),
                 "atan" => new AtanFunction(),
+                "abs" => new AbsFunction(),
                 _ => throw new ParseException($"{functionName} is undefined identifier", begin, begin + functionName.Length - 1)
             };
 
