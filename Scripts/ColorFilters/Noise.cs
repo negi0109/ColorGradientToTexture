@@ -25,10 +25,7 @@ namespace Negi0109.ColorGradientToTexture.Filters
                 () => weight,
                 () => { weight = EditorGUILayout.Slider("weight", weight, 0f, 1f); }
             );
-            updated |= Watch(
-                () => seed,
-                () => { seed = EditorGUILayout.IntField("seed", seed); }
-            );
+            updated |= ColorFilterEditorUtils.IntField("seed", ref seed);
 
             EditorGUIUtility.labelWidth = 0;
             EditorGUILayout.EndVertical();
