@@ -85,7 +85,9 @@ namespace Negi0109.ColorGradientToTexture
                     coordinateUpdated |= PopupSubClass(ref value);
                     coordinateUpdated |= value.Editor();
 
-                    if (!GUILayout.Button("x", new GUILayoutOption[] { GUILayout.Width(20) })) result.Add(value);
+                    if (GUILayout.Button("x", new GUILayoutOption[] { GUILayout.Width(20) }))
+                        updated = true;
+                    else result.Add(value);
                     if (GUILayout.Button("+", new GUILayoutOption[] { GUILayout.Width(20) })) result.Add(CoordinateFilter.DefaultFilter);
                     EditorGUILayout.EndHorizontal();
 
@@ -117,7 +119,10 @@ namespace Negi0109.ColorGradientToTexture
                     updated |= PopupSubClass(ref value);
                     updated |= value.Editor();
 
-                    if (!GUILayout.Button("x", new GUILayoutOption[] { GUILayout.Width(20) })) result.Add(value);
+                    if (GUILayout.Button("x", new GUILayoutOption[] { GUILayout.Width(20) }))
+                        updated = true;
+                    else result.Add(value);
+
                     if (GUILayout.Button("+", new GUILayoutOption[] { GUILayout.Width(20) })) result.Add(ColorFilter.DefaultFilter);
 
                     EditorGUILayout.EndHorizontal();
