@@ -45,6 +45,10 @@ namespace Negi0109.ColorGradientToTexture
                 colorGradient.axes[1].xCurve = v1;
                 colorGradient.axes[2].xCurve = v2;
 
+                colorGradient.axes[0].Dirty =
+                colorGradient.axes[1].Dirty =
+                colorGradient.axes[2].Dirty = true;
+
                 editorWindow.Close();
             }
 
@@ -60,6 +64,10 @@ namespace Negi0109.ColorGradientToTexture
                     colorGradient.axes[0].yCurve = v0;
                     colorGradient.axes[1].yCurve = v1;
                     colorGradient.axes[2].yCurve = v2;
+
+                    colorGradient.axes[0].Dirty =
+                    colorGradient.axes[1].Dirty =
+                    colorGradient.axes[2].Dirty = true;
 
                     editorWindow.Close();
                 }
@@ -77,6 +85,10 @@ namespace Negi0109.ColorGradientToTexture
                     colorGradient.axes[0].yCurve = new AnimationCurve((Keyframe[])v0.keys.Clone());
                     colorGradient.axes[1].yCurve = new AnimationCurve((Keyframe[])v1.keys.Clone());
                     colorGradient.axes[2].yCurve = new AnimationCurve((Keyframe[])v2.keys.Clone());
+
+                    colorGradient.axes[0].Dirty =
+                    colorGradient.axes[1].Dirty =
+                    colorGradient.axes[2].Dirty = true;
 
                     editorWindow.Close();
                 }

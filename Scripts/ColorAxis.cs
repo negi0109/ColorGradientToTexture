@@ -17,6 +17,13 @@ namespace Negi0109.ColorGradientToTexture
         public List<CoordinateFilter> coordinateFilters;
         public readonly int axesCount = 0;
 
+        private bool dirty = false;
+        public bool Dirty
+        {
+            get => dirty;
+            set => dirty = value;
+        }
+
         public ColorAxis(int axesCount)
         {
             this.axesCount = axesCount;

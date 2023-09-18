@@ -24,6 +24,8 @@ namespace Negi0109.ColorGradientToTexture
             var updated = false;
             var coordinateUpdated = false;
 
+            updated |= axis.Dirty;
+
             if (previewTex == null)
             {
                 previewTex = new Texture2D(previewSize, previewSize, TextureFormat.ARGB32, false);
@@ -204,6 +206,8 @@ namespace Negi0109.ColorGradientToTexture
                 }
                 coordinatePreviewTex.Apply();
             }
+
+            axis.Dirty = false;
             return updated;
         }
 
